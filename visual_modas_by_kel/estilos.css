@@ -1,0 +1,254 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+/* Corpo e layout geral */
+body {
+    font-family: Arial, sans-serif;
+    background: #fafafa;
+    color: #222;
+    min-height: 100vh;
+}
+/* Cabeçalho */
+header {
+    background: #222;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+}
+/* Navegação principal */
+nav {
+    background: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 15px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+nav a {
+    color: #222;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: color 0.2s;
+}
+nav a:hover {
+    color: #e91e63;
+}
+/* Navegação alternativa (pagina_home.php) */
+nav.alt {
+    background: #444;
+    padding: 10px 0;
+    text-align: center;
+    gap: 0;
+    box-shadow: none;
+}
+nav.alt a {
+    color: #fff;
+    margin: 0 15px;
+    font-size: 1em;
+}
+/* Banner (pagina_home.php) */
+.banner {
+    background: url('banner.jpg') center/cover no-repeat;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 2em;
+}
+/* Produtos em destaque (pagina_home.php) */
+.produtos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    padding: 40px 0;
+}
+.produto {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    width: 220px;
+    text-align: center;
+    box-shadow: 0 2px 8px #0001;
+    padding: 20px;
+}
+.produto img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+.produto h3 {
+    margin: 15px 0 10px;
+    font-size: 1.1em;
+}
+.produto p {
+    color: #888;
+    margin: 0 0 10px;
+}
+.produto .preco {
+    color: #e91e63;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+.produto button {
+    background: #e91e63;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.produto button:hover {
+    background: #c2185b;
+}
+/* Main container (pagina_menu.html) */
+main {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+    text-align: center;
+}
+/* Tabelas (carrinho_compras.php) */
+table {
+    border-collapse: collapse;
+    width: 60%;
+    margin: 20px auto;
+    background: #fff;
+    box-shadow: 0 2px 8px #0001;
+}
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+th {
+    background: #f4f4f4;
+}
+/* Formulários gerais */
+form {
+    max-width: 400px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 24px 18px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+label {
+    display: block;
+    margin-top: 10px;
+    color: #555;
+}
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+input[type="submit"],
+button[type="submit"],
+button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: #e91e63;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+input[type="submit"]:hover,
+button[type="submit"]:hover,
+button:hover {
+    background: #c2185b;
+}
+/* Mensagens de sucesso e erro */
+.mensagem {
+    margin: 20px 0;
+    color: green;
+    text-align: center;
+}
+.error {
+    color: #e53935;
+    margin-bottom: 16px;
+    text-align: center;
+}
+/* Login container (pagina_login.php) */
+.login-container {
+    background: #fff;
+    padding: 32px 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    width: 320px;
+    margin: 40px auto;
+}
+.login-container h2 {
+    margin-bottom: 24px;
+    color: #333;
+    text-align: center;
+}
+.login-container .register-link {
+    display: block;
+    text-align: center;
+    margin-top: 16px;
+    color: #e91e63;
+    text-decoration: none;
+}
+.login-container .register-link:hover {
+    text-decoration: underline;
+}
+/* Footer */
+footer {
+    background: #222;
+    color: #fff;
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 40px;
+}
+/* Responsividade */
+@media (max-width: 700px) {
+    .produtos {
+        flex-direction: column;
+        align-items: center;
+    }
+    .produto {
+        width: 90%;
+    }
+    .banner {
+        font-size: 1.2em;
+        height: 150px;
+    }
+    table {
+        width: 98%;
+    }
+}
+@media (max-width: 600px) {
+    nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+    nav.alt {
+        flex-direction: column;
+        gap: 10px;
+    }
+    main {
+        padding: 0 5px;
+    }
+    .login-container {
+        width: 98%;
+        padding: 18px 4px;
+    }
+}
