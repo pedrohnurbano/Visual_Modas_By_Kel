@@ -1,7 +1,4 @@
 <?php
-// cadastro_usuario.php
-
-// Conexão com o banco de dados (ajuste conforme necessário)
 $host = 'localhost';
 $user = 'root';
 $pass = '';

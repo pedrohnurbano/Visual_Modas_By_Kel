@@ -1,19 +1,16 @@
 <?php
 session_start();
 
-// Inicializa o carrinho se não existir
 if (!isset($_SESSION['carrinho'])) {
     $_SESSION['carrinho'] = [];
 }
 
-// Adiciona produto ao carrinho
 if (isset($_POST['adicionar'])) {
     $id = $_POST['id'];
     $nome = $_POST['nome'];
     $preco = floatval($_POST['preco']);
     $quantidade = intval($_POST['quantidade']);
 
-    // Se já existe, soma a quantidade
     if (isset($_SESSION['carrinho'][$id])) {
         $_SESSION['carrinho'][$id]['quantidade'] += $quantidade;
     } else {
@@ -25,13 +22,11 @@ if (isset($_POST['adicionar'])) {
     }
 }
 
-// Remove produto do carrinho
 if (isset($_GET['remover'])) {
     $id = $_GET['remover'];
     unset($_SESSION['carrinho'][$id]);
 }
 
-// Lista de produtos de exemplo
 $produtos = [
     1 => ['nome' => 'Camiseta', 'preco' => 49.90],
     2 => ['nome' => 'Calça Jeans', 'preco' => 129.90],
@@ -65,11 +60,11 @@ $produtos = [
     <?php else: ?>
         <table>
             <tr>
-                <th>Produto</th>
-                <th>Preço</th>
-                <th>Quantidade</th>
-                <th>Total</th>
-                <th>Ação</th>
+                <th> Produto    </th>
+                <th> Preço      </th>
+                <th> Quantidade </th>
+                <th> Total      </th>
+                <th> Ação       </th>
             </tr>
             <?php
             $total = 0;
