@@ -12,4 +12,3 @@ CREATE TABLE usuarios(
     criadoEm timestamp default current_timestamp()
 ) ENGINE=INNODB;
 
-aaaaaaaaaa
