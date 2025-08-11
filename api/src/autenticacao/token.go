@@ -72,5 +72,5 @@ func retornarChaveDeVerificacao(token *jwt.Token) (interface{}, error) {
 		return nil, fmt.Errorf("método de assinatura inesperado! %v", token.Header["alg"])
 	}
 
-	return []byte(config.SecretKey), nil  // <-- Adicione []byte() aqui
+	return []byte(config.SecretKey), nil
 }

@@ -20,14 +20,14 @@ func NovoRepositorioDeUsuarios(db *sql.DB) *Usuarios {
 func (repositorio Usuarios) Criar(usuario modelos.Usuario) (uint64, error) { 
 	//Método vai estar dentro do repositório de usuários, vai criar um usuário, vai receber um parâmetro (um modelo de usuario) e vai retornar um id e um erro
 	statement, erro := repositorio.db.Prepare(
-		"insert into usuarios (nome, nick, email, senha) values(?, ?, ?, ?)",
+		"insert into usuarios (nome, sobrenome, email, senha, telefone, cpf) values(?, ?, ?, ?, ?, ?)",
 	)
 	if erro != nil {
 		return 0, erro
 	}
 	defer statement.Close()
 
-	resultado, erro := statement.Exec(usuario.Nome, usuario.Nick, usuario.Email, usuario.Senha)
+	resultado, erro := statement.Exec(usuario.Nome, usuario.Sobrenome, usuario.Email, usuario.Senha, usuario.Telefone, usuario.CPF)
 	if erro != nil {
 		return 0, erro
 	}
@@ -38,16 +38,15 @@ func (repositorio Usuarios) Criar(usuario modelos.Usuario) (uint64, error) {
 	}
 
 	return uint64(ultimoIDInserido), nil
-
 }
 
-// Buscar traz todos os usuarios que atendem um filtro de nome ou nick
-func (repositorio Usuarios) Buscar(nomeOuNick string) ([]modelos.Usuario, error) {
-	nomeOuNick = fmt.Sprintf("%%%s%%", nomeOuNick) //%nomeOuNick%
-	//func recebe um nome ou nick e retorna uma lista de usuarios e um erro
+// Buscar traz todos os usuarios que atendem um filtro de nome, sobrenome ou email
+func (repositorio Usuarios) Buscar(nomeOuEmail string) ([]modelos.Usuario, error) {
+	nomeOuEmail = fmt.Sprintf("%%%s%%", nomeOuEmail) //%nomeOuEmail%
+	//func recebe um nome ou email e retorna uma lista de usuarios e um erro
 	linhas, erro := repositorio.db.Query(
-		"select id, nome, nick, email, criadoEm from usuarios where nome like ? or nick like ?", //vai procurar por um cara que tenha o nome ou nick igual ao nomeOuNick
-		nomeOuNick, nomeOuNick, //são as duas "?"
+		"select id, nome, sobrenome, email, telefone, cpf, criadoEm from usuarios where nome like ? or sobrenome like ? or email like ?", 
+		nomeOuEmail, nomeOuEmail, nomeOuEmail, //são as três "?"
 	)
 
 	if erro != nil {
@@ -64,8 +63,10 @@ func (repositorio Usuarios) Buscar(nomeOuNick string) ([]modelos.Usuario, error)
 		if erro = linhas.Scan( // vai ler cada linha e atribuir os valores a cada campo do usuario
 			&usuario.ID,
 			&usuario.Nome,
-			&usuario.Nick,
+			&usuario.Sobrenome,
 			&usuario.Email,
+			&usuario.Telefone,
+			&usuario.CPF,
 			&usuario.CriadoEm,
 		); erro != nil {
 			return nil, erro
@@ -80,7 +81,7 @@ func (repositorio Usuarios) Buscar(nomeOuNick string) ([]modelos.Usuario, error)
 // BuscarPorId traz um usuario pelo seu id
 func (repositorio Usuarios) BuscarPorID(ID uint64) (modelos.Usuario, error) {
 	linhas, erro := repositorio.db.Query(
-		"select id, nome, nick, email, criadoEm from usuarios where id = ?",
+		"select id, nome, sobrenome, email, telefone, cpf, criadoEm from usuarios where id = ?",
 		ID,
 	)
 	if erro != nil {
@@ -94,8 +95,10 @@ func (repositorio Usuarios) BuscarPorID(ID uint64) (modelos.Usuario, error) {
 		if erro = linhas.Scan( //vai ler os dados
 			&usuario.ID, //& serve para passar o endereço da variavel, não o valor, para que o Scan possa alterar o valor da variavel
 			&usuario.Nome,
-			&usuario.Nick,
+			&usuario.Sobrenome,
 			&usuario.Email,
+			&usuario.Telefone,
+			&usuario.CPF,
 			&usuario.CriadoEm,
 		); erro != nil {
 			return modelos.Usuario{}, erro
@@ -108,14 +111,14 @@ func (repositorio Usuarios) BuscarPorID(ID uint64) (modelos.Usuario, error) {
 // Atualizar altera as informações de um usuario no banco de dados
 func (repositorio Usuarios) Atualizar(ID uint64, usuario modelos.Usuario) error {
 	statement, erro := repositorio.db.Prepare(
-		"update usuarios set nome = ?, nick = ?, email = ? where id = ?",
+		"update usuarios set nome = ?, sobrenome = ?, email = ?, telefone = ?, cpf = ? where id = ?",
 	)
 	if erro != nil {
 		return erro
 	}
 	defer statement.Close() //fecha a conexão com o statement
 
-	if _, erro = statement.Exec(usuario.Nome, usuario.Nick, usuario.Email, ID); erro != nil { //_ para ignorar o 1° valor retornado pelo Exec, ID é o id q ta no parametro
+	if _, erro = statement.Exec(usuario.Nome, usuario.Sobrenome, usuario.Email, usuario.Telefone, usuario.CPF, ID); erro != nil { //_ para ignorar o 1° valor retornado pelo Exec, ID é o id q ta no parametro
 		return erro
 	}
 
@@ -149,6 +152,33 @@ func (repositorio Usuarios) BuscarPorEmail(email string) (modelos.Usuario, error
 
 	if linha.Next() {
 		if erro = linha.Scan(&usuario.ID, &usuario.Senha); erro != nil {
+			return modelos.Usuario{}, erro
+		}
+	}
+
+	return usuario, nil
+}
+
+//BuscarPorCPF busca um usuário por CPF (útil para verificar duplicatas)
+func (repositorio Usuarios) BuscarPorCPF(cpf string) (modelos.Usuario, error) {
+	linha, erro := repositorio.db.Query("select id, nome, sobrenome, email, telefone, cpf, criadoEm from usuarios where cpf = ?", cpf)
+	if erro != nil {
+		return modelos.Usuario{}, erro
+	}
+	defer linha.Close()
+
+	var usuario modelos.Usuario
+
+	if linha.Next() {
+		if erro = linha.Scan(
+			&usuario.ID,
+			&usuario.Nome,
+			&usuario.Sobrenome,
+			&usuario.Email,
+			&usuario.Telefone,
+			&usuario.CPF,
+			&usuario.CriadoEm,
+		); erro != nil {
 			return modelos.Usuario{}, erro
 		}
 	}
