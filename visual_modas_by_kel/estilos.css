@@ -686,3 +686,21 @@ body {
 /* Estilização da Página de Favoritos */
 
 /* Estilização da Página de Sacola */
+.logo-link {
+    text-decoration: none !important;
+}
+.logo-link:visited,
+.logo-link:active,
+.logo-link:focus {
+    text-decoration: none !important;
+    outline: none;
+}
+a span.logo {
+    text-decoration: none !important;
+}
+a:visited span.logo,
+a:active span.logo,
+a:focus span.logo {
+    text-decoration: none !important;
+    outline: none;
+}
