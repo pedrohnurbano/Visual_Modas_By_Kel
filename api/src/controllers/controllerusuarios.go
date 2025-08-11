@@ -43,18 +43,35 @@ func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repositorio := repositorios.NovoRepositorioDeUsuarios(db) //criando um novo repositorio de usuarios
-	usuario.ID, erro = repositorio.Criar(usuario)             //chamando o metodo criar do repositorio de usuarios (inserindo)
+	
+	// Verificar se email já existe
+	_, erro = repositorio.BuscarPorEmail(usuario.Email)
+	if erro == nil {
+		respostas.Erro(w, http.StatusConflict, errors.New("este e-mail já está cadastrado"))
+		return
+	}
+
+	// Verificar se CPF já existe
+	_, erro = repositorio.BuscarPorCPF(usuario.CPF)
+	if erro == nil {
+		respostas.Erro(w, http.StatusConflict, errors.New("este CPF já está cadastrado"))
+		return
+	}
+
+	usuario.ID, erro = repositorio.Criar(usuario) //chamando o metodo criar do repositorio de usuarios (inserindo)
 	if erro != nil {
 		respostas.Erro(w, http.StatusInternalServerError, erro) //recebe 3 parâmetros: resposta, código de status e mensagem de erro
 		return
 	}
 
+	// Limpar senha da resposta por segurança
+	usuario.Senha = ""
 	respostas.JSON(w, http.StatusCreated, usuario) //enviando resposta para o usuario
 }
 
-// BuscarUsuarios busca todos os usuários salvos no banco
+// BuscarUsuarios busca todos os usuários salvos no banco (apenas para administradores)
 func BuscarUsuarios(w http.ResponseWriter, r *http.Request) {
-	nomeOuNick := strings.ToLower(r.URL.Query().Get("usuario")) //converte a string para minuscula, vai trazer tudo que tiver na query (rota) e vai pegar o valor do campo usuario
+	nomeOuEmail := strings.ToLower(r.URL.Query().Get("usuario")) //converte a string para minuscula, vai trazer tudo que tiver na query (rota) e vai pegar o valor do campo usuario
 	db, erro := banco.Conectar()                                //conecta ao banco de dados
 	if erro != nil {
 		respostas.Erro(w, http.StatusInternalServerError, erro) //chama a função erro lá do respostas.go e envia o erro para o usuario
@@ -63,10 +80,15 @@ func BuscarUsuarios(w http.ResponseWriter, r *http.Request) {
 	defer db.Close() //fecha a conexão com o banco de dados
 
 	repositorio := repositorios.NovoRepositorioDeUsuarios(db)
-	usuarios, erro := repositorio.Buscar(nomeOuNick)
+	usuarios, erro := repositorio.Buscar(nomeOuEmail)
 	if erro != nil {
 		respostas.Erro(w, http.StatusInternalServerError, erro) //chama a função erro lá do respostas.go e envia o erro para o usuario
 		return
+	}
+
+	// Limpar senhas da resposta por segurança
+	for i := range usuarios {
+		usuarios[i].Senha = ""
 	}
 
 	respostas.JSON(w, http.StatusOK, usuarios)
@@ -82,9 +104,22 @@ func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	usuarioIDNoToken, erro := autenticacao.ExtrairUsuarioID(r)
+	if erro != nil {
+		respostas.Erro(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	// Só permite que o usuário veja seus próprios dados
+	if usuarioID != usuarioIDNoToken {
+		respostas.Erro(w, http.StatusForbidden, errors.New("não é possível visualizar dados de outro usuário"))
+		return
+	}
+
 	db, erro := banco.Conectar() //conecta ao banco de dados
 	if erro != nil {
 		respostas.Erro(w, http.StatusInternalServerError, erro) //chama a função erro lá do respostas.go e envia o erro para o usuario
+		return
 	}
 	defer db.Close()
 
@@ -95,6 +130,8 @@ func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Limpar senha da resposta por segurança
+	usuario.Senha = ""
 	respostas.JSON(w, http.StatusOK, usuario)
 }
 
@@ -115,7 +152,7 @@ func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if usuarioID != usuarioIDNoToken { //nao deixa os usuarios alterarem informações que não são deles (dos outros)
-		respostas.Erro(w, http.StatusForbidden, errors.New("nao é possivel atualizar um usuario que nao seja o seu")) //chama a função erro lá do respostas.go e envia o erro para o usuario
+		respostas.Erro(w, http.StatusForbidden, errors.New("não é possível atualizar um usuário que não seja o seu")) //chama a função erro lá do respostas.go e envia o erro para o usuario
 		return
 	}
 
@@ -144,6 +181,21 @@ func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repositorio := repositorios.NovoRepositorioDeUsuarios(db)
+
+	// Verificar se o email já existe para outro usuário
+	usuarioComEmail, erro := repositorio.BuscarPorEmail(usuario.Email)
+	if erro == nil && usuarioComEmail.ID != usuarioID {
+		respostas.Erro(w, http.StatusConflict, errors.New("este e-mail já está sendo usado por outro usuário"))
+		return
+	}
+
+	// Verificar se o CPF já existe para outro usuário  
+	usuarioComCPF, erro := repositorio.BuscarPorCPF(usuario.CPF)
+	if erro == nil && usuarioComCPF.ID != usuarioID {
+		respostas.Erro(w, http.StatusConflict, errors.New("este CPF já está sendo usado por outro usuário"))
+		return
+	}
+
 	if erro = repositorio.Atualizar(usuarioID, usuario); erro != nil {
 		respostas.Erro(w, http.StatusInternalServerError, erro) //chama a função erro lá do respostas.go e envia o erro para o usuario
 		return
@@ -168,7 +220,7 @@ func DeletarUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if usuarioID != usuarioIDNoToken {
-		respostas.Erro(w, http.StatusForbidden, errors.New("nao é possivel deletar um usuario que nao seja o seu"))
+		respostas.Erro(w, http.StatusForbidden, errors.New("não é possível deletar um usuário que não seja o seu"))
 		return
 	}
 
