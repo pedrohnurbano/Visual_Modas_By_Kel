@@ -11,4 +11,3 @@ CREATE TABLE usuarios(
     senha varchar(100) not null,
     criadoEm timestamp default current_timestamp()
 ) ENGINE=INNODB;
-
