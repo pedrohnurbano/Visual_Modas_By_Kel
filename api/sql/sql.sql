@@ -10,4 +10,8 @@ CREATE TABLE usuarios(
     email varchar(50) not null unique,
     senha varchar(100) not null,
     criadoEm timestamp default current_timestamp()
+<<<<<<< Updated upstream
 ) ENGINE=INNODB;
+=======
+) ENGINE=INNODB;
+>>>>>>> Stashed changes
