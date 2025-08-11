@@ -8,6 +8,7 @@ import (
 	"api/src/respostas"
 	"api/src/seguranca"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 )
@@ -20,9 +21,24 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var usuario modelos.Usuario
-	if erro = json.Unmarshal(corpoRequisicao, &usuario); erro != nil {
+	var dadosLogin struct {
+		Email string `json:"email"`
+		Senha string `json:"senha"`
+	}
+
+	if erro = json.Unmarshal(corpoRequisicao, &dadosLogin); erro != nil {
 		respostas.Erro(w, http.StatusBadRequest, erro) //chama a função erro lá do respostas.go e envia o erro para o usuario
+		return
+	}
+
+	// Validações básicas
+	if dadosLogin.Email == "" {
+		respostas.Erro(w, http.StatusBadRequest, errors.New("o e-mail é obrigatório"))
+		return
+	}
+
+	if dadosLogin.Senha == "" {
+		respostas.Erro(w, http.StatusBadRequest, errors.New("a senha é obrigatória"))
 		return
 	}
 
@@ -34,14 +50,20 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repositorio := repositorios.NovoRepositorioDeUsuarios(db)
-	usuarioSalvoNoBanco, erro := repositorio.BuscarPorEmail(usuario.Email)
+	usuarioSalvoNoBanco, erro := repositorio.BuscarPorEmail(dadosLogin.Email)
 	if erro != nil {
-		respostas.Erro(w, http.StatusInternalServerError, erro)
+		respostas.Erro(w, http.StatusUnauthorized, errors.New("credenciais inválidas"))
 		return
 	}
 
-	if erro = seguranca.VerificarSenha(usuarioSalvoNoBanco.Senha, usuario.Senha); erro != nil {
-		respostas.Erro(w, http.StatusUnauthorized, erro)
+	// Verificar se o usuário foi encontrado
+	if usuarioSalvoNoBanco.ID == 0 {
+		respostas.Erro(w, http.StatusUnauthorized, errors.New("credenciais inválidas"))
+		return
+	}
+
+	if erro = seguranca.VerificarSenha(usuarioSalvoNoBanco.Senha, dadosLogin.Senha); erro != nil {
+		respostas.Erro(w, http.StatusUnauthorized, errors.New("credenciais inválidas"))
 		return
 	}
 
@@ -50,6 +72,25 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		respostas.Erro(w, http.StatusInternalServerError, erro)
 		return
 	}
-	
-	w.Write([]byte(token))
+
+	// Buscar dados completos do usuário para retornar (sem senha)
+	usuarioCompleto, erro := repositorio.BuscarPorID(usuarioSalvoNoBanco.ID)
+	if erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	// Limpar senha por segurança
+	usuarioCompleto.Senha = ""
+
+	// Retornar token e dados do usuário
+	resposta := struct {
+		Token   string          `json:"token"`
+		Usuario modelos.Usuario `json:"usuario"`
+	}{
+		Token:   token,
+		Usuario: usuarioCompleto,
+	}
+
+	respostas.JSON(w, http.StatusOK, resposta)
 }

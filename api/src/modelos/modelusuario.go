@@ -12,10 +12,12 @@ import (
 // Usuario representa um usuário utilizando a rede social
 type Usuario struct {
 	ID       uint64    `json:"id,omitempty"` //omitempty faz com que o campo seja ignorado se estiver vazio
-	Nome     string    `json:"nome,omitempty"`
-	Nick     string    `json:"nick,omitempty"`
+	Nome      string    `json:"nome,omitempty"`
+    Sobrenome string    `json:"sobrenome,omitempty"`
 	Email    string    `json:"email,omitempty"`
 	Senha    string    `json:"senha,omitempty"`
+	Telefone  string    `json:"telefone,omitempty"`
+    CPF       string    `json:"cpf,omitempty"`
 	CriadoEm time.Time `json:"CriadoEm,omitempty"`
 }
 
@@ -37,12 +39,20 @@ func (usuario *Usuario) validar(etapa string) error {
 		return errors.New("o nome é obrigatório e não pode estar em branco")
 	}
 
-	if usuario.Nick == "" {
-		return errors.New("o nick é obrigatório e não pode estar em branco")
+	if usuario.Sobrenome == "" {
+		return errors.New("o sobrenome é obrigatório e não pode estar em branco")
 	}
 
 	if usuario.Email == "" {
 		return errors.New("o e-mail é obrigatório e não pode estar em branco")
+	}
+
+	if usuario.Telefone == "" {
+		return errors.New("o telefone é obrigatório e não pode estar em branco")
+	}
+
+	if usuario.CPF == "" {
+		return errors.New("o CPF é obrigatório e não pode estar em branco")
 	}
 
 	if erro := checkmail.ValidateFormat(usuario.Email); erro != nil { //valida o formato do e-mail
@@ -57,9 +67,12 @@ func (usuario *Usuario) validar(etapa string) error {
 }
 
 func (usuario *Usuario) formatar(etapa string) error {
-	usuario.Nome = strings.TrimSpace(usuario.Nome) //Remove espaços em branco do nome
-	usuario.Nick = strings.TrimSpace(usuario.Nick)
+	usuario.Nome = strings.TrimSpace(usuario.Nome) //Remove espaços em branco no início e no final
+	usuario.Sobrenome = strings.TrimSpace(usuario.Sobrenome)
 	usuario.Email = strings.TrimSpace(usuario.Email)
+	usuario.Telefone = strings.TrimSpace(usuario.Telefone)
+	usuario.CPF = strings.TrimSpace(usuario.CPF)
+
 
 	if etapa == "cadastro" {
 		senhaComHash, erro := seguranca.Hash(usuario.Senha) //Hasheia a senha

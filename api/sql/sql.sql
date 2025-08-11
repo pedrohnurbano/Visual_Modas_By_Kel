@@ -3,11 +3,13 @@ USE devbook;
 
 DROP TABLE IF EXISTS usuarios;
 
-CREATE TABLE usuarios(
-    id int auto_increment primary key,
-    nome varchar(50) not null,
-    nick varchar(50) not null unique,
-    email varchar(50) not null unique,
-    senha varchar(100) not null,
-    criadoEm timestamp default current_timestamp()
-) ENGINE=INNODB;
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    sobrenome VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
+    telefone VARCHAR(20) NOT NULL,
+    cpf VARCHAR(14) NOT NULL UNIQUE,
+    criadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+); ENGINE=INNODB;
