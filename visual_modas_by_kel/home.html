@@ -9,24 +9,32 @@
 </head>
 
 <body>
-    <cabecalho>
-        <titulo> VISUAL MODAS BY KEL </titulo>
-        <a href="home.html">
-            <img src="design/logo_visualmodasbykel.png" width="180" alt="Logo da Livraria">
-        </a>
-        <input type="text" id="pesquisa" name="pesquisa" placeholder="O que você procura?"><br>
-        <div class="cabecalho_icones">
-            <a href="pagina_login.html" title="Minha Conta">
-                <img src="design/icone_usuario.png" width="24" height="24" alt="Minha Conta">
+    <header class="header">
+        <div class="header-content">
+            <a href="home.html" style="text-decoration:none;">
+                <span class="logo" style="position:static;transform:none;left:auto;z-index:auto;flex:0 0 auto;margin-right:24px;">
+                    VISUAL MODAS BY KEL
+                </span>
             </a>
-            <a href="pagina_favoritos.html" title="Favoritos" id="abrir_favoritos">
-                <img src="design/icone_favoritos.png" width="24" height="24" alt="Favoritos">
+            <form style="display:inline; margin:0 16px 0 0;">
+                <input type="text" placeholder="O que você procura?">
+            </form>
+            <a href="home.html">
+                <img src="design/logo_visualmodasbykel.png" alt="Logo Decorativa" style="height:32px; margin:0 24px;">
             </a>
-            <a href="pagina_sacola.html" title="Sacola" id="abrir_sacola">
-                <img src="design/icone_sacola.png" width="24" height="24" alt="Sacola">
-            </a>
+            <div class="cabecalho_icones">
+                <a href="login.html" title="Minha Conta">
+                    <img src="design/icone_usuario.png" width="24" height="24" alt="Minha Conta">
+                </a>
+                <a href="favoritos.html" title="Favoritos" id="abrir_favoritos">
+                    <img src="design/icone_favoritos.png" width="24" height="24" alt="Favoritos">
+                </a>
+                <a href="sacola.html" title="Sacola" id="abrir_sacola">
+                    <img src="design/icone_sacola.png" width="24" height="24" alt="Sacola">
+                </a>
+            </div>
         </div>
-    </cabecalho>
+    </header>
 
     ---> BANNER AQUI
     ---> BARRA INSTITUCIONAL
