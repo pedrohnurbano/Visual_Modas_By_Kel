@@ -56,6 +56,57 @@
     </header>
 
     ---> BANNER AQUI;
+
+    <script>
+        const catLabel = document.getElementById('comprar-categoria-label');
+        const catDropdown = document.getElementById('categorias-dropdown');
+        const hamburgerLi = catLabel.closest('li');
+
+        function showDropdown() {
+            catDropdown.style.display = 'block';
+        }
+        function hideDropdown() {
+            catDropdown.style.display = 'none';
+        }
+        hamburgerLi.addEventListener('mouseenter', showDropdown);
+        hamburgerLi.addEventListener('mouseleave', hideDropdown);
+    </script>
+    <div class="banner-slideshow">
+        <div class="slides fade">
+            <img src="design/banner_01.png" class="banner-img">
+        </div>
+        <div class="slides fade">
+            <img src="design/banner_02.png" class="banner-img">
+        </div>
+        <div class="slides fade">
+            <img src="design/banner_03.png" class="banner-img">
+        </div>
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+    <script>
+        let slideIndex = 1;
+        showSlides(slideIndex);
+
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        function showSlides(n) {
+            let i;
+            let slides = document.getElementsByClassName("slides");
+            if (n > slides.length) { slideIndex = 1 }
+            if (n < 1) { slideIndex = slides.length }
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            slides[slideIndex - 1].style.display = "block";
+        }
+
+        setInterval(() => {
+            plusSlides(1);
+        }, 10000);
+    </script>
     ---> BARRA INSTITUCIONAL.
 
 </body>
