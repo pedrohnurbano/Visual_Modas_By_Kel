@@ -17,7 +17,7 @@ func NovoRepositorioDeUsuarios(db *sql.DB) *Usuarios {
 }
 
 // Criar insere um usuario no banco de dados
-func (repositorio Usuarios) Criar(usuario modelos.Usuario) (uint64, error) { 
+func (repositorio Usuarios) Criar(usuario modelos.Usuario) (uint64, error) {
 	//Método vai estar dentro do repositório de usuários, vai criar um usuário, vai receber um parâmetro (um modelo de usuario) e vai retornar um id e um erro
 	statement, erro := repositorio.db.Prepare(
 		"insert into usuarios (nome, sobrenome, email, senha, telefone, cpf) values(?, ?, ?, ?, ?, ?)",
@@ -45,7 +45,7 @@ func (repositorio Usuarios) Buscar(nomeOuEmail string) ([]modelos.Usuario, error
 	nomeOuEmail = fmt.Sprintf("%%%s%%", nomeOuEmail) //%nomeOuEmail%
 	//func recebe um nome ou email e retorna uma lista de usuarios e um erro
 	linhas, erro := repositorio.db.Query(
-		"select id, nome, sobrenome, email, telefone, cpf, criadoEm from usuarios where nome like ? or sobrenome like ? or email like ?", 
+		"select id, nome, sobrenome, email, telefone, cpf, criadoEm from usuarios where nome like ? or sobrenome like ? or email like ?",
 		nomeOuEmail, nomeOuEmail, nomeOuEmail, //são as três "?"
 	)
 
@@ -140,7 +140,7 @@ func (repositorio Usuarios) Deletar(ID uint64) error {
 	return nil
 }
 
-//BuscarPorEmail busca um usuário por email e retorna o seu id e senha com hash
+// BuscarPorEmail busca um usuário por email e retorna o seu id e senha com hash
 func (repositorio Usuarios) BuscarPorEmail(email string) (modelos.Usuario, error) {
 	linha, erro := repositorio.db.Query("select id, senha from usuarios where email = ?", email)
 	if erro != nil {
@@ -159,7 +159,7 @@ func (repositorio Usuarios) BuscarPorEmail(email string) (modelos.Usuario, error
 	return usuario, nil
 }
 
-//BuscarPorCPF busca um usuário por CPF (útil para verificar duplicatas)
+// BuscarPorCPF busca um usuário por CPF (útil para verificar duplicatas)
 func (repositorio Usuarios) BuscarPorCPF(cpf string) (modelos.Usuario, error) {
 	linha, erro := repositorio.db.Query("select id, nome, sobrenome, email, telefone, cpf, criadoEm from usuarios where cpf = ?", cpf)
 	if erro != nil {
@@ -184,4 +184,37 @@ func (repositorio Usuarios) BuscarPorCPF(cpf string) (modelos.Usuario, error) {
 	}
 
 	return usuario, nil
+}
+
+func (repositorio Usuarios) BuscarSenha(usuarioID uint64) (string, error) {
+	linha, erro := repositorio.db.Query("select senha from usuarios where id = ?", usuarioID)
+	if erro != nil {
+		return "", erro
+	}
+	defer linha.Close()
+
+	var usuario modelos.Usuario
+
+	if linha.Next() { //se tiver uma proxima linha, faz o scan
+		if erro = linha.Scan(&usuario.Senha); erro != nil {
+			return "", erro
+		}
+	}
+
+	return usuario.Senha, nil
+}
+
+// AtualizarSenha altera a senha de um usuário
+func (repositorio Usuarios) AtualizarSenha(usuarioID uint64, senha string) error {
+	statement, erro := repositorio.db.Prepare("update usuarios set senha = ? where id = ?")
+	if erro != nil {
+		return erro
+	}
+	defer statement.Close()
+
+	if _, erro = statement.Exec(senha, usuarioID); erro != nil {
+		return erro
+	}
+
+	return nil
 }
