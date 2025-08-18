@@ -6,6 +6,7 @@ import (
 	"api/src/modelos"
 	"api/src/repositorios"
 	"api/src/respostas"
+	"api/src/seguranca"
 	"encoding/json"
 	"errors"
 	"io"
@@ -43,7 +44,7 @@ func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repositorio := repositorios.NovoRepositorioDeUsuarios(db) //criando um novo repositorio de usuarios
-	
+
 	// Verificar se email já existe
 	_, erro = repositorio.BuscarPorEmail(usuario.Email)
 	if erro == nil {
@@ -72,7 +73,7 @@ func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 // BuscarUsuarios busca todos os usuários salvos no banco (apenas para administradores)
 func BuscarUsuarios(w http.ResponseWriter, r *http.Request) {
 	nomeOuEmail := strings.ToLower(r.URL.Query().Get("usuario")) //converte a string para minuscula, vai trazer tudo que tiver na query (rota) e vai pegar o valor do campo usuario
-	db, erro := banco.Conectar()                                //conecta ao banco de dados
+	db, erro := banco.Conectar()                                 //conecta ao banco de dados
 	if erro != nil {
 		respostas.Erro(w, http.StatusInternalServerError, erro) //chama a função erro lá do respostas.go e envia o erro para o usuario
 		return
@@ -189,7 +190,7 @@ func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Verificar se o CPF já existe para outro usuário  
+	// Verificar se o CPF já existe para outro usuário
 	usuarioComCPF, erro := repositorio.BuscarPorCPF(usuario.CPF)
 	if erro == nil && usuarioComCPF.ID != usuarioID {
 		respostas.Erro(w, http.StatusConflict, errors.New("este CPF já está sendo usado por outro usuário"))
@@ -233,6 +234,70 @@ func DeletarUsuario(w http.ResponseWriter, r *http.Request) {
 
 	repositorio := repositorios.NovoRepositorioDeUsuarios(db)
 	if erro = repositorio.Deletar(usuarioID); erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	respostas.JSON(w, http.StatusNoContent, nil)
+}
+
+func AtualizarSenha(w http.ResponseWriter, r *http.Request) {
+	usuarioIDNoToken, erro := autenticacao.ExtrairUsuarioID(r)
+	if erro != nil {
+		respostas.Erro(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	parametros := mux.Vars(r)
+	usuarioID, erro := strconv.ParseUint(parametros["usuarioId"], 10, 64)
+	if erro != nil {
+		respostas.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	if usuarioIDNoToken != usuarioID {
+		respostas.Erro(w, http.StatusForbidden, errors.New("nao é possivel atualizar a senha de um usuario que nao seja o seu"))
+		return
+	}
+
+	corpoRequisicao, erro := io.ReadAll(r.Body)
+	if erro != nil {
+		respostas.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	var senha modelos.Senha
+	if erro = json.Unmarshal(corpoRequisicao, &senha); erro != nil {
+		respostas.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	db, erro := banco.Conectar()
+	if erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repositorios.NovoRepositorioDeUsuarios(db)
+	senhaSalvaNoBanco, erro := repositorio.BuscarSenha(usuarioID)
+	if erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	if erro = seguranca.VerificarSenha(senhaSalvaNoBanco, senha.Atual); erro != nil {
+		respostas.Erro(w, http.StatusUnauthorized, errors.New("a senha atual nao condiz com a que está salva no banco"))
+		return
+	}
+
+	senhaComHash, erro := seguranca.Hash(senha.Nova)
+	if erro != nil {
+		respostas.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	if erro = repositorio.AtualizarSenha(usuarioID, string(senhaComHash)); erro != nil {
 		respostas.Erro(w, http.StatusInternalServerError, erro)
 		return
 	}
