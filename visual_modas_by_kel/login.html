@@ -1,59 +1,64 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Entrar | Visual Modas By Kel </title>
     <link rel="icon" type="image/png" href="design/icone_visualmodasbykel.png">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="estilos.css">
 </head>
-<body>
 
-        <!-- CABEÇALHO PRINCIPAL -->
+<body>
+    <!----------------------------------------------------------------------------------------->
+    <!---------------------------------- CABEÇALHO PRINCIPAL ---------------------------------->
+    <!----------------------------------------------------------------------------------------->
     <header class="header">
-        <div class="header-content">
-            <a href="home.html" style="text-decoration:none;">
-                <span class="logo"
-                    style="position:static;transform:none;left:auto;z-index:auto;flex:0 0 auto;margin-right:24px;">
-                    VISUAL MODAS BY KEL
-                </span>
-            </a>
-            <form style="display:inline; margin:0 16px 0 0;">
-                <input type="text" placeholder="O que você procura?">
-            </form>
-            <a href="home.html">
-                <img src="design/logo_visualmodasbykel.png" alt="Logo Decorativa" style="height:32px; margin:0 24px;">
-            </a>
-            <!--- ÍCONES DE ACESSO RÁPIDO -->
-            <div class="header-icons" style="gap: 24px;">
-                <a href="login.html" style="font-size:12px;display:flex;align-items:center;gap:4px;">
-                    <img src="design/icone_usuario.png" alt="Minha Conta">
-                    <span>Minha conta e<br><b style="color:#fff;">Meus pedidos</b></span>
-                </a>
-                <a href="favoritos.html" title="Favoritos" id="abrir_favoritos">
-                    <img src="design/icone_favoritos.png" alt="Favoritos">
-                </a>
-                <a href="sacola.html" title="Sacola" id="abrir_sacola">
-                    <img src="design/icone_sacola.png" alt="Sacola">
-                </a>
-            </div>
-        </div>
-        <nav class="header-filters" id="headerFilters">
-            <ul>
-                <li><a href="#" class="active">CATEGORIAS</a></li>
-                <li><a href="#">NOVIDADES</a></li>
-                <li><a href="#">COLEÇÃO</a></li>
-                <li><a href="#">TENDÊNCIAS</a></li>
-                <li><a href="#">LOOKBOOK</a></li>
-                <li><a href="#">PROMOÇÕES</a></li>
-                <li><a href="#">INSPIRAÇÃO</a></li>
-                <li><a href="#">OUTLET</a></li>
-                <li><a href="#">EXCLUSIVOS</a></li>
-            </ul>
-        </nav>
+    <div class="header-content">
+    <a href="home.html" style="text-decoration:none;">
+    <span class="logo"
+    style="position:static;transform:none;left:auto;z-index:auto;flex:0 0 auto;margin-right:24px;">
+    VISUAL MODAS BY KEL
+    </span>
+    </a>
+    <form style="display:inline; margin:0 16px 0 0;">
+    <input type="text" placeholder="O que você procura?">
+    </form>
+    <a href="home.html">
+    <img src="design/logo_visualmodasbykel.png" alt="Logo Decorativa" style="height:32px; margin:0 24px;">
+    </a>
+    <div class="header-icons" style="gap: 24px;">
+    <a href="login.html" style="font-size:12px;display:flex;align-items:center;gap:4px;">
+    <img src="design/icone_usuario.png" alt="Minha Conta">
+    <span>Minha conta e<br><b style="color:#fff;">Meus pedidos</b></span>
+    </a>
+    <a href="favoritos.html" title="Favoritos" id="abrir_favoritos">
+    <img src="design/icone_favoritos.png" alt="Favoritos">
+    </a>
+    <a href="sacola.html" title="Sacola" id="abrir_sacola">
+    <img src="design/icone_sacola.png" alt="Sacola">
+    </a>
+    </div>
+    </div>
+    <nav class="header-filters" id="headerFilters">
+    <ul>
+    <li><a href="#" class="active">CATEGORIAS</a></li>
+    <li><a href="#">NOVIDADES</a></li>
+    <li><a href="#">COLEÇÃO</a></li>
+    <li><a href="#">TENDÊNCIAS</a></li>
+    <li><a href="#">LOOKBOOK</a></li>
+    <li><a href="#">PROMOÇÕES</a></li>
+    <li><a href="#">INSPIRAÇÃO</a></li>
+    <li><a href="#">OUTLET</a></li>
+    <li><a href="#">EXCLUSIVOS</a></li>
+    </ul>
+    </nav>
     </header>
+    <!----------------------------------------------------------------------------------------->
 
     <!-- Main Content -->
     <main class="main-container two-columns">
@@ -77,7 +82,8 @@
                     <div class="form-group">
                         <label class="form-label" for="loginPassword">Senha</label>
                         <div class="password-container">
-                            <input type="password" id="loginPassword" class="form-input" placeholder="Digite sua senha" required>
+                            <input type="password" id="loginPassword" class="form-input" placeholder="Digite sua senha"
+                                required>
                             <span class="password-toggle" onclick="togglePassword('loginPassword', this)">
                                 <i class="fas fa-eye"></i>
                             </span>
@@ -111,7 +117,7 @@
         function togglePassword(fieldId, toggleElement) {
             const field = document.getElementById(fieldId);
             const icon = toggleElement.querySelector('i');
-            
+
             if (field.type === 'password') {
                 field.type = 'text';
                 icon.className = 'fas fa-eye-slash';
@@ -126,21 +132,21 @@
         }
 
         // Form handling
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const forms = document.querySelectorAll('form');
-            
+
             forms.forEach(form => {
-                form.addEventListener('submit', function(e) {
+                form.addEventListener('submit', function (e) {
                     e.preventDefault();
-                    
+
                     const submitBtn = this.querySelector('.submit-button');
                     const originalText = submitBtn.textContent;
-                    
+
                     // Loading state
                     submitBtn.textContent = 'Processando...';
                     submitBtn.disabled = true;
                     submitBtn.classList.add('loading');
-                    
+
                     // Simulate API call
                     setTimeout(() => {
                         alert('Formulário enviado com sucesso!');
@@ -154,9 +160,9 @@
             // Password confirmation validation
             const confirmPassword = document.getElementById('confirmPassword');
             const registerPassword = document.getElementById('registerPassword');
-            
+
             if (confirmPassword && registerPassword) {
-                confirmPassword.addEventListener('input', function() {
+                confirmPassword.addEventListener('input', function () {
                     if (this.value !== registerPassword.value) {
                         this.setCustomValidity('As senhas não coincidem');
                         this.style.borderBottomColor = '#ff6b6b';
@@ -189,7 +195,7 @@
             // Máscara CPF
             const cpfInput = document.getElementById('cpf');
             if (cpfInput) {
-                cpfInput.addEventListener('input', function() {
+                cpfInput.addEventListener('input', function () {
                     this.value = maskCPF(this.value);
                 });
             }
@@ -197,18 +203,18 @@
             // Máscara Telefone
             const phoneInput = document.getElementById('phone');
             if (phoneInput) {
-                phoneInput.addEventListener('input', function() {
+                phoneInput.addEventListener('input', function () {
                     this.value = maskPhone(this.value);
                 });
             }
 
             // Enhanced UX interactions
             document.querySelectorAll('.form-input').forEach(input => {
-                input.addEventListener('focus', function() {
+                input.addEventListener('focus', function () {
                     this.style.borderBottomColor = '#000';
                 });
-                
-                input.addEventListener('blur', function() {
+
+                input.addEventListener('blur', function () {
                     if (!this.value) {
                         this.style.borderBottomColor = '#e8e8e8';
                     }
@@ -218,7 +224,7 @@
 
         // Troca a aba ativa ao clicar
         document.querySelectorAll('.header-filters a').forEach(link => {
-            link.addEventListener('click', function(e) {
+            link.addEventListener('click', function (e) {
                 document.querySelectorAll('.header-filters a').forEach(a => a.classList.remove('active'));
                 this.classList.add('active');
                 e.preventDefault();
@@ -229,9 +235,9 @@
         let lastScrollTop = 0;
         const headerFilters = document.getElementById('headerFilters');
         let ticking = false;
-        window.addEventListener('scroll', function() {
+        window.addEventListener('scroll', function () {
             if (!ticking) {
-                window.requestAnimationFrame(function() {
+                window.requestAnimationFrame(function () {
                     const st = window.pageYOffset || document.documentElement.scrollTop;
                     if (st > lastScrollTop && st > 60) {
                         headerFilters.classList.add('filters-hide');
@@ -246,4 +252,5 @@
         }, { passive: true });
     </script>
 </body>
+
 </html>

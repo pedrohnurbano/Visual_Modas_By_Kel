@@ -10,24 +10,27 @@
 </head>
 
 <body>
-
-    <!-- CABEÇALHO PRINCIPAL -->
+    <!----------------------------------------------------------------------------------------->
+    <!---------------------------------- CABEÇALHO PRINCIPAL ---------------------------------->
+    <!----------------------------------------------------------------------------------------->
     <header class="header">
         <div class="header-content">
             <a href="home.html" style="text-decoration:none;">
                 <span class="logo"
-                    style="position:static;transform:none;left:auto;z-index:auto;flex:0 0 auto;margin-right:24px;">
+                    style="position:static;transform:none;left:auto;z-index:auto;flex:0 0 auto;">
                     VISUAL MODAS BY KEL
                 </span>
             </a>
-            <form style="display:inline; margin:0 16px 0 0;">
-                <input type="text" placeholder="O que você procura?">
-            </form>
+            
             <a href="home.html">
-                <img src="design/logo_visualmodasbykel.png" alt="Logo Decorativa" style="height:32px; margin:0 24px;">
+                <img src="design/logo_visualmodasbykel.png" alt="Logo Decorativa" style="height:38px;">
             </a>
-            <!--- ÍCONES DE ACESSO RÁPIDO -->
+
             <div class="header-icons" style="gap: 24px;">
+                <form style="display:inline; margin:0 16px 0 0; border-bottom: 1px solid #000;">
+                    <input type="text" placeholder="O que você procura?">
+                </form>
+                
                 <a href="login.html" style="font-size:12px;display:flex;align-items:center;gap:4px;">
                     <img src="design/icone_usuario.png" alt="Minha Conta">
                     <span>Minha conta e<br><b style="color:#fff;">Meus pedidos</b></span>
@@ -54,6 +57,8 @@
             </ul>
         </nav>
     </header>
+    <!----------------------------------------------------------------------------------------->
+
 
     <script>
         const catLabel = document.getElementById('comprar-categoria-label');
@@ -69,6 +74,7 @@
         hamburgerLi.addEventListener('mouseenter', showDropdown);
         hamburgerLi.addEventListener('mouseleave', hideDropdown);
     </script>
+    
     <div class="banner-slideshow">
         <div class="slides fade">
             <img src="design/banner_01.png" class="banner-img">
@@ -105,7 +111,46 @@
             plusSlides(1);
         }, 10000);
     </script>
-    ---> BARRA INSTITUCIONAL.
+
+
+    <div class="institutional-bar">
+        <div class="institutional-container">
+            <div class="inst-block">
+                <img src="design/icone_preco.png" width="32" alt="Logo">
+                <div>
+                    <span class="inst-title">10% OFF NA PRIMEIRA COMPRA</span>
+                    <span class="inst-sub">USE O CUPOM BEMVINDOVM</span>
+                </div>
+            </div>
+            <div class="inst-divider"></div>
+            <div class="inst-block">
+                <img src="design/icone_pix.png" width="32" alt="App">
+                <div>
+                    <span class="inst-title">GANHE 5% OFF NO PIX</span>
+                    <span class="inst-sub">EXCETO PEÇAS REMARCADAS</span>
+                </div>
+            </div>
+            <div class="inst-divider"></div>
+            <div class="inst-block">
+                <img src="design/icone_entrega.png" width="32" alt="Loja">
+                <div>
+                    <span class="inst-title">FRETE GRÁTIS</span>
+                    <span class="inst-sub">EM COMPRAS ACIMA DE R$500 EM TODO O SITE</span>
+                </div>
+            </div>
+            <div class="inst-divider"></div>
+            <div class="inst-block">
+                <img src="design/icone_loja.png" width="32" alt="Vale Presente">
+                <div>
+                    <span class="inst-title">COMPRE NO SITE E RETIRE NA LOJA</span>
+                    <span class="inst-sub">GANHE 15% NA ESCOLHA DE NOVOS LOOKS</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 
 </body>
 
