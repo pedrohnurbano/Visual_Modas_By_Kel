@@ -23,8 +23,9 @@ func Configurar(router *mux.Router) *mux.Router {
 		router.HandleFunc(rota.URI, rota.Funcao).Methods(rota.Metodo)
 	}
 
-	fileServer := http.FileServer(http.Dir("./assets/")) //precisa disso pro css funcionar
-	router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", fileServer))
+	// Serve arquivos estáticos diretamente da pasta raiz
+	fileServer := http.FileServer(http.Dir("./"))
+	router.PathPrefix("/").Handler(fileServer)
 
 	return router
 }

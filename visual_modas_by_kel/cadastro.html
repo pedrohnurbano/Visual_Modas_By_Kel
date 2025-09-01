@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< Updated upstream
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -6,6 +7,20 @@
     <link rel="icon" type="image/x-icon" href="design/icone_visualmodasbykel.png">
     <link href="estilos.css" rel="stylesheet">
     <title> Cadastrar-se | Visual Modas By Kel </title>
+=======
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Cadastrar-se | Visual Modas By Kel</title>
+    <link rel="icon" type="image/png" href="design/icone_visualmodasbykel.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="estilos.css">
+>>>>>>> Stashed changes
 </head>
 
 <body>
@@ -27,6 +42,7 @@
         </div>
     </cabecalho>
 
+<<<<<<< Updated upstream
     <titulo> CONTA </titulo>
     <button> ENTRAR </button>
     <button> CADASTRAR </button>
@@ -284,5 +300,168 @@
     </form_cadastro>
     <button> CONTINUAR </button>
 
+=======
+    <!-- Main Content -->
+    <main class="main-container two-columns">
+        <div class="banner-side">
+            <img src="design/banner_cadastro.jpg" alt="Coleção Visual Modas" class="banner-img">
+        </div>
+        <div class="auth-container">
+            <div class="form-container">
+                <div class="auth-header">
+                    <h1 class="auth-title">Criar Conta</h1>
+                    <p class="auth-subtitle">Junte-se a nós</p>
+                </div>
+                <form id="formulario-cadastro">
+                    <div class="form-group">
+                        <label class="form-label" for="nome">Nome</label>
+                        <input type="text" id="nome" class="form-input" placeholder="Seu nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="sobrenome">Sobrenome</label>
+                        <input type="text" id="sobrenome" class="form-input" placeholder="Seu sobrenome" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="cpf">CPF</label>
+                        <input type="text" id="cpf" class="form-input" placeholder="000.000.000-00" maxlength="14"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="telefone">Telefone</label>
+                        <input type="text" id="telefone" class="form-input" placeholder="(00) 00000-0000" maxlength="15"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="email">E-mail</label>
+                        <input type="email" id="email" class="form-input" placeholder="exemplo@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="senha">Senha</label>
+                        <div class="password-container">
+                            <input type="password" id="senha" class="form-input" placeholder="Crie uma senha" required>
+                            <span class="password-toggle" onclick="togglePassword('senha', this)">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="confirmar-senha">Confirmar Senha</label>
+                        <div class="password-container">
+                            <input type="password" id="confirmar-senha" class="form-input"
+                                placeholder="Confirme sua senha" required>
+                            <span class="password-toggle" onclick="togglePassword('confirmar-senha', this)">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="checkbox-container">
+                        <div class="custom-checkbox">
+                            <input type="checkbox" id="agreeTerms" required>
+                            <div class="checkbox-mark"></div>
+                        </div>
+                        <label class="checkbox-label" for="agreeTerms">
+                            Aceito os <a href="termos_politica.html" target="_blank">termos de uso</a> e <a
+                                href="termos_politica.html" target="_blank">política de privacidade</a>
+                        </label>
+                    </div>
+                    <button type="submit" class="submit-button">Criar conta</button>
+                </form>
+                <div class="toggle-form">
+                    <p class="toggle-form-text">Já possui uma conta?</p>
+                    <a href="login.html"><button type="button" class="toggle-button">Entrar</button></a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts necessários --><!-- Scripts necessários -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/cadastro.js"></script>
+
+
+    <script>
+        function togglePassword(fieldId, toggleElement) {
+            const field = document.getElementById(fieldId);
+            const icon = toggleElement.querySelector('i');
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                field.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Máscara de CPF
+            function maskCPF(value) {
+                return value
+                    .replace(/\D/g, '')
+                    .replace(/(\d{3})(\d)/, '$1.$2')
+                    .replace(/(\d{3})(\d)/, '$1.$2')
+                    .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+                    .slice(0, 14);
+            }
+            const cpfInput = document.getElementById('cpf');
+            if (cpfInput) {
+                cpfInput.addEventListener('input', function () {
+                    this.value = maskCPF(this.value);
+                });
+            }
+
+            // Máscara de telefone brasileiro
+            function maskPhone(value) {
+                return value
+                    .replace(/\D/g, '')
+                    .replace(/^(\d{2})(\d)/g, '($1) $2')
+                    .replace(/(\d{5})(\d{1,4})$/, '$1-$2')
+                    .slice(0, 15);
+            }
+            const phoneInput = document.getElementById('telefone');
+            if (phoneInput) {
+                phoneInput.addEventListener('input', function () {
+                    this.value = maskPhone(this.value);
+                });
+            }
+
+            // UX: foco e blur
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.addEventListener('focus', function () {
+                    this.style.borderBottomColor = '#000';
+                });
+                input.addEventListener('blur', function () {
+                    if (!this.value) {
+                        this.style.borderBottomColor = '#e8e8e8';
+                    }
+                });
+            });
+
+            // Troca a aba ativa ao clicar
+            document.querySelectorAll('.header-filters a').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    document.querySelectorAll('.header-filters a').forEach(a => a.classList.remove('active'));
+                    this.classList.add('active');
+                    e.preventDefault();
+                });
+            });
+        });
+
+        // Esconde/mostra a barra de filtros ao rolar (estilo Chanel)
+        let lastScrollTop = 0;
+        const headerFilters = document.getElementById('headerFilters');
+        window.addEventListener('scroll', function () {
+            const st = window.pageYOffset || document.documentElement.scrollTop;
+            if (st > lastScrollTop && st > 60) {
+                // Rolando para baixo
+                headerFilters.classList.add('filters-hide');
+            } else {
+                // Rolando para cima
+                headerFilters.classList.remove('filters-hide');
+            }
+            lastScrollTop = st <= 0 ? 0 : st;
+        }, false);
+    </script>
+>>>>>>> Stashed changes
 </body>
+
 </html>
