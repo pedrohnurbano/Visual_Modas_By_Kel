@@ -13,77 +13,100 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"log"
 
 	"github.com/gorilla/mux"
 )
 
 // CriarUsuario insere um usuário no banco de dados
 func CriarUsuario(w http.ResponseWriter, r *http.Request) {
-	corpoRequest, erro := io.ReadAll(r.Body) //Lê o corpo da requisição
+	// Log para debug
+	log.Println("Iniciando criação de usuário")
+	
+	corpoRequest, erro := io.ReadAll(r.Body)
 	if erro != nil {
-		respostas.Erro(w, http.StatusUnprocessableEntity, erro) //recebe 3 parâmetros: resposta, código de status e mensagem de erro
+		log.Printf("Erro ao ler corpo da requisição: %v", erro)
+		respostas.Erro(w, http.StatusUnprocessableEntity, erro)
 		return
 	}
 
-	var usuario modelos.Usuario //criando usuario que está no pacote de modelos
+	// Log do corpo da requisição
+	log.Printf("Corpo da requisição: %s", string(corpoRequest))
+
+	var usuario modelos.Usuario
 	if erro = json.Unmarshal(corpoRequest, &usuario); erro != nil {
-		respostas.Erro(w, http.StatusBadRequest, erro) //recebe 3 parâmetros: resposta, código de status e mensagem de erro
+		log.Printf("Erro ao fazer unmarshal: %v", erro)
+		respostas.Erro(w, http.StatusBadRequest, erro)
 		return
 	}
 
-	if erro = usuario.Preparar("cadastro"); erro != nil { //recebe o cadastro como parametro, para quando chegar no método de validar, ver que a etapa == cadastro, e se a senha estiver em branco vai fazer o erro q falta senha
-		respostas.Erro(w, http.StatusBadRequest, erro) //recebe 3 parâmetros: resposta, código de status e mensagem de erro
+	// Log do usuário após unmarshal
+	log.Printf("Usuário após unmarshal: %+v", usuario)
+
+	if erro = usuario.Preparar("cadastro"); erro != nil {
+		log.Printf("Erro na preparação do usuário: %v", erro)
+		respostas.Erro(w, http.StatusBadRequest, erro)
 		return
 	}
 
-	db, erro := banco.Conectar() //criando conexao com o banco de dados
+	db, erro := banco.Conectar()
 	if erro != nil {
-		respostas.Erro(w, http.StatusInternalServerError, erro) //recebe 3 parâmetros: resposta, código de status e mensagem de erro
+		log.Printf("Erro ao conectar com o banco: %v", erro)
+		respostas.Erro(w, http.StatusInternalServerError, erro)
 		return
 	}
 	defer db.Close()
 
-	repositorio := repositorios.NovoRepositorioDeUsuarios(db) //criando um novo repositorio de usuarios
+	log.Println("Conexão com banco estabelecida")
+
+	repositorio := repositorios.NovoRepositorioDeUsuarios(db)
 
 	// Verificar se email já existe
-	_, erro = repositorio.BuscarPorEmail(usuario.Email)
-	if erro == nil {
+	usuarioExistente, erro := repositorio.BuscarPorEmail(usuario.Email)
+	if erro == nil && usuarioExistente.ID != 0 {
+		log.Printf("Email já existe: %s", usuario.Email)
 		respostas.Erro(w, http.StatusConflict, errors.New("este e-mail já está cadastrado"))
 		return
 	}
 
 	// Verificar se CPF já existe
-	_, erro = repositorio.BuscarPorCPF(usuario.CPF)
-	if erro == nil {
+	usuarioExistenteCPF, erro := repositorio.BuscarPorCPF(usuario.CPF)
+	if erro == nil && usuarioExistenteCPF.ID != 0 {
+		log.Printf("CPF já existe: %s", usuario.CPF)
 		respostas.Erro(w, http.StatusConflict, errors.New("este CPF já está cadastrado"))
 		return
 	}
 
-	usuario.ID, erro = repositorio.Criar(usuario) //chamando o metodo criar do repositorio de usuarios (inserindo)
+	log.Println("Validações passaram, tentando inserir no banco")
+
+	usuario.ID, erro = repositorio.Criar(usuario)
 	if erro != nil {
-		respostas.Erro(w, http.StatusInternalServerError, erro) //recebe 3 parâmetros: resposta, código de status e mensagem de erro
+		log.Printf("Erro ao criar usuário no banco: %v", erro)
+		respostas.Erro(w, http.StatusInternalServerError, erro)
 		return
 	}
 
+	log.Printf("Usuário criado com sucesso, ID: %d", usuario.ID)
+
 	// Limpar senha da resposta por segurança
 	usuario.Senha = ""
-	respostas.JSON(w, http.StatusCreated, usuario) //enviando resposta para o usuario
+	respostas.JSON(w, http.StatusCreated, usuario)
 }
 
 // BuscarUsuarios busca todos os usuários salvos no banco (apenas para administradores)
 func BuscarUsuarios(w http.ResponseWriter, r *http.Request) {
-	nomeOuEmail := strings.ToLower(r.URL.Query().Get("usuario")) //converte a string para minuscula, vai trazer tudo que tiver na query (rota) e vai pegar o valor do campo usuario
-	db, erro := banco.Conectar()                                 //conecta ao banco de dados
+	nomeOuEmail := strings.ToLower(r.URL.Query().Get("usuario"))
+	db, erro := banco.Conectar()
 	if erro != nil {
-		respostas.Erro(w, http.StatusInternalServerError, erro) //chama a função erro lá do respostas.go e envia o erro para o usuario
+		respostas.Erro(w, http.StatusInternalServerError, erro)
 		return
 	}
-	defer db.Close() //fecha a conexão com o banco de dados
+	defer db.Close()
 
 	repositorio := repositorios.NovoRepositorioDeUsuarios(db)
 	usuarios, erro := repositorio.Buscar(nomeOuEmail)
 	if erro != nil {
-		respostas.Erro(w, http.StatusInternalServerError, erro) //chama a função erro lá do respostas.go e envia o erro para o usuario
+		respostas.Erro(w, http.StatusInternalServerError, erro)
 		return
 	}
 
@@ -97,11 +120,11 @@ func BuscarUsuarios(w http.ResponseWriter, r *http.Request) {
 
 // BuscarUsuario busca um usuário salvo no banco
 func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
-	parametros := mux.Vars(r) //mux.Vars recebe a requisição e retorna um map com os parâmetros da rota
+	parametros := mux.Vars(r)
 
-	usuarioID, erro := strconv.ParseUint(parametros["usuarioId"], 10, 64) //converte o id do usuario de string para uint64
+	usuarioID, erro := strconv.ParseUint(parametros["usuarioId"], 10, 64)
 	if erro != nil {
-		respostas.Erro(w, http.StatusBadRequest, erro) //chama a função erro lá do respostas.go e envia o erro para o usuario
+		respostas.Erro(w, http.StatusBadRequest, erro)
 		return
 	}
 
@@ -117,17 +140,17 @@ func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, erro := banco.Conectar() //conecta ao banco de dados
+	db, erro := banco.Conectar()
 	if erro != nil {
-		respostas.Erro(w, http.StatusInternalServerError, erro) //chama a função erro lá do respostas.go e envia o erro para o usuario
+		respostas.Erro(w, http.StatusInternalServerError, erro)
 		return
 	}
 	defer db.Close()
 
-	repositorio := repositorios.NovoRepositorioDeUsuarios(db) //criando um novo repositorio de usuarios
-	usuario, erro := repositorio.BuscarPorID(usuarioID)       //chamando o metodo buscar por id do repositorio de usuarios, passando o id do usuario como parâmetro
+	repositorio := repositorios.NovoRepositorioDeUsuarios(db)
+	usuario, erro := repositorio.BuscarPorID(usuarioID)
 	if erro != nil {
-		respostas.Erro(w, http.StatusInternalServerError, erro) //chama a função erro lá do respostas.go e envia o erro para o usuario
+		respostas.Erro(w, http.StatusInternalServerError, erro)
 		return
 	}
 
@@ -138,45 +161,45 @@ func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
 
 // AtualizarUsuario altera as informações de um usuário no banco
 func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
-	parametros := mux.Vars(r) //mux.Vars recebe a requisição e retorna um map com os parâmetros da rota
+	parametros := mux.Vars(r)
 
-	usuarioID, erro := strconv.ParseUint(parametros["usuarioId"], 10, 64) //converte o id do usuario de string para uint64
+	usuarioID, erro := strconv.ParseUint(parametros["usuarioId"], 10, 64)
 	if erro != nil {
-		respostas.Erro(w, http.StatusBadRequest, erro) //chama a função erro lá do respostas.go e envia o erro para o usuario
+		respostas.Erro(w, http.StatusBadRequest, erro)
 		return
 	}
 
 	usuarioIDNoToken, erro := autenticacao.ExtrairUsuarioID(r)
 	if erro != nil {
-		respostas.Erro(w, http.StatusUnauthorized, erro) //chama a função erro lá do respostas.go e envia o erro para o usuario
+		respostas.Erro(w, http.StatusUnauthorized, erro)
 		return
 	}
 
-	if usuarioID != usuarioIDNoToken { //nao deixa os usuarios alterarem informações que não são deles (dos outros)
-		respostas.Erro(w, http.StatusForbidden, errors.New("não é possível atualizar um usuário que não seja o seu")) //chama a função erro lá do respostas.go e envia o erro para o usuario
+	if usuarioID != usuarioIDNoToken {
+		respostas.Erro(w, http.StatusForbidden, errors.New("não é possível atualizar um usuário que não seja o seu"))
 		return
 	}
 
-	corpoRequisicao, erro := io.ReadAll(r.Body) //lê o corpo da requisição
+	corpoRequisicao, erro := io.ReadAll(r.Body)
 	if erro != nil {
-		respostas.Erro(w, http.StatusUnprocessableEntity, erro) //chama a função erro lá do respostas.go e envia o erro para o usuario
+		respostas.Erro(w, http.StatusUnprocessableEntity, erro)
 		return
 	}
 
 	var usuario modelos.Usuario
-	if erro = json.Unmarshal(corpoRequisicao, &usuario); erro != nil { //json.Unmarshall converte o corpo da requisição em um objeto do tipo usuario
-		respostas.Erro(w, http.StatusBadRequest, erro) //chama a função erro lá do respostas.go e envia o erro para o usuario
+	if erro = json.Unmarshal(corpoRequisicao, &usuario); erro != nil {
+		respostas.Erro(w, http.StatusBadRequest, erro)
 		return
 	}
 
 	if erro = usuario.Preparar("edicao"); erro != nil {
-		respostas.Erro(w, http.StatusBadRequest, erro) //chama a função erro lá do respostas.go e envia o erro para o usuario
+		respostas.Erro(w, http.StatusBadRequest, erro)
 		return
 	}
 
 	db, erro := banco.Conectar()
 	if erro != nil {
-		respostas.Erro(w, http.StatusInternalServerError, erro) //chama a função erro lá do respostas.go e envia o erro para o usuario
+		respostas.Erro(w, http.StatusInternalServerError, erro)
 		return
 	}
 	defer db.Close()
@@ -198,7 +221,7 @@ func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if erro = repositorio.Atualizar(usuarioID, usuario); erro != nil {
-		respostas.Erro(w, http.StatusInternalServerError, erro) //chama a função erro lá do respostas.go e envia o erro para o usuario
+		respostas.Erro(w, http.StatusInternalServerError, erro)
 		return
 	}
 
@@ -227,7 +250,7 @@ func DeletarUsuario(w http.ResponseWriter, r *http.Request) {
 
 	db, erro := banco.Conectar()
 	if erro != nil {
-		respostas.Erro(w, http.StatusInternalServerError, erro) //chama a função erro
+		respostas.Erro(w, http.StatusInternalServerError, erro)
 		return
 	}
 	defer db.Close()
@@ -256,7 +279,7 @@ func AtualizarSenha(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if usuarioIDNoToken != usuarioID {
-		respostas.Erro(w, http.StatusForbidden, errors.New("nao é possivel atualizar a senha de um usuario que nao seja o seu"))
+		respostas.Erro(w, http.StatusForbidden, errors.New("não é possível atualizar a senha de um usuário que não seja o seu"))
 		return
 	}
 
@@ -287,7 +310,7 @@ func AtualizarSenha(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if erro = seguranca.VerificarSenha(senhaSalvaNoBanco, senha.Atual); erro != nil {
-		respostas.Erro(w, http.StatusUnauthorized, errors.New("a senha atual nao condiz com a que está salva no banco"))
+		respostas.Erro(w, http.StatusUnauthorized, errors.New("a senha atual não condiz com a que está salva no banco"))
 		return
 	}
 

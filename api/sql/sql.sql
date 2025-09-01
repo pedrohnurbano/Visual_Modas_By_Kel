@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS devbook;
-USE devbook;
+CREATE DATABASE IF NOT EXISTS visualmodasbykel;
+USE visualmodasbykel;
 
 DROP TABLE IF EXISTS usuarios;
 
@@ -12,4 +12,4 @@ CREATE TABLE usuarios (
     telefone VARCHAR(20) NOT NULL,
     cpf VARCHAR(14) NOT NULL UNIQUE,
     criadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-); ENGINE=INNODB;
+) ENGINE=InnoDB;
