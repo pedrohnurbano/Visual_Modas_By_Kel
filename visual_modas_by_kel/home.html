@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,27 +10,103 @@
 </head>
 
 <body>
-    <cabecalho>
-        <titulo> VISUAL MODAS BY KEL </titulo>
-        <a href="home.html">
-            <img src="design/logo_visualmodasbykel.png" width="180" alt="Logo da Livraria">
-        </a>
-        <input type="text" id="pesquisa" name="pesquisa" placeholder="O que você procura?"><br>
-        <div class="cabecalho_icones">
-            <a href="pagina_login.html" title="Minha Conta">
-                <img src="design/icone_usuario.png" width="24" height="24" alt="Minha Conta">
-            </a>
-            <a href="pagina_favoritos.html" title="Favoritos" id="abrir_favoritos">
-                <img src="design/icone_favoritos.png" width="24" height="24" alt="Favoritos">
-            </a>
-            <a href="pagina_sacola.html" title="Sacola" id="abrir_sacola">
-                <img src="design/icone_sacola.png" width="24" height="24" alt="Sacola">
-            </a>
-        </div>
-    </cabecalho>
 
-    ---> BANNER AQUI
-    ---> BARRA INSTITUCIONAL
+    <!-- CABEÇALHO PRINCIPAL -->
+    <header class="header">
+        <div class="header-content">
+            <a href="home.html" style="text-decoration:none;">
+                <span class="logo"
+                    style="position:static;transform:none;left:auto;z-index:auto;flex:0 0 auto;margin-right:24px;">
+                    VISUAL MODAS BY KEL
+                </span>
+            </a>
+            <form style="display:inline; margin:0 16px 0 0;">
+                <input type="text" placeholder="O que você procura?">
+            </form>
+            <a href="home.html">
+                <img src="design/logo_visualmodasbykel.png" alt="Logo Decorativa" style="height:32px; margin:0 24px;">
+            </a>
+            <!--- ÍCONES DE ACESSO RÁPIDO -->
+            <div class="header-icons" style="gap: 24px;">
+                <a href="login.html" style="font-size:12px;display:flex;align-items:center;gap:4px;">
+                    <img src="design/icone_usuario.png" alt="Minha Conta">
+                    <span>Minha conta e<br><b style="color:#fff;">Meus pedidos</b></span>
+                </a>
+                <a href="favoritos.html" title="Favoritos" id="abrir_favoritos">
+                    <img src="design/icone_favoritos.png" alt="Favoritos">
+                </a>
+                <a href="sacola.html" title="Sacola" id="abrir_sacola">
+                    <img src="design/icone_sacola.png" alt="Sacola">
+                </a>
+            </div>
+        </div>
+        <nav class="header-filters" id="headerFilters">
+            <ul>
+                <li><a href="#" class="active">CATEGORIAS</a></li>
+                <li><a href="#">NOVIDADES</a></li>
+                <li><a href="#">COLEÇÃO</a></li>
+                <li><a href="#">TENDÊNCIAS</a></li>
+                <li><a href="#">LOOKBOOK</a></li>
+                <li><a href="#">PROMOÇÕES</a></li>
+                <li><a href="#">INSPIRAÇÃO</a></li>
+                <li><a href="#">OUTLET</a></li>
+                <li><a href="#">EXCLUSIVOS</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <script>
+        const catLabel = document.getElementById('comprar-categoria-label');
+        const catDropdown = document.getElementById('categorias-dropdown');
+        const hamburgerLi = catLabel.closest('li');
+
+        function showDropdown() {
+            catDropdown.style.display = 'block';
+        }
+        function hideDropdown() {
+            catDropdown.style.display = 'none';
+        }
+        hamburgerLi.addEventListener('mouseenter', showDropdown);
+        hamburgerLi.addEventListener('mouseleave', hideDropdown);
+    </script>
+    <div class="banner-slideshow">
+        <div class="slides fade">
+            <img src="design/banner_01.png" class="banner-img">
+        </div>
+        <div class="slides fade">
+            <img src="design/banner_02.png" class="banner-img">
+        </div>
+        <div class="slides fade">
+            <img src="design/banner_03.png" class="banner-img">
+        </div>
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+    <script>
+        let slideIndex = 1;
+        showSlides(slideIndex);
+
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        function showSlides(n) {
+            let i;
+            let slides = document.getElementsByClassName("slides");
+            if (n > slides.length) { slideIndex = 1 }
+            if (n < 1) { slideIndex = slides.length }
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            slides[slideIndex - 1].style.display = "block";
+        }
+
+        setInterval(() => {
+            plusSlides(1);
+        }, 10000);
+    </script>
+    ---> BARRA INSTITUCIONAL.
 
 </body>
+
 </html>
