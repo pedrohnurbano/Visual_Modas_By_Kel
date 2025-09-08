@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"net/http"
-	"visual_modas_by_kel/visual_modas_by_kel/respostas"
+	"visual_modas_by_kel/visual_modas_by_kel/src/respostas"
 )
 
 // CriarUsuario chama a API para cadastrar um usuário no banco de dados
