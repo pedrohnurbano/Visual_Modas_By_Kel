@@ -3,12 +3,14 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
-	"visual_modas_by_kel/visual_modas_by_kel/src/respostas"
+	"visual_modas_by_kel/visual_modas_by_kel/src/config"
 	"visual_modas_by_kel/visual_modas_by_kel/src/modelos"
+	"visual_modas_by_kel/visual_modas_by_kel/src/respostas"
 )
 
-//FazerLogin utiliza o e-mail e senha do usuário para autenticar na aplicação
+// FazerLogin utiliza o e-mail e senha do usuário para autenticar na aplicação
 func FazerLogin(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
@@ -22,7 +24,9 @@ func FazerLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, erro := http.Post("http://localhost:5000/login", "application/json", bytes.NewBuffer(usuario))
+	url := fmt.Sprintf("%s/login", config.APIURL)
+	response, erro := http.Post(url, "application/json", bytes.NewBuffer(usuario))
+
 	if erro != nil {
 		respostas.JSON(w, http.StatusInternalServerError, respostas.ErroAPI{Erro: erro.Error()})
 		return
