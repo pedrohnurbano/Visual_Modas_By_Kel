@@ -144,7 +144,7 @@ body {
     color: #fff;
 }
 
-.header-filters {
+/* .header-filters {
     width: 100%;
     background: #370400;
     border-bottom: 1px solid #ececec;
@@ -154,7 +154,14 @@ body {
     z-index: 99;
     height: 48px;
     overflow: hidden;
+} */
+
+.header-filters {
+    transition: transform 0.35s cubic-bezier(.4, 0, .2, 1),
+                opacity 0.35s cubic-bezier(.4, 0, .2, 1);
+    will-change: transform, opacity;
 }
+
 
 .header-filters ul {
     display: flex;
@@ -211,8 +218,6 @@ body {
     transform: translateY(-100%);
     opacity: 0;
     pointer-events: none;
-    height: 0 !important;
-    min-height: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
     border: none !important;
@@ -295,25 +300,97 @@ body {
     background: #fff;
 }
 
-.banner-side {
-    flex: 1 1 0;
-    min-width: 320px;
-    max-width: 600px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f7f7f7;
-    border-right: 1px solid #ececec;
+/* Estilos para o Banner Slideshow */
+.banner-slideshow {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.slides {
+    display: none;
+    width: 100%;
+    position: relative;
+}
+
+.slides.fade {
+    animation-name: fade;
+    animation-duration: 1.5s;
 }
 
 .banner-img {
     width: 100%;
     height: auto;
+    max-height: 500px;
     object-fit: cover;
     object-position: center;
     display: block;
-    /* max-width: 100%;
-    max-height: 100vh; */
+}
+
+/* Estilos das setas de navegação */
+.prev, .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    margin-top: -22px;
+    padding: 16px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    user-select: none;
+    transition: all 0.3s ease;
+    z-index: 10;
+    border-radius: 0 3px 3px 0;
+}
+
+.next {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+.prev {
+    left: 0;
+}
+
+.prev:hover, .next:hover {
+    background: rgba(55, 4, 0, 0.8);
+    color: #c9a063;
+}
+
+/* Animação de fade */
+@keyframes fade {
+    from { opacity: 0.4 }
+    to { opacity: 1 }
+}
+
+/* Responsividade para o banner */
+@media (max-width: 768px) {
+    .banner-img {
+        max-height: 300px;
+    }
+    
+    .prev, .next {
+        padding: 12px;
+        font-size: 16px;
+        margin-top: -20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .banner-img {
+        max-height: 250px;
+    }
+    
+    .prev, .next {
+        padding: 8px;
+        font-size: 14px;
+        margin-top: -18px;
+    }
 }
 
 .auth-container {
