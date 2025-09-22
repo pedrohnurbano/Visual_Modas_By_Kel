@@ -24,3 +24,22 @@ func Autenticar(proximaFuncao http.HandlerFunc) http.HandlerFunc {
 		proximaFuncao(w, r)
 	}
 }
+
+// AutenticarAdmin verifica se o usuário é admin
+func AutenticarAdmin(proximaFuncao http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		cookie, erro := cookies.Ler(r)
+		if erro != nil {
+			http.Redirect(w, r, "/login", http.StatusFound)
+			return
+		}
+
+		// Verificar se o usuário tem role de admin
+		if cookie["role"] != "admin" {
+			http.Redirect(w, r, "/home", http.StatusForbidden)
+			return
+		}
+
+		proximaFuncao(w, r)
+	}
+}

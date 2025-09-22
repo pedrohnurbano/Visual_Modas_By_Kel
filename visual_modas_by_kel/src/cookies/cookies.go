@@ -14,11 +14,17 @@ func Configurar() {
 	s = securecookie.New(config.HashKey, config.BlockKey)
 }
 
-// Salvar registra as inforamações de autenticação
+// Salvar registra as informações de autenticação
 func Salvar(w http.ResponseWriter, ID, token string) error {
+	return SalvarComRole(w, ID, token, "user")
+}
+
+// SalvarComRole registra as informações de autenticação incluindo a role
+func SalvarComRole(w http.ResponseWriter, ID, token, role string) error {
 	dados := map[string]string{
 		"id":    ID,
 		"token": token,
+		"role":  role,
 	}
 
 	dadosCodificados, erro := s.Encode("dados", dados)
@@ -49,4 +55,15 @@ func Ler(r *http.Request) (map[string]string, error) {
 	}
 
 	return valores, nil
+}
+
+// Deletar remove o cookie de autenticação
+func Deletar(w http.ResponseWriter) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "dados",
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+		MaxAge:   -1,
+	})
 }

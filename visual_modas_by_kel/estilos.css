@@ -207,6 +207,445 @@ body {
     box-shadow: none !important;
 }
 
+/* ================= PAINEL ADMINISTRATIVO ================= */
+.painel-admin-container {
+    display: flex;
+    min-height: calc(100vh - 60px);
+    background: #f8f9fa;
+}
+
+.painel-admin-sidebar {
+    width: 280px;
+    background: #fff;
+    border-right: 1px solid #e8e8e8;
+    padding: 30px 0;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+}
+
+.painel-admin-main {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.painel-sidebar-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.painel-sidebar-menu li {
+    margin: 0;
+}
+
+.painel-sidebar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 30px;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.painel-sidebar-menu a:hover,
+.painel-sidebar-menu a.active {
+    background: #f8f9fa;
+    color: #370400;
+    border-left-color: #370400;
+}
+
+.painel-sidebar-menu .painel-icon {
+    width: 20px;
+    height: 20px;
+    opacity: 0.7;
+}
+
+.painel-admin-header {
+    margin-bottom: 30px;
+}
+
+.painel-admin-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.painel-admin-subtitle {
+    color: #666;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.painel-stats-grid {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 40px;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+.painel-stat-card {
+    flex: 1 1 0;
+    min-width: 0;
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    border-left: 4px solid #370400;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 0;
+}
+
+.painel-stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #370400;
+    margin-bottom: 5px;
+}
+
+.painel-stat-label {
+    color: #666;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.painel-content-section {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+.painel-section-header {
+    padding: 20px 30px;
+    border-bottom: 1px solid #e8e8e8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.painel-section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: #333;
+    margin: 0;
+}
+
+.painel-btn-primary {
+    background: #370400;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.painel-btn-primary:hover {
+    background: #4d0a0a;
+    transform: translateY(-2px);
+}
+
+.painel-btn-secondary {
+    background: transparent;
+    color: #370400;
+    border: 1px solid #370400;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.painel-btn-secondary:hover {
+    background: #370400;
+    color: #fff;
+}
+
+.painel-btn-danger {
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.painel-data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.painel-data-table th,
+.painel-data-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.painel-data-table th {
+    background: #f8f9fa;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #333;
+}
+
+.painel-data-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.painel-status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.painel-status-active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.painel-status-inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.painel-status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.painel-status-completed {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.painel-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 30px;
+}
+
+.painel-admin-form-group {
+    margin-bottom: 20px;
+}
+
+.painel-admin-form-label {
+    display: block;
+    font-size: 12px;
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.painel-admin-form-input,
+.painel-admin-form-select,
+.painel-admin-form-textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+    outline: none;
+    transition: border-color 0.3s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.painel-admin-form-input:focus,
+.painel-admin-form-select:focus,
+.painel-admin-form-textarea:focus {
+    border-color: #370400;
+}
+
+.painel-admin-form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.painel-file-upload {
+    border: 2px dashed #e8e8e8;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.painel-file-upload:hover {
+    border-color: #370400;
+    background: #f8f9fa;
+}
+
+.painel-file-upload input {
+    display: none;
+}
+
+.painel-product-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.painel-search-bar {
+    background: #f8f9fa;
+    padding: 20px 30px;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.painel-search-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 15px;
+    border: 1px solid #e8e8e8;
+    border-radius: 25px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.painel-search-input:focus {
+    border-color: #370400;
+}
+
+.painel-actions-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.painel-actions-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px;
+    color: #666;
+}
+
+.painel-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+}
+
+.painel-modal-content {
+    background: #fff;
+    margin: 2% auto;
+    padding: 0;
+    width: 95%;
+    max-width: 800px;
+    max-height: 95vh;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.painel-modal-header {
+    padding: 20px 30px;
+    border-bottom: 1px solid #e8e8e8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.painel-modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: #333;
+    margin: 0;
+}
+
+.painel-close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+
+.painel-modal-body {
+    padding: 30px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}
+
+.painel-modal-footer {
+    padding: 20px 30px;
+    border-top: 1px solid #e8e8e8;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .painel-admin-container {
+        flex-direction: column;
+    }
+    .painel-admin-sidebar {
+        width: 100%;
+        padding: 20px 0;
+    }
+    .painel-sidebar-menu {
+        display: flex;
+        overflow-x: auto;
+        padding: 0 20px;
+    }
+    .painel-sidebar-menu a {
+        white-space: nowrap;
+        padding: 10px 20px;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+    }
+    .painel-sidebar-menu a:hover,
+    .painel-sidebar-menu a.active {
+        border-left: none;
+        border-bottom-color: #370400;
+    }
+    .painel-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    .painel-admin-main {
+        padding: 20px;
+    }
+}
+
+.painel-hidden {
+    display: none !important;
+}
+
 /* ========================================== */
 /* ESTILOS DO BANNER SLIDESHOW - HOME */
 /* ========================================== */
@@ -786,4 +1225,94 @@ body {
     background: #e0e0e0;
     margin: 12px 0;
     align-self: stretch;
+}
+
+/* ================= PAINEL ADMINISTRATIVO ================= */
+/* (já está correto, não repita regras globais aqui) */
+/* ...existing painel-... regras já presentes... */
+
+/* Gráficos do Dashboard Painel */
+.painel-graficos-dashboard {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+}
+.painel-grafico-card {
+    flex: 1;
+    min-width: 320px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+.painel-grafico-titulo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+/* QUADRADOS INFORMATIVOS EM LINHA FIXA */
+.painel-stats-grid {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 40px;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+.painel-stat-card {
+    flex: 1 1 0;
+    min-width: 0;
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    border-left: 4px solid #370400;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 0;
+}
+.painel-stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #370400;
+    margin-bottom: 5px;
+}
+.painel-stat-label {
+    color: #666;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Nunca quebra linha dos cards do dashboard, só aumenta o tamanho */
+@media (max-width: 1200px) {
+    .painel-stats-grid {
+        gap: 12px;
+    }
+    .painel-graficos-dashboard {
+        gap: 12px;
+    }
+}
+@media (max-width: 900px) {
+    .painel-stats-grid {
+        gap: 6px;
+    }
+    .painel-graficos-dashboard {
+        gap: 6px;
+    }
+}
+@media (max-width: 600px) {
+    .painel-stats-grid {
+        gap: 2px;
+    }
+    .painel-graficos-dashboard {
+        gap: 2px;
+    }
 }

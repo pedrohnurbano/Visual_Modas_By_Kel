@@ -45,10 +45,18 @@ func FazerLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if erro = cookies.Salvar(w, dadosAutenticacao.ID, dadosAutenticacao.Token); erro != nil {
+	// Salvar role junto com ID e token no cookie
+	if erro = cookies.SalvarComRole(w, dadosAutenticacao.ID, dadosAutenticacao.Token, dadosAutenticacao.Role); erro != nil {
 		respostas.JSON(w, http.StatusUnprocessableEntity, respostas.ErroAPI{Erro: erro.Error()})
 		return
 	}
 
-	respostas.JSON(w, http.StatusOK, nil)
+	// Retornar os dados incluindo a role para o JavaScript
+	respostas.JSON(w, http.StatusOK, dadosAutenticacao)
+}
+
+// FazerLogout remove os dados de autenticação salvos no cookie
+func FazerLogout(w http.ResponseWriter, r *http.Request) {
+	cookies.Deletar(w)
+	http.Redirect(w, r, "/login", http.StatusFound)
 }
