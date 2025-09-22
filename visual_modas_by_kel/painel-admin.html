@@ -164,6 +164,7 @@
                                 <th>Nome</th>
                                 <th>Preço</th>
                                 <th>Tamanho</th>
+                                <th>Cor</th>
                                 <th>Categoria</th>
                                 <th>Marca</th>
                                 <th>Descrição</th>
@@ -400,13 +401,29 @@
                                     <option value="XGG">XGG</option>
                                 </select>
                             </div>
+                            <div class="painel-admin-form-group">
+                                <label class="painel-admin-form-label">Cor</label>
+                                <input type="text" class="painel-admin-form-input" required
+                                    placeholder="Ex: Preto, Azul, Estampado">
+                            </div>
                         </div>
                         <div>
                             <div class="painel-admin-form-group">
                                 <label class="painel-admin-form-label">Categoria</label>
                                 <select class="painel-admin-form-select" required>
                                     <option value="">Selecione uma categoria</option>
-                                    <!-- Preencher dinamicamente com Go/MySQL -->
+                                    <option value="Vestidos">Vestidos</option>
+                                    <option value="Blusas">Blusas</option>
+                                    <option value="Calças">Calças</option>
+                                    <option value="Saias">Saias</option>
+                                    <option value="Shorts e Bermudas">Shorts e Bermudas</option>
+                                    <option value="Jaquetas e Casacos">Jaquetas e Casacos</option>
+                                    <option value="Macacões">Macacões</option>
+                                    <option value="Blazers">Blazers</option>
+                                    <option value="Camisas">Camisas</option>
+                                    <option value="T-shirts">T-shirts</option>
+                                    <option value="Body">Body</option>
+                                    <option value="Regatas">Regatas</option>
                                 </select>
                             </div>
                             <div class="painel-admin-form-group">
@@ -619,6 +636,7 @@
                             <td>${prod.nome}</td>
                             <td>R$ ${prod.preco.toFixed(2)}</td>
                             <td>${prod.tamanho}</td>
+                            <td>${prod.cor || ''}</td>
                             <td>${prod.categoria}</td>
                             <td>${prod.marca}</td>
                             <td>${prod.descricao}</td>

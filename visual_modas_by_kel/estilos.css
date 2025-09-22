@@ -1316,3 +1316,164 @@ body {
         gap: 2px;
     }
 }
+
+/* ================== VITRINE DE CARDS ================== */
+.vitrine-cards {
+    max-width: 1200px;
+    margin: 32px auto 0 auto;
+    padding: 0 8px 32px 8px;
+}
+.vitrine-titulo {
+    font-size: 1.3rem;
+    margin-bottom: 18px;
+}
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+.produto-card {
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(55,4,0,0.08), 0 1px 2px rgba(55,4,0,0.04);
+    border: 1px solid #ececec;
+    min-width: 0;
+    max-width: 240px;
+    margin: 0 auto;
+}
+.produto-favorito {
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+}
+.produto-img-container {
+    aspect-ratio: 3/4;
+    min-height: 180px;
+    max-height: 260px;
+    position: relative;
+}
+.produto-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    left: 0; top: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    opacity: 1;
+    z-index: 1;
+    pointer-events: none;
+}
+.img-primaria {
+    z-index: 1;
+}
+.img-secundaria {
+    opacity: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+.produto-card:hover .img-primaria {
+    opacity: 0;
+}
+.produto-card:hover .img-secundaria {
+    opacity: 1;
+    transform: scale(1.01);
+}
+
+/* Corrigido: .produto-tamanhos só afeta a imagem, não o card inteiro */
+.produto-img-container .produto-tamanhos {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 12px;
+    justify-content: center;
+    background: rgba(255,255,255,0.92);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(55,4,0,0.04);
+    padding: 6px 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    z-index: 3;
+    font-size: 12px;
+}
+.produto-card:hover .produto-img-container .produto-tamanhos {
+    opacity: 1;
+    pointer-events: auto;
+}
+.produto-tamanhos {
+    gap: 6px;
+    padding: 0 10px;
+    height: 32px;
+    min-height: 32px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    position: static;
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+}
+.produto-card:hover .produto-tamanhos {
+    opacity: 1;
+    pointer-events: auto;
+}
+.produto-tamanhos span {
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: #f8f8f8;
+    border: 1px solid #ececec;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s, border 0.2s;
+    cursor: pointer;
+}
+.produto-tamanhos span:hover {
+    background: #c9a063;
+    color: #fff;
+    border: 1px solid #c9a063;
+}
+.produto-sacola {
+    width: 26px;
+    height: 26px;
+    margin-left: 8px;
+    background: #370400;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.produto-sacola:hover {
+    background: #c9a063;
+}
+.produto-sacola svg {
+    display: block;
+}
+
+/* Remova regras antigas que posicionavam .produto-tamanhos fora da imagem */
+.produto-card .produto-tamanhos,
+.produto-card:hover .produto-tamanhos {
+    position: static;
+    top: auto;
+    left: auto;
+    right: auto;
+    height: auto;
+    min-height: 0;
+    border-top: none;
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+    opacity: 1;
+    pointer-events: auto;
+    transition: none;
+}
