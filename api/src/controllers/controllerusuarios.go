@@ -39,6 +39,9 @@ func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 		respostas.Erro(w, http.StatusBadRequest, erro)
 		return
 	}
+	
+	// Força a role como "user" para novos cadastros (segurança)
+	usuario.Role = "user"
 
 	// Log do usuário após unmarshal
 	log.Printf("Usuário após unmarshal: %+v", usuario)

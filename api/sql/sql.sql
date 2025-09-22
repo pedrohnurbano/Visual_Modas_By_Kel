@@ -25,3 +25,5 @@ VALUES (
     '00000000000',
     'admin'
 );
+
+// trocar a senha acima por uma senha segura em produção
