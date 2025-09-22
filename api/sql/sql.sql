@@ -11,5 +11,17 @@ CREATE TABLE usuarios (
     senha VARCHAR(255) NOT NULL,
     telefone VARCHAR(20) NOT NULL,
     cpf VARCHAR(14) NOT NULL UNIQUE,
+    role VARCHAR(20) NOT NULL DEFAULT 'user',
     criadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
+
+INSERT INTO usuarios (nome, sobrenome, email, senha, telefone, cpf, role) 
+VALUES (
+    'Admin', 
+    'Sistema', 
+    'admin@visualmodasbykel.com', 
+    '123456',
+    '00000000000',
+    '00000000000',
+    'admin'
+);

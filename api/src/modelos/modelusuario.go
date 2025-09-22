@@ -11,14 +11,15 @@ import (
 
 // Usuario representa um usuário utilizando a rede social
 type Usuario struct {
-	ID       uint64    `json:"id,omitempty"` //omitempty faz com que o campo seja ignorado se estiver vazio
+	ID        uint64    `json:"id,omitempty"` //omitempty faz com que o campo seja ignorado se estiver vazio
 	Nome      string    `json:"nome,omitempty"`
-    Sobrenome string    `json:"sobrenome,omitempty"`
-	Email    string    `json:"email,omitempty"`
-	Senha    string    `json:"senha,omitempty"`
+	Sobrenome string    `json:"sobrenome,omitempty"`
+	Email     string    `json:"email,omitempty"`
+	Senha     string    `json:"senha,omitempty"`
 	Telefone  string    `json:"telefone,omitempty"`
-    CPF       string    `json:"cpf,omitempty"`
-	CriadoEm time.Time `json:"CriadoEm,omitempty"`
+	CPF       string    `json:"cpf,omitempty"`
+	Role      string    `json:"role,omitempty"` // Nova campo para role (user ou admin)
+	CriadoEm  time.Time `json:"CriadoEm,omitempty"`
 }
 
 // Preparar vai chamar os métodos para validar e formatar o usuário recebido
@@ -30,7 +31,7 @@ func (usuario *Usuario) Preparar(etapa string) error {
 	if erro := usuario.formatar(etapa); erro != nil {
 		return erro
 	}
-	
+
 	return nil
 }
 
@@ -60,7 +61,12 @@ func (usuario *Usuario) validar(etapa string) error {
 	}
 
 	if etapa == "cadastro" && usuario.Senha == "" {
-		return errors.New("o senha é obrigatória e não pode estar em branco")
+		return errors.New("a senha é obrigatória e não pode estar em branco")
+	}
+
+	// Validação da role
+	if usuario.Role != "" && usuario.Role != "user" && usuario.Role != "admin" {
+		return errors.New("role inválida. Deve ser 'user' ou 'admin'")
 	}
 
 	return nil
@@ -73,6 +79,10 @@ func (usuario *Usuario) formatar(etapa string) error {
 	usuario.Telefone = strings.TrimSpace(usuario.Telefone)
 	usuario.CPF = strings.TrimSpace(usuario.CPF)
 
+	// Se a role não for especificada ou for vazia, define como "user" por padrão
+	if usuario.Role == "" {
+		usuario.Role = "user"
+	}
 
 	if etapa == "cadastro" {
 		senhaComHash, erro := seguranca.Hash(usuario.Senha) //Hasheia a senha
