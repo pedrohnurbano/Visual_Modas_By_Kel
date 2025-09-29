@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="design/icone_visualmodasbykel.png">
     <link href="estilos.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <title>Visual Modas By Kel - Moda Feminina</title>
 </head>
+
 <body>
     <!-- Cabeçalho -->
     <header class="header">
@@ -128,15 +132,15 @@
                         <li><a href="#">Termos de Uso</a></li>
                     </ul>
                 </div>
-                
+
                 <!-- Contato -->
                 <div class="footer-section">
                     <h3>Contato</h3>
                     <p><strong>WhatsApp:</strong> (48) 99999-9999</p>
                     <p><strong>E-mail:</strong> contato@visualmodasbykel.com.br</p>
                     <p><strong>Horário de Atendimento:</strong><br>
-                    Segunda a Sexta: 9h às 18h<br>
-                    Sábado: 9h às 13h</p>
+                        Segunda a Sexta: 9h às 18h<br>
+                        Sábado: 9h às 13h</p>
                     <div class="footer-social">
                         <a href="#" title="Instagram" aria-label="Instagram">
                             <img src="design/icone_instagram.png" alt="Instagram">
@@ -149,7 +153,7 @@
                         </a>
                     </div>
                 </div>
-                
+
                 <!-- Newsletter -->
                 <div class="footer-section">
                     <h3>Formas de Pagamento</h3>
@@ -161,7 +165,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="footer-bottom">
                 <p>&copy; 2025 Visual Modas By Kel - Todos os direitos reservados</p>
                 <p>CNPJ: 00.000.000/0001-00 | Criciúma - SC</p>
@@ -217,7 +221,7 @@
         // GERENCIAMENTO DE FAVORITOS (SEM localStorage)
         // ====================
         let favorites = [];
-        
+
         function toggleFavorite(productId) {
             const index = favorites.indexOf(productId);
             if (index > -1) {
@@ -284,7 +288,7 @@
             grid.innerHTML = products.map(product => {
                 const isFavorite = favorites.includes(product.id);
                 const installmentValue = (product.price / product.installments).toFixed(2);
-                
+
                 return `
                     <div class="produto-card">
                         <button class="produto-favorito" title="${isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}" onclick="toggleFavorite(${product.id})">
@@ -335,16 +339,13 @@
             `;
             notification.textContent = message;
             document.body.appendChild(notification);
-            
+
             setTimeout(() => {
                 notification.style.animation = 'slideOut 0.3s ease-out';
                 setTimeout(() => notification.remove(), 300);
             }, 2000);
         }
 
-        // ====================
-        // SLIDESHOW
-        // ====================
         let slideIndex = 1;
         let slideTimer;
 
@@ -352,11 +353,11 @@
             const slides = document.getElementsByClassName("slides");
             if (n > slides.length) slideIndex = 1;
             if (n < 1) slideIndex = slides.length;
-            
+
             Array.from(slides).forEach(slide => {
                 slide.classList.remove('active');
             });
-            
+
             if (slides.length > 0) {
                 slides[slideIndex - 1].classList.add('active');
             }
@@ -374,9 +375,6 @@
             }, 10000);
         }
 
-        // ====================
-        // MENU TOGGLE
-        // ====================
         function toggleFilters() {
             document.getElementById('headerFilters').classList.toggle('hide');
         }
@@ -392,40 +390,34 @@
             }
         }
 
-// ====================
-// SCROLL HIDE FILTERS
-// ====================
-function initScrollBehavior() {
-    const filters = document.getElementById('headerFilters');
-    let lastScroll = window.scrollY;
-    let ticking = false;
-    let isHidden = false;
+        function initScrollBehavior() {
+            const filters = document.getElementById('headerFilters');
+            let lastScroll = window.scrollY;
+            let ticking = false;
+            let isHidden = false;
 
-    window.addEventListener('scroll', () => {
-        if (!ticking) {
-            window.requestAnimationFrame(() => {
-                const current = window.scrollY;
-                if (current > lastScroll && current > 80 && !isHidden) {
-                    filters.classList.add('filters-hide-scroll');
-                    isHidden = true;
-                } else if (current < lastScroll && isHidden) {
-                    filters.classList.remove('filters-hide-scroll');
-                    isHidden = false;
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        const current = window.scrollY;
+                        if (current > lastScroll && current > 80 && !isHidden) {
+                            filters.classList.add('filters-hide-scroll');
+                            isHidden = true;
+                        } else if (current < lastScroll && isHidden) {
+                            filters.classList.remove('filters-hide-scroll');
+                            isHidden = false;
+                        }
+                        lastScroll = current;
+                        ticking = false;
+                    });
+                    ticking = true;
                 }
-                lastScroll = current;
-                ticking = false;
             });
-            ticking = true;
         }
-    });
-}
 
-        // ====================
-        // FILTROS ATIVOS
-        // ====================
         function initFilterLinks() {
             document.querySelectorAll('.header-filters a').forEach(link => {
-                link.addEventListener('click', function(e) {
+                link.addEventListener('click', function (e) {
                     e.preventDefault();
                     document.querySelectorAll('.header-filters a').forEach(l => l.classList.remove('active'));
                     this.classList.add('active');
@@ -433,32 +425,24 @@ function initScrollBehavior() {
             });
         }
 
-        // ====================
-        // INICIALIZAÇÃO
-        // ====================
         document.addEventListener('DOMContentLoaded', () => {
-            // Renderiza produtos
             renderProducts();
-            
-            // Atualiza contadores
+
             updateFavoritesCount();
             updateCartCount();
-            
-            // Inicia slideshow
+
             showSlides(slideIndex);
             startSlideTimer();
-            
-            // Configura menu toggle
+
             document.getElementById('menuToggle').onclick = toggleFilters;
             window.addEventListener('resize', handleMenuToggleDisplay);
             handleMenuToggleDisplay();
-            
-            // Configura comportamento de scroll
+
             initScrollBehavior();
-            
-            // Configura links dos filtros
+
             initFilterLinks();
         });
     </script>
 </body>
+
 </html>

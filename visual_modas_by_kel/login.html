@@ -14,7 +14,6 @@
 </head>
 
 <body>
-    <!-- Cabeçalho Principal -->
     <header class="header">
         <div class="header-content">
             <a style="text-decoration:none;">
@@ -58,7 +57,6 @@
             </ul>
         </nav>
     </header>
-    <!-- Fim do Cabeçalho Principal -->
 
     <script>
         const catLabel = document.getElementById('comprar-categoria-label');
@@ -75,13 +73,11 @@
         hamburgerLi.addEventListener('mouseleave', hideDropdown);
     </script>
 
-    <!-- Main Content -->
     <main class="main-container two-columns">
         <div class="banner-side">
             <img src="design/banner_login.jpg" alt="Coleção Visual Modas" class="banner-img">
         </div>
         <div class="auth-container">
-            <!-- Login Form -->
             <div id="loginForm" class="form-container">
                 <div class="auth-header">
                     <h1 class="auth-title">Entrar</h1>
@@ -149,7 +145,6 @@
             alert('Funcionalidade de recuperação de senha será implementada!');
         }
 
-        // Form handling
         document.addEventListener('DOMContentLoaded', function () {
             const forms = document.querySelectorAll('form');
 
@@ -160,12 +155,10 @@
                     const submitBtn = this.querySelector('.submit-button');
                     const originalText = submitBtn.textContent;
 
-                    // Loading state
                     submitBtn.textContent = 'Processando...';
                     submitBtn.disabled = true;
                     submitBtn.classList.add('loading');
 
-                    // Simulate API call
                     setTimeout(() => {
                         alert('Formulário enviado com sucesso!');
                         submitBtn.textContent = originalText;
@@ -175,7 +168,6 @@
                 });
             });
 
-            // Password confirmation validation
             const confirmPassword = document.getElementById('confirmPassword');
             const registerPassword = document.getElementById('registerPassword');
 
@@ -191,7 +183,6 @@
                 });
             }
 
-            // Máscara de CPF
             function maskCPF(value) {
                 return value
                     .replace(/\D/g, '')
@@ -201,7 +192,6 @@
                     .slice(0, 14);
             }
 
-            // Máscara de telefone brasileiro
             function maskPhone(value) {
                 return value
                     .replace(/\D/g, '')
@@ -210,7 +200,6 @@
                     .slice(0, 15);
             }
 
-            // Máscara CPF
             const cpfInput = document.getElementById('cpf');
             if (cpfInput) {
                 cpfInput.addEventListener('input', function () {
@@ -218,7 +207,6 @@
                 });
             }
 
-            // Máscara Telefone
             const phoneInput = document.getElementById('phone');
             if (phoneInput) {
                 phoneInput.addEventListener('input', function () {
@@ -226,7 +214,6 @@
                 });
             }
 
-            // Enhanced UX interactions
             document.querySelectorAll('.form-input').forEach(input => {
                 input.addEventListener('focus', function () {
                     this.style.borderBottomColor = '#000';
@@ -240,7 +227,6 @@
             });
         });
 
-        // Troca a aba ativa ao clicar
         document.querySelectorAll('.header-filters a').forEach(link => {
             link.addEventListener('click', function (e) {
                 document.querySelectorAll('.header-filters a').forEach(a => a.classList.remove('active'));
@@ -249,7 +235,6 @@
             });
         });
 
-        // Esconde/mostra a barra de filtros ao rolar (esconde/mostra de forma instantânea)
         let lastScrollTop = 0;
         const headerFilters = document.getElementById('headerFilters');
         let ticking = false;

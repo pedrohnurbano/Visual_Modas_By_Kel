@@ -9,21 +9,21 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="estilos.css">
 </head>
 
-<body>    
-    <!-- Cabeçalho Principal -->
+<body>
     <header class="header">
         <div class="header-content">
             <a style="text-decoration:none;">
-                <span class="logo"
-                    style="position:static;transform:none;left:auto;z-index:auto;flex:0 0 auto;">
+                <span class="logo" style="position:static;transform:none;left:auto;z-index:auto;flex:0 0 auto;">
                     VISUAL MODAS BY KEL
                 </span>
             </a>
-            
+
             <a>
                 <img src="design/logo_visualmodasbykel.png" alt="Logo Decorativa" style="height:38px;">
             </a>
@@ -32,7 +32,7 @@
                 <form style="display:inline; margin:0 16px 0 0; border-bottom: 1px solid #000;">
                     <input type="text" placeholder="O que você procura?">
                 </form>
-                
+
                 <a href="login.html" style="font-size:12px;display:flex;align-items:center;gap:4px;">
                     <img src="design/icone_usuario.png" alt="Minha Conta">
                     <span>Minha conta e<br><b style="color:#fff;">Meus pedidos</b></span>
@@ -59,8 +59,6 @@
             </ul>
         </nav>
     </header>
-    <!-- Fim do Cabeçalho Principal -->
-
 
     <script>
         const catLabel = document.getElementById('comprar-categoria-label');
@@ -77,7 +75,6 @@
         hamburgerLi.addEventListener('mouseleave', hideDropdown);
     </script>
 
-    <!-- Main Content -->
     <main class="main-container two-columns">
         <div class="banner-side">
             <img src="design/banner_cadastro.jpg" alt="Coleção Visual Modas" class="banner-img">
@@ -150,7 +147,6 @@
         </div>
     </main>
 
-    <!-- Scripts necessários --><!-- Scripts necessários -->
     <script src="js/jquery.min.js"></script>
     <script src="js/cadastro.js"></script>
 
@@ -169,7 +165,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            // Máscara de CPF
             function maskCPF(value) {
                 return value
                     .replace(/\D/g, '')
@@ -185,7 +180,6 @@
                 });
             }
 
-            // Máscara de telefone brasileiro
             function maskPhone(value) {
                 return value
                     .replace(/\D/g, '')
@@ -200,7 +194,6 @@
                 });
             }
 
-            // UX: foco e blur
             document.querySelectorAll('.form-input').forEach(input => {
                 input.addEventListener('focus', function () {
                     this.style.borderBottomColor = '#000';
@@ -212,7 +205,6 @@
                 });
             });
 
-            // Troca a aba ativa ao clicar
             document.querySelectorAll('.header-filters a').forEach(link => {
                 link.addEventListener('click', function (e) {
                     document.querySelectorAll('.header-filters a').forEach(a => a.classList.remove('active'));
@@ -222,16 +214,13 @@
             });
         });
 
-        // Esconde/mostra a barra de filtros ao rolar (estilo Chanel)
         let lastScrollTop = 0;
         const headerFilters = document.getElementById('headerFilters');
         window.addEventListener('scroll', function () {
             const st = window.pageYOffset || document.documentElement.scrollTop;
             if (st > lastScrollTop && st > 60) {
-                // Rolando para baixo
                 headerFilters.classList.add('filters-hide');
             } else {
-                // Rolando para cima
                 headerFilters.classList.remove('filters-hide');
             }
             lastScrollTop = st <= 0 ? 0 : st;

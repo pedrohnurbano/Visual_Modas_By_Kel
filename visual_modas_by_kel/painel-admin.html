@@ -14,7 +14,6 @@
 </head>
 
 <body>
-    <!-- Cabeçalho Principal -->
     <header class="header">
         <div class="header-content">
             <a style="text-decoration:none;">
@@ -40,10 +39,8 @@
             </div>
         </div>
     </header>
-    <!-- Fim do Cabeçalho Principal -->
 
     <div class="painel-admin-container">
-        <!-- Sidebar -->
         <aside class="painel-admin-sidebar">
             <nav>
                 <ul class="painel-sidebar-menu">
@@ -79,16 +76,13 @@
             </nav>
         </aside>
 
-        <!-- Conteúdo Principal -->
         <main class="painel-admin-main">
-            <!-- Dashboard Section -->
             <div id="dashboard-section" class="painel-admin-section">
                 <div class="painel-admin-header">
                     <h1 class="painel-admin-title">Dashboard</h1>
                     <p class="painel-admin-subtitle">Visão geral do negócio</p>
                 </div>
 
-                <!-- GRÁFICOS -->
                 <div class="painel-graficos-dashboard">
                     <div class="painel-grafico-card">
                         <h3 class="painel-grafico-titulo">Vendas Mensais</h3>
@@ -100,7 +94,6 @@
                     </div>
                 </div>
 
-                <!-- QUADRADOS INFORMATIVOS -->
                 <div class="painel-stats-grid">
                     <div class="painel-stat-card">
                         <div class="painel-stat-value"><!-- VAR_VENDAS_MES --></div>
@@ -135,13 +128,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Preencher dinamicamente com Go/MySQL -->
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Produtos Section -->
             <div id="produtos-section" class="painel-admin-section painel-hidden">
                 <div class="painel-admin-header">
                     <h1 class="painel-admin-title">Produtos</h1>
@@ -173,13 +164,11 @@
                             </tr>
                         </thead>
                         <tbody id="produtos-list">
-                            <!-- Preencher dinamicamente com Go/MySQL -->
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Estoque Section -->
             <div id="estoque-section" class="painel-admin-section painel-hidden">
                 <div class="painel-admin-header">
                     <h1 class="painel-admin-title">Controle de Estoque</h1>
@@ -204,13 +193,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Preencher dinamicamente com Go/MySQL -->
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Pedidos Section -->
             <div id="pedidos-section" class="painel-admin-section painel-hidden">
                 <div class="painel-admin-header">
                     <h1 class="painel-admin-title">Pedidos</h1>
@@ -236,13 +223,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Preencher dinamicamente com Go/MySQL -->
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Financeiro Section -->
             <div id="financeiro-section" class="painel-admin-section painel-hidden">
                 <div class="painel-admin-header">
                     <h1 class="painel-admin-title">Financeiro</h1>
@@ -283,13 +268,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Preencher dinamicamente com Go/MySQL -->
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Clientes Section -->
             <div id="clientes-section" class="painel-admin-section painel-hidden">
                 <div class="painel-admin-header">
                     <h1 class="painel-admin-title">Clientes</h1>
@@ -315,13 +298,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Preencher dinamicamente com Go/MySQL -->
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Relatórios Section -->
             <div id="relatorios-section" class="painel-admin-section painel-hidden">
                 <div class="painel-admin-header">
                     <h1 class="painel-admin-title">Relatórios</h1>
@@ -361,7 +342,6 @@
         </main>
     </div>
 
-    <!-- Modal Adicionar Produto -->
     <div id="produto-modal" class="painel-modal">
         <div class="painel-modal-content">
             <div class="painel-modal-header">
@@ -456,7 +436,6 @@
         </div>
     </div>
 
-    <!-- Modal Atualizar Estoque -->
     <div id="estoque-modal" class="painel-modal">
         <div class="painel-modal-content">
             <div class="painel-modal-header">
@@ -469,14 +448,12 @@
                         <label class="painel-admin-form-label">Produto</label>
                         <select class="painel-admin-form-select" required>
                             <option value="">Selecione um produto</option>
-                            <!-- Preencher dinamicamente com Go/MySQL -->
                         </select>
                     </div>
                     <div class="painel-admin-form-group">
                         <label class="painel-admin-form-label">Tipo de Movimentação</label>
                         <select class="painel-admin-form-select" required>
                             <option value="">Selecione o tipo</option>
-                            <!-- Preencher dinamicamente com Go/MySQL -->
                         </select>
                     </div>
                     <div class="painel-admin-form-group">
@@ -499,29 +476,23 @@
     </div>
 
     <script>
-        // Navegação do menu
         document.querySelectorAll('.menu-item').forEach(item => {
             item.addEventListener('click', function (e) {
                 e.preventDefault();
 
-                // Remove active class from all menu items
                 document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
 
-                // Add active class to clicked item
                 this.classList.add('active');
 
-                // Hide all sections
                 document.querySelectorAll('.painel-admin-section').forEach(section => {
                     section.classList.add('painel-hidden');
                 });
 
-                // Show selected section
                 const sectionName = this.dataset.section;
                 document.getElementById(sectionName + '-section').classList.remove('painel-hidden');
             });
         });
 
-        // Modal functions
         function openModal(modalId) {
             document.getElementById(modalId).style.display = 'block';
         }
@@ -530,40 +501,33 @@
             document.getElementById(modalId).style.display = 'none';
         }
 
-        // Close modal when clicking outside
         window.addEventListener('click', function (event) {
             if (event.target.classList.contains('painel-modal')) {
                 event.target.style.display = 'none';
             }
         });
 
-        // Product management functions
         function editProduct(id) {
-            // Implementar lógica de edição
             alert('Editar produto ID: ' + id);
         }
 
         function deleteProduct(id) {
             if (confirm('Tem certeza que deseja excluir este produto?')) {
-                // Implementar lógica de exclusão
+
                 alert('Produto excluído: ' + id);
             }
         }
 
-        // Form submissions
         document.getElementById('produto-form').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            // Collect form data
             const formData = new FormData(this);
 
-            // Simulate API call
             setTimeout(() => {
                 alert('Produto adicionado com sucesso!');
                 closeModal('produto-modal');
                 this.reset();
 
-                // Update products table (simulation)
                 updateProductsTable();
             }, 1000);
         });
@@ -571,7 +535,6 @@
         document.getElementById('estoque-form').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            // Simulate API call
             setTimeout(() => {
                 alert('Estoque atualizado com sucesso!');
                 closeModal('estoque-modal');
@@ -579,20 +542,16 @@
             }, 1000);
         });
 
-        // Update products table (simulation)
         function updateProductsTable() {
-            // This would normally fetch data from the server
             console.log('Atualizando tabela de produtos...');
         }
 
-        // Logout function
         function logout() {
             if (confirm('Tem certeza que deseja sair do painel administrativo?')) {
                 window.location.href = 'login.html';
             }
         }
 
-        // Search functionality
         document.querySelectorAll('.painel-search-input').forEach(input => {
             input.addEventListener('input', function () {
                 const searchTerm = this.value.toLowerCase();
@@ -607,7 +566,6 @@
             });
         });
 
-        // File upload preview
         document.getElementById('product-images').addEventListener('change', function (e) {
             const files = e.target.files;
             if (files.length > 0) {
@@ -621,7 +579,6 @@
             }
         });
 
-        // Exemplo: buscar produtos da API e preencher tabela
         function carregarProdutos() {
             fetch('/api/produtos')
                 .then(res => res.json())
@@ -651,10 +608,8 @@
                 });
         }
 
-        // Carregar produtos ao abrir a seção Produtos
         document.querySelector('[data-section="produtos"]').addEventListener('click', carregarProdutos);
 
-        // Auto-generate SKU based on product name
         document.querySelector('#produto-form input[type="text"]:nth-of-type(3)').addEventListener('input', function () {
             const name = this.value;
             if (name.length >= 3) {
@@ -663,7 +618,6 @@
             }
         });
 
-        // Calculate profit margin in financial section
         function calculateProfitMargin() {
             const revenue = 125450;
             const costs = 40220;
@@ -673,25 +627,20 @@
             document.querySelector('.stat-card:last-child .stat-value').textContent = margin + '%';
         }
 
-        // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function () {
             calculateProfitMargin();
 
-            // Simulate real-time updates
             setInterval(() => {
-                // Update random statistics (simulation)
                 const salesCard = document.querySelector('.stat-card .stat-value');
                 if (salesCard) {
                     let currentValue = parseInt(salesCard.textContent.replace(/[R$.,\s]/g, ''));
                     currentValue += Math.floor(Math.random() * 100);
                     salesCard.textContent = 'R$ ' + currentValue.toLocaleString('pt-BR');
                 }
-            }, 30000); // Update every 30 seconds
+            }, 30000);
         });
 
-        // GRÁFICO DE VENDAS MENSAIS
         document.addEventListener('DOMContentLoaded', function () {
-            // Vendas Mensais (exemplo)
             const ctxVendas = document.getElementById('grafico-vendas-mensais').getContext('2d');
             new Chart(ctxVendas, {
                 type: 'line',
@@ -719,7 +668,6 @@
                 }
             });
 
-            // Pedidos Ativos x Pendentes (exemplo)
             const ctxPedidos = document.getElementById('grafico-pedidos-status').getContext('2d');
             new Chart(ctxPedidos, {
                 type: 'doughnut',
@@ -744,13 +692,11 @@
             });
         });
 
-        // Responsive sidebar toggle for mobile
         function toggleMobileSidebar() {
             const sidebar = document.querySelector('.admin-sidebar');
             sidebar.classList.toggle('mobile-open');
         }
 
-        // Add responsive behavior
         if (window.innerWidth <= 768) {
             const header = document.querySelector('.header-content');
             const hamburger = document.createElement('button');
@@ -768,7 +714,6 @@
             header.insertBefore(hamburger, header.firstChild);
         }
 
-        // Form validation
         function validateForm(form) {
             const requiredFields = form.querySelectorAll('[required]');
             let isValid = true;
