@@ -18,12 +18,19 @@ type Rota struct {
 func Configurar(router *mux.Router) *mux.Router {
 	rotas := rotasLogin
 	rotas = append(rotas, rotasUsuarios...)
+<<<<<<< Updated upstream
+=======
+	rotas = append(rotas, rotaPaginaPrincipal)
+	rotas = append(rotas, rotasAdmin...)
+	rotas = append(rotas, rotaLogout)
+	rotas = append(rotas, rotasProdutos...)
+>>>>>>> Stashed changes
 
 	for _, rota := range rotas {
 		router.HandleFunc(rota.URI, rota.Funcao).Methods(rota.Metodo)
 	}
 
-	// Serve arquivos estáticos diretamente da pasta raiz
+	// Serve arquivos estáticos (CSS, JS, imagens)
 	fileServer := http.FileServer(http.Dir("./"))
 	router.PathPrefix("/").Handler(fileServer)
 
