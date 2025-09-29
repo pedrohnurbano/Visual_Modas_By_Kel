@@ -4,43 +4,340 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="design/icone_visualmodasbykel.png">
-    <title> Sacola | Visual Modas By Kel </title>
+    <title>Sacola | Visual Modas By Kel</title>
     <link rel="stylesheet" href="estilos.css">
+    <style>
+        .sacola-container {
+            max-width: 1240px;
+            margin: 40px auto;
+            padding: 0 24px;
+            min-height: calc(100vh - 300px);
+        }
+        
+        .sacola-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e8e8e8;
+        }
+        
+        .sacola-titulo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #370400;
+            margin-bottom: 10px;
+        }
+        
+        .sacola-subtitulo {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .sacola-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 40px;
+        }
+        
+        .sacola-items {
+            background: #fff;
+        }
+        
+        .sacola-vazia {
+            text-align: center;
+            padding: 80px 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .sacola-vazia-icon {
+            font-size: 4rem;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+        
+        .sacola-vazia h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .sacola-vazia p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+        
+        .btn-continuar {
+            display: inline-block;
+            background: #370400;
+            color: #fff;
+            padding: 15px 40px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+        
+        .btn-continuar:hover {
+            background: #4d0a0a;
+            transform: translateY(-2px);
+        }
+        
+        .sacola-item {
+            display: flex;
+            gap: 20px;
+            padding: 25px 0;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        
+        .item-imagem {
+            width: 120px;
+            height: 160px;
+            flex-shrink: 0;
+            background: #f8f8f8;
+        }
+        
+        .item-imagem img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .item-detalhes {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .item-nome {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: #370400;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .item-info {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .item-preco {
+            font-size: 1.3rem;
+            color: #c9a063;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+        
+        .item-acoes {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-top: auto;
+        }
+        
+        .item-quantidade {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #e8e8e8;
+            padding: 5px;
+        }
+        
+        .btn-quantidade {
+            background: none;
+            border: none;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 18px;
+            color: #370400;
+            transition: background 0.2s;
+        }
+        
+        .btn-quantidade:hover {
+            background: #f8f8f8;
+        }
+        
+        .quantidade-valor {
+            min-width: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .btn-remover {
+            background: none;
+            border: none;
+            color: #dc3545;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+        
+        .btn-remover:hover {
+            color: #c82333;
+        }
+        
+        .sacola-resumo {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+        }
+        
+        .resumo-titulo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 25px;
+        }
+        
+        .resumo-linha {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .resumo-linha.total {
+            padding-top: 20px;
+            border-top: 2px solid #e8e8e8;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .resumo-linha.total .valor {
+            color: #c9a063;
+        }
+        
+        .btn-finalizar {
+            width: 100%;
+            background: #370400;
+            color: #fff;
+            border: none;
+            padding: 18px;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: all 0.3s;
+        }
+        
+        .btn-finalizar:hover {
+            background: #4d0a0a;
+            transform: translateY(-2px);
+        }
+        
+        .cupom-desconto {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e8e8e8;
+        }
+        
+        .cupom-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .cupom-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e8e8e8;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+        
+        .btn-cupom {
+            padding: 12px 20px;
+            background: #370400;
+            color: #fff;
+            border: none;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn-cupom:hover {
+            background: #4d0a0a;
+        }
+        
+        @media (max-width: 1024px) {
+            .sacola-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sacola-resumo {
+                position: static;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sacola-container {
+                padding: 0 15px;
+            }
+            
+            .sacola-titulo {
+                font-size: 2rem;
+            }
+            
+            .sacola-item {
+                flex-direction: column;
+            }
+            
+            .item-imagem {
+                width: 100%;
+                height: 280px;
+            }
+            
+            .item-acoes {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Cabeçalho Principal -->
     <header class="header">
         <div class="header-content">
-            <a style="text-decoration:none;">
-                <span class="logo" style="position:static;transform:none;left:auto;z-index:auto;flex:0 0 auto;">
-                    VISUAL MODAS BY KEL
-                </span>
+            <a href="home.html" class="logo" aria-label="Visual Modas By Kel">
+                VISUAL MODAS BY KEL
             </a>
-
-            <a>
-                <img src="design/logo_visualmodasbykel.png" alt="Logo Decorativa" style="height:38px;">
+            <a href="home.html" aria-label="Logo Visual Modas By Kel">
+                <img src="design/logo_visualmodasbykel.png" alt="Logo Visual Modas By Kel" />
             </a>
-
-            <div class="header-icons" style="gap: 24px;">
-                <form style="display:inline; margin:0 16px 0 0; border-bottom: 1px solid #000;">
-                    <input type="text" placeholder="O que você procura?">
+            <div class="header-icons">
+                <form role="search" aria-label="Busca de produtos">
+                    <input type="text" placeholder="O que você procura?" aria-label="Buscar produto">
                 </form>
-
-                <a href="login.html" style="font-size:12px;display:flex;align-items:center;gap:4px;">
+                <a href="login.html" title="Minha Conta">
                     <img src="design/icone_usuario.png" alt="Minha Conta">
-                    <span>Minha conta e<br><b style="color:#fff;">Meus pedidos</b></span>
+                    <span>Minha conta<br><b>Meus pedidos</b></span>
                 </a>
-                <a href="favoritos.html" title="Favoritos" id="abrir_favoritos">
+                <a href="favoritos.html" title="Favoritos">
                     <img src="design/icone_favoritos.png" alt="Favoritos">
                 </a>
-                <a href="sacola.html" title="Sacola" id="abrir_sacola">
+                <a href="sacola.html" title="Sacola">
                     <img src="design/icone_sacola.png" alt="Sacola">
+                    <span id="sacola-contador" style="background:#c9a063;color:#fff;border-radius:50%;width:18px;height:18px;display:none;align-items:center;justify-content:center;font-size:10px;font-weight:700;position:absolute;top:-5px;right:-5px;">0</span>
                 </a>
             </div>
         </div>
-        <nav class="header-filters" id="headerFilters">
+        <nav class="header-filters">
             <ul>
-                <li><a href="#" class="active">CATEGORIAS</a></li>
+                <li><a href="#">CATEGORIAS</a></li>
                 <li><a href="#">NOVIDADES</a></li>
                 <li><a href="#">COLEÇÃO</a></li>
                 <li><a href="#">TENDÊNCIAS</a></li>
@@ -52,22 +349,94 @@
             </ul>
         </nav>
     </header>
-    <!-- Fim do Cabeçalho Principal -->
 
+    <!-- Container da Sacola -->
+    <div class="sacola-container">
+        <div class="sacola-header">
+            <h1 class="sacola-titulo">Minha Sacola</h1>
+            <p class="sacola-subtitulo" id="sacola-subtitulo">0 itens</p>
+        </div>
+        
+        <div class="sacola-content">
+            <!-- Lista de Itens -->
+            <div class="sacola-items" id="sacola-items">
+                <div class="sacola-vazia" id="sacola-vazia">
+                    <div class="sacola-vazia-icon">🛍️</div>
+                    <h3>Sua sacola está vazia</h3>
+                    <p>Adicione produtos incríveis e comece a montar seu look!</p>
+                    <a href="home.html" class="btn-continuar">Continuar Comprando</a>
+                </div>
+            </div>
+            
+            <!-- Resumo do Pedido -->
+            <div class="sacola-resumo" id="sacola-resumo" style="display: none;">
+                <h2 class="resumo-titulo">Resumo do Pedido</h2>
+                
+                <div class="resumo-linha">
+                    <span>Subtotal</span>
+                    <span id="resumo-subtotal">R$ 0,00</span>
+                </div>
+                
+                <div class="resumo-linha">
+                    <span>Frete</span>
+                    <span id="resumo-frete">Calcular</span>
+                </div>
+                
+                <div class="resumo-linha" id="desconto-linha" style="display: none;">
+                    <span>Desconto</span>
+                    <span id="resumo-desconto" style="color: #28a745;">- R$ 0,00</span>
+                </div>
+                
+                <div class="resumo-linha total">
+                    <span>Total</span>
+                    <span class="valor" id="resumo-total">R$ 0,00</span>
+                </div>
+                
+                <button class="btn-finalizar" onclick="finalizarCompra()">Finalizar Compra</button>
+                
+                <div class="cupom-desconto">
+                    <label style="font-size: 13px; color: #666;">Tem um cupom de desconto?</label>
+                    <div class="cupom-input">
+                        <input type="text" id="cupom-input" placeholder="Digite o cupom">
+                        <button class="btn-cupom" onclick="aplicarCupom()">Aplicar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <script>
-        const catLabel = document.getElementById('comprar-categoria-label');
-        const catDropdown = document.getElementById('categorias-dropdown');
-        const hamburgerLi = catLabel.closest('li');
+    <!-- Rodapé -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Institucional</h3>
+                    <ul>
+                        <li><a href="#">Sobre Nós</a></li>
+                        <li><a href="#">Nossa História</a></li>
+                        <li><a href="#">Trabalhe Conosco</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Atendimento</h3>
+                    <ul>
+                        <li><a href="#">Central de Ajuda</a></li>
+                        <li><a href="#">Trocas e Devoluções</a></li>
+                        <li><a href="#">Rastreio de Pedidos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contato</h3>
+                    <p><strong>WhatsApp:</strong> (48) 99999-9999</p>
+                    <p><strong>E-mail:</strong> contato@visualmodasbykel.com.br</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Visual Modas By Kel - Todos os direitos reservados</p>
+            </div>
+        </div>
+    </footer>
 
-        function showDropdown() {
-            catDropdown.style.display = 'block';
-        }
-        function hideDropdown() {
-            catDropdown.style.display = 'none';
-        }
-        hamburgerLi.addEventListener('mouseenter', showDropdown);
-        hamburgerLi.addEventListener('mouseleave', hideDropdown);
-    </script>
+    <script src="js/sacola.js"></script>
 </body>
 </html>
