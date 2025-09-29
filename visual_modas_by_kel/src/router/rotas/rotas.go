@@ -23,6 +23,7 @@ func Configurar(router *mux.Router) *mux.Router {
 	rotas = append(rotas, rotaPaginaPrincipal)
 	rotas = append(rotas, rotasAdmin...)
 	rotas = append(rotas, rotaLogout)
+	rotas = append(rotas, rotasProdutos...) // ADICIONAR ESTA LINHA
 
 	for _, rota := range rotas {
 		if rota.RequerAdmin {
@@ -43,7 +44,7 @@ func Configurar(router *mux.Router) *mux.Router {
 		}
 	}
 
-	// Serve arquivos estáticos diretamente da pasta raiz
+	// Serve arquivos estáticos (CSS, JS, imagens)
 	fileServer := http.FileServer(http.Dir("./"))
 	router.PathPrefix("/").Handler(fileServer)
 
