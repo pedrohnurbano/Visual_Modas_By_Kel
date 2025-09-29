@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="design/icone_visualmodasbykel.png">
+    <title>Painel Administrativo | Visual Modas By Kel</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="estilos.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <!-- Cabeçalho Principal -->
+    <header class="header">
+        <div class="header-content">
+            <a style="text-decoration:none;">
+                <span class="logo" style="position:static;transform:none;left:auto;z-index:auto;flex:0 0 auto;">
+                    VISUAL MODAS BY KEL
+                </span>
+            </a>
+
+            <a>
+                <img src="design/logo_visualmodasbykel.png" alt="Logo Decorativa" style="height:38px;">
+            </a>
+
+            <div class="header-icons" style="gap: 24px;">
+                <a href="login.html" style="font-size:12px;display:flex;align-items:center;gap:4px;">
+                    <img src="design/icone_usuario.png" alt="Minha Conta">
+                    <span>Minha conta e<br><b style="color:#fff;">Meus pedidos</b></span>
+                </a>
+
+                <a href="login.html" style="font-size:12px;display:flex;align-items:center;gap:4px;" onclick="logout()">
+                    <img src="design/icone_sair.png" alt="Sair">
+                    <span><b style="color:#fff;">Sair</b></span>
+                </a>
+            </div>
+        </div>
+    </header>
+    <!-- Fim do Cabeçalho Principal -->
+
+    <div class="painel-admin-container">
+        <!-- Sidebar -->
+        <aside class="painel-admin-sidebar">
+            <nav>
+                <ul class="painel-sidebar-menu">
+                    <li><a href="#" class="menu-item active" data-section="dashboard">
+                            <span class="painel-icon">📊</span>
+                            Dashboard
+                        </a></li>
+                    <li><a href="#" class="menu-item" data-section="produtos">
+                            <span class="painel-icon">👗</span>
+                            Produtos
+                        </a></li>
+                    <li><a href="#" class="menu-item" data-section="estoque">
+                            <span class="painel-icon">📦</span>
+                            Estoque
+                        </a></li>
+                    <li><a href="#" class="menu-item" data-section="pedidos">
+                            <span class="painel-icon">🛒</span>
+                            Pedidos
+                        </a></li>
+                    <li><a href="#" class="menu-item" data-section="financeiro">
+                            <span class="painel-icon">💰</span>
+                            Financeiro
+                        </a></li>
+                    <li><a href="#" class="menu-item" data-section="clientes">
+                            <span class="painel-icon">👥</span>
+                            Clientes
+                        </a></li>
+                    <li><a href="#" class="menu-item" data-section="relatorios">
+                            <span class="painel-icon">📈</span>
+                            Relatórios
+                        </a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="painel-admin-main">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="painel-admin-section">
+                <div class="painel-admin-header">
+                    <h1 class="painel-admin-title">Dashboard</h1>
+                    <p class="painel-admin-subtitle">Visão geral do negócio</p>
+                </div>
+
+                <!-- GRÁFICOS -->
+                <div class="painel-graficos-dashboard">
+                    <div class="painel-grafico-card">
+                        <h3 class="painel-grafico-titulo">Vendas Mensais</h3>
+                        <canvas id="grafico-vendas-mensais" height="120"></canvas>
+                    </div>
+                    <div class="painel-grafico-card">
+                        <h3 class="painel-grafico-titulo">Pedidos Ativos x Pendentes</h3>
+                        <canvas id="grafico-pedidos-status" height="120"></canvas>
+                    </div>
+                </div>
+
+                <!-- QUADRADOS INFORMATIVOS -->
+                <div class="painel-stats-grid">
+                    <div class="painel-stat-card">
+                        <div class="painel-stat-value"><!-- VAR_VENDAS_MES --></div>
+                        <div class="painel-stat-label">Vendas do Mês</div>
+                    </div>
+                    <div class="painel-stat-card">
+                        <div class="painel-stat-value"><!-- VAR_PRODUTOS_ATIVOS --></div>
+                        <div class="painel-stat-label">Produtos Ativos</div>
+                    </div>
+                    <div class="painel-stat-card">
+                        <div class="painel-stat-value"><!-- VAR_PEDIDOS_PENDENTES --></div>
+                        <div class="painel-stat-label">Pedidos Pendentes</div>
+                    </div>
+                    <div class="painel-stat-card">
+                        <div class="painel-stat-value"><!-- VAR_CLIENTES_CADASTRADOS --></div>
+                        <div class="painel-stat-label">Clientes Cadastrados</div>
+                    </div>
+                </div>
+
+                <div class="painel-content-section">
+                    <div class="painel-section-header">
+                        <h2 class="painel-section-title">Pedidos Recentes</h2>
+                    </div>
+                    <table class="painel-data-table">
+                        <thead>
+                            <tr>
+                                <th>Pedido</th>
+                                <th>Cliente</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                                <th>Data</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Preencher dinamicamente com Go/MySQL -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Produtos Section -->
+            <div id="produtos-section" class="painel-admin-section painel-hidden">
+                <div class="painel-admin-header">
+                    <h1 class="painel-admin-title">Produtos</h1>
+                    <p class="painel-admin-subtitle">Gerenciamento de produtos</p>
+                </div>
+                <div class="painel-content-section">
+                    <div class="painel-section-header">
+                        <h2 class="painel-section-title">Lista de Produtos</h2>
+                        <button class="painel-btn-primary" onclick="openModal('produto-modal')">Adicionar
+                            Produto</button>
+                    </div>
+                    <div class="painel-search-bar">
+                        <input type="text" class="painel-search-input" placeholder="Buscar produtos...">
+                    </div>
+                    <table class="painel-data-table">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>SKU</th>
+                                <th>Nome</th>
+                                <th>Preço</th>
+                                <th>Tamanho</th>
+                                <th>Cor</th>
+                                <th>Categoria</th>
+                                <th>Marca</th>
+                                <th>Descrição</th>
+                                <th>Foto</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="produtos-list">
+                            <!-- Preencher dinamicamente com Go/MySQL -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Estoque Section -->
+            <div id="estoque-section" class="painel-admin-section painel-hidden">
+                <div class="painel-admin-header">
+                    <h1 class="painel-admin-title">Controle de Estoque</h1>
+                    <p class="painel-admin-subtitle">Gestão de inventário</p>
+                </div>
+
+                <div class="painel-content-section">
+                    <div class="painel-section-header">
+                        <h2 class="painel-section-title">Produtos em Estoque</h2>
+                        <button class="painel-btn-primary" onclick="openModal('estoque-modal')">Atualizar
+                            Estoque</button>
+                    </div>
+                    <table class="painel-data-table">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>SKU</th>
+                                <th>Quantidade</th>
+                                <th>Estoque Mínimo</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Preencher dinamicamente com Go/MySQL -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pedidos Section -->
+            <div id="pedidos-section" class="painel-admin-section painel-hidden">
+                <div class="painel-admin-header">
+                    <h1 class="painel-admin-title">Pedidos</h1>
+                    <p class="painel-admin-subtitle">Gerenciamento de pedidos</p>
+                </div>
+
+                <div class="painel-content-section">
+                    <div class="painel-section-header">
+                        <h2 class="painel-section-title">Lista de Pedidos</h2>
+                    </div>
+                    <div class="painel-search-bar">
+                        <input type="text" class="painel-search-input" placeholder="Buscar pedidos...">
+                    </div>
+                    <table class="painel-data-table">
+                        <thead>
+                            <tr>
+                                <th>Pedido</th>
+                                <th>Cliente</th>
+                                <th>Data</th>
+                                <th>Valor Total</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Preencher dinamicamente com Go/MySQL -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Financeiro Section -->
+            <div id="financeiro-section" class="painel-admin-section painel-hidden">
+                <div class="painel-admin-header">
+                    <h1 class="painel-admin-title">Financeiro</h1>
+                    <p class="painel-admin-subtitle">Controle financeiro</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value"><!-- VAR_RECEITA_TOTAL --></div>
+                        <div class="stat-label">Receita Total</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value"><!-- VAR_RECEITA_LIQUIDA --></div>
+                        <div class="stat-label">Receita Líquida</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value"><!-- VAR_CUSTOS --></div>
+                        <div class="stat-label">Custos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value"><!-- VAR_MARGEM_LUCRO --></div>
+                        <div class="stat-label">Margem de Lucro</div>
+                    </div>
+                </div>
+
+                <div class="painel-content-section">
+                    <div class="painel-section-header">
+                        <h2 class="painel-section-title">Movimentações Financeiras</h2>
+                    </div>
+                    <table class="painel-data-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Tipo</th>
+                                <th>Descrição</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Preencher dinamicamente com Go/MySQL -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Clientes Section -->
+            <div id="clientes-section" class="painel-admin-section painel-hidden">
+                <div class="painel-admin-header">
+                    <h1 class="painel-admin-title">Clientes</h1>
+                    <p class="painel-admin-subtitle">Gerenciamento de clientes</p>
+                </div>
+
+                <div class="painel-content-section">
+                    <div class="painel-section-header">
+                        <h2 class="painel-section-title">Lista de Clientes</h2>
+                    </div>
+                    <div class="painel-search-bar">
+                        <input type="text" class="painel-search-input" placeholder="Buscar clientes...">
+                    </div>
+                    <table class="painel-data-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Telefone</th>
+                                <th>Pedidos</th>
+                                <th>Valor Total</th>
+                                <th>Cadastro</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Preencher dinamicamente com Go/MySQL -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Relatórios Section -->
+            <div id="relatorios-section" class="painel-admin-section painel-hidden">
+                <div class="painel-admin-header">
+                    <h1 class="painel-admin-title">Relatórios</h1>
+                    <p class="painel-admin-subtitle">Análises e relatórios</p>
+                </div>
+
+                <div class="painel-content-section">
+                    <div class="painel-section-header">
+                        <h2 class="painel-section-title">Relatórios Disponíveis</h2>
+                    </div>
+                    <div
+                        style="padding: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                        <!-- Os botões podem ser preenchidos dinamicamente ou mantidos estáticos para gerar relatórios -->
+                        <div class="stat-card">
+                            <h3><!-- VAR_RELATORIO_1 --></h3>
+                            <p style="margin: 10px 0; color: #666;"><!-- VAR_DESC_RELATORIO_1 --></p>
+                            <button class="painel-btn-primary">Gerar Relatório</button>
+                        </div>
+                        <div class="stat-card">
+                            <h3><!-- VAR_RELATORIO_2 --></h3>
+                            <p style="margin: 10px 0; color: #666;"><!-- VAR_DESC_RELATORIO_2 --></p>
+                            <button class="painel-btn-primary">Gerar Relatório</button>
+                        </div>
+                        <div class="stat-card">
+                            <h3><!-- VAR_RELATORIO_3 --></h3>
+                            <p style="margin: 10px 0; color: #666;"><!-- VAR_DESC_RELATORIO_3 --></p>
+                            <button class="painel-btn-primary">Gerar Relatório</button>
+                        </div>
+                        <div class="stat-card">
+                            <h3><!-- VAR_RELATORIO_4 --></h3>
+                            <p style="margin: 10px 0; color: #666;"><!-- VAR_DESC_RELATORIO_4 --></p>
+                            <button class="painel-btn-primary">Gerar Relatório</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Adicionar Produto -->
+    <div id="produto-modal" class="painel-modal">
+        <div class="painel-modal-content">
+            <div class="painel-modal-header">
+                <h2 class="painel-modal-title">Adicionar Produto</h2>
+                <button class="painel-close-btn" onclick="closeModal('produto-modal')">&times;</button>
+            </div>
+            <div class="painel-modal-body">
+                <form id="produto-form">
+                    <div class="painel-form-grid" style="grid-template-columns: 1fr 1fr;">
+                        <div>
+                            <div class="painel-admin-form-group">
+                                <label class="painel-admin-form-label">Código</label>
+                                <input type="text" class="painel-admin-form-input" required>
+                            </div>
+                            <div class="painel-admin-form-group">
+                                <label class="painel-admin-form-label">SKU</label>
+                                <input type="text" class="painel-admin-form-input" required>
+                            </div>
+                            <div class="painel-admin-form-group">
+                                <label class="painel-admin-form-label">Nome</label>
+                                <input type="text" class="painel-admin-form-input" required>
+                            </div>
+                            <div class="painel-admin-form-group">
+                                <label class="painel-admin-form-label">Preço (R$)</label>
+                                <input type="number" step="0.01" class="painel-admin-form-input" required>
+                            </div>
+                            <div class="painel-admin-form-group">
+                                <label class="painel-admin-form-label">Tamanho</label>
+                                <select class="painel-admin-form-select" required>
+                                    <option value="">Selecione o tamanho</option>
+                                    <option value="PP">PP</option>
+                                    <option value="P">P</option>
+                                    <option value="M">M</option>
+                                    <option value="G">G</option>
+                                    <option value="GG">GG</option>
+                                    <option value="XG">XG</option>
+                                    <option value="XGG">XGG</option>
+                                </select>
+                            </div>
+                            <div class="painel-admin-form-group">
+                                <label class="painel-admin-form-label">Cor</label>
+                                <input type="text" class="painel-admin-form-input" required
+                                    placeholder="Ex: Preto, Azul, Estampado">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="painel-admin-form-group">
+                                <label class="painel-admin-form-label">Categoria</label>
+                                <select class="painel-admin-form-select" required>
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="Vestidos">Vestidos</option>
+                                    <option value="Blusas">Blusas</option>
+                                    <option value="Calças">Calças</option>
+                                    <option value="Saias">Saias</option>
+                                    <option value="Shorts e Bermudas">Shorts e Bermudas</option>
+                                    <option value="Jaquetas e Casacos">Jaquetas e Casacos</option>
+                                    <option value="Macacões">Macacões</option>
+                                    <option value="Blazers">Blazers</option>
+                                    <option value="Camisas">Camisas</option>
+                                    <option value="T-shirts">T-shirts</option>
+                                    <option value="Body">Body</option>
+                                    <option value="Regatas">Regatas</option>
+                                </select>
+                            </div>
+                            <div class="painel-admin-form-group">
+                                <label class="painel-admin-form-label">Marca</label>
+                                <input type="text" class="painel-admin-form-input" required>
+                            </div>
+                            <div class="painel-admin-form-group">
+                                <label class="painel-admin-form-label">Descrição</label>
+                                <textarea class="painel-admin-form-textarea" rows="4"
+                                    placeholder="Descrição detalhada do produto..." required></textarea>
+                            </div>
+                            <div class="painel-admin-form-group">
+                                <label class="painel-admin-form-label">Foto</label>
+                                <div class="painel-file-upload"
+                                    onclick="document.getElementById('product-images').click()">
+                                    <input type="file" id="product-images" accept="image/*" required>
+                                    <p>Clique para selecionar a foto</p>
+                                    <small>Formatos aceitos: JPG, PNG, WEBP</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="painel-modal-footer">
+                <button type="button" class="painel-btn-secondary"
+                    onclick="closeModal('produto-modal')">Cancelar</button>
+                <button type="submit" class="painel-btn-primary" form="produto-form">Salvar Produto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Atualizar Estoque -->
+    <div id="estoque-modal" class="painel-modal">
+        <div class="painel-modal-content">
+            <div class="painel-modal-header">
+                <h2 class="painel-modal-title">Atualizar Estoque</h2>
+                <button class="painel-close-btn" onclick="closeModal('estoque-modal')">&times;</button>
+            </div>
+            <div class="painel-modal-body">
+                <form id="estoque-form">
+                    <div class="painel-admin-form-group">
+                        <label class="painel-admin-form-label">Produto</label>
+                        <select class="painel-admin-form-select" required>
+                            <option value="">Selecione um produto</option>
+                            <!-- Preencher dinamicamente com Go/MySQL -->
+                        </select>
+                    </div>
+                    <div class="painel-admin-form-group">
+                        <label class="painel-admin-form-label">Tipo de Movimentação</label>
+                        <select class="painel-admin-form-select" required>
+                            <option value="">Selecione o tipo</option>
+                            <!-- Preencher dinamicamente com Go/MySQL -->
+                        </select>
+                    </div>
+                    <div class="painel-admin-form-group">
+                        <label class="painel-admin-form-label">Quantidade</label>
+                        <input type="number" class="painel-admin-form-input" required>
+                    </div>
+                    <div class="painel-admin-form-group">
+                        <label class="painel-admin-form-label">Motivo</label>
+                        <textarea class="painel-admin-form-textarea" rows="3"
+                            placeholder="Descreva o motivo da movimentação..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="painel-modal-footer">
+                <button type="button" class="painel-btn-secondary"
+                    onclick="closeModal('estoque-modal')">Cancelar</button>
+                <button type="submit" class="painel-btn-primary" form="estoque-form">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navegação do menu
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // Remove active class from all menu items
+                document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+
+                // Add active class to clicked item
+                this.classList.add('active');
+
+                // Hide all sections
+                document.querySelectorAll('.painel-admin-section').forEach(section => {
+                    section.classList.add('painel-hidden');
+                });
+
+                // Show selected section
+                const sectionName = this.dataset.section;
+                document.getElementById(sectionName + '-section').classList.remove('painel-hidden');
+            });
+        });
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function (event) {
+            if (event.target.classList.contains('painel-modal')) {
+                event.target.style.display = 'none';
+            }
+        });
+
+        // Product management functions
+        function editProduct(id) {
+            // Implementar lógica de edição
+            alert('Editar produto ID: ' + id);
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Tem certeza que deseja excluir este produto?')) {
+                // Implementar lógica de exclusão
+                alert('Produto excluído: ' + id);
+            }
+        }
+
+        // Form submissions
+        document.getElementById('produto-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Collect form data
+            const formData = new FormData(this);
+
+            // Simulate API call
+            setTimeout(() => {
+                alert('Produto adicionado com sucesso!');
+                closeModal('produto-modal');
+                this.reset();
+
+                // Update products table (simulation)
+                updateProductsTable();
+            }, 1000);
+        });
+
+        document.getElementById('estoque-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Simulate API call
+            setTimeout(() => {
+                alert('Estoque atualizado com sucesso!');
+                closeModal('estoque-modal');
+                this.reset();
+            }, 1000);
+        });
+
+        // Update products table (simulation)
+        function updateProductsTable() {
+            // This would normally fetch data from the server
+            console.log('Atualizando tabela de produtos...');
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Tem certeza que deseja sair do painel administrativo?')) {
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Search functionality
+        document.querySelectorAll('.painel-search-input').forEach(input => {
+            input.addEventListener('input', function () {
+                const searchTerm = this.value.toLowerCase();
+                const table = this.closest('.painel-content-section').querySelector('.painel-data-table tbody');
+                if (table) {
+                    const rows = table.querySelectorAll('tr');
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(searchTerm) ? '' : 'none';
+                    });
+                }
+            });
+        });
+
+        // File upload preview
+        document.getElementById('product-images').addEventListener('change', function (e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                const fileNames = Array.from(files).map(file => file.name).join(', ');
+                const uploadDiv = this.parentElement;
+                uploadDiv.innerHTML = `
+                    <p><strong>Arquivos selecionados:</strong></p>
+                    <p>${fileNames}</p>
+                    <button type="button" onclick="document.getElementById('product-images').click()" class="btn-secondary" style="margin-top: 10px;">Alterar Seleção</button>
+                `;
+            }
+        });
+
+        // Exemplo: buscar produtos da API e preencher tabela
+        function carregarProdutos() {
+            fetch('/api/produtos')
+                .then(res => res.json())
+                .then(produtos => {
+                    const tbody = document.getElementById('produtos-list');
+                    tbody.innerHTML = '';
+                    produtos.forEach(prod => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${prod.codigo}</td>
+                            <td>${prod.sku}</td>
+                            <td>${prod.nome}</td>
+                            <td>R$ ${prod.preco.toFixed(2)}</td>
+                            <td>${prod.tamanho}</td>
+                            <td>${prod.cor || ''}</td>
+                            <td>${prod.categoria}</td>
+                            <td>${prod.marca}</td>
+                            <td>${prod.descricao}</td>
+                            <td>${prod.foto ? `<img src="${prod.foto}" class="product-image" alt="Foto">` : ''}</td>
+                            <td>
+                                <button class="btn-secondary" onclick="editProduct(${prod.codigo})">Editar</button>
+                                <button class="btn-danger" onclick="deleteProduct(${prod.codigo})">Excluir</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                });
+        }
+
+        // Carregar produtos ao abrir a seção Produtos
+        document.querySelector('[data-section="produtos"]').addEventListener('click', carregarProdutos);
+
+        // Auto-generate SKU based on product name
+        document.querySelector('#produto-form input[type="text"]:nth-of-type(3)').addEventListener('input', function () {
+            const name = this.value;
+            if (name.length >= 3) {
+                const sku = name.substring(0, 3).toUpperCase() + Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+                document.querySelector('#produto-form input[type="text"]:nth-of-type(2)').value = sku;
+            }
+        });
+
+        // Calculate profit margin in financial section
+        function calculateProfitMargin() {
+            const revenue = 125450;
+            const costs = 40220;
+            const profit = revenue - costs;
+            const margin = ((profit / revenue) * 100).toFixed(1);
+
+            document.querySelector('.stat-card:last-child .stat-value').textContent = margin + '%';
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function () {
+            calculateProfitMargin();
+
+            // Simulate real-time updates
+            setInterval(() => {
+                // Update random statistics (simulation)
+                const salesCard = document.querySelector('.stat-card .stat-value');
+                if (salesCard) {
+                    let currentValue = parseInt(salesCard.textContent.replace(/[R$.,\s]/g, ''));
+                    currentValue += Math.floor(Math.random() * 100);
+                    salesCard.textContent = 'R$ ' + currentValue.toLocaleString('pt-BR');
+                }
+            }, 30000); // Update every 30 seconds
+        });
+
+        // GRÁFICO DE VENDAS MENSAIS
+        document.addEventListener('DOMContentLoaded', function () {
+            // Vendas Mensais (exemplo)
+            const ctxVendas = document.getElementById('grafico-vendas-mensais').getContext('2d');
+            new Chart(ctxVendas, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [{
+                        label: 'Vendas (R$)',
+                        data: [1200, 1500, 1800, 2100, 2500, 2300, 2700, 3000, 3200, 3100, 3500, 4000],
+                        borderColor: '#370400',
+                        backgroundColor: 'rgba(55,4,0,0.08)',
+                        tension: 0.3,
+                        fill: true,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#370400'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            // Pedidos Ativos x Pendentes (exemplo)
+            const ctxPedidos = document.getElementById('grafico-pedidos-status').getContext('2d');
+            new Chart(ctxPedidos, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Ativos', 'Pendentes'],
+                    datasets: [{
+                        data: [35, 12],
+                        backgroundColor: ['#370400', '#ffc107'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom'
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+        });
+
+        // Responsive sidebar toggle for mobile
+        function toggleMobileSidebar() {
+            const sidebar = document.querySelector('.admin-sidebar');
+            sidebar.classList.toggle('mobile-open');
+        }
+
+        // Add responsive behavior
+        if (window.innerWidth <= 768) {
+            const header = document.querySelector('.header-content');
+            const hamburger = document.createElement('button');
+            hamburger.innerHTML = '☰';
+            hamburger.style.cssText = `
+                background: none;
+                border: none;
+                color: #fff;
+                font-size: 20px;
+                cursor: pointer;
+                padding: 5px;
+                margin-right: 15px;
+            `;
+            hamburger.onclick = toggleMobileSidebar;
+            header.insertBefore(hamburger, header.firstChild);
+        }
+
+        // Form validation
+        function validateForm(form) {
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#dc3545';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#e8e8e8';
+                }
+            });
+
+            return isValid;
+        }
+
+        // Add validation to all forms
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                if (!validateForm(this)) {
+                    e.preventDefault();
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

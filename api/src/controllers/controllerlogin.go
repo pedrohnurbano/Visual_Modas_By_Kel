@@ -11,6 +11,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"strconv"
 )
 
 // Login é responsável por autenticar o usuário na API
@@ -73,24 +74,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Buscar dados completos do usuário para retornar (sem senha)
-	usuarioCompleto, erro := repositorio.BuscarPorID(usuarioSalvoNoBanco.ID)
-	if erro != nil {
-		respostas.Erro(w, http.StatusInternalServerError, erro)
-		return
-	}
+	usuarioID := strconv.FormatUint(usuarioSalvoNoBanco.ID, 10)
 
-	// Limpar senha por segurança
-	usuarioCompleto.Senha = ""
-
-	// Retornar token e dados do usuário
-	resposta := struct {
-		Token   string          `json:"token"`
-		Usuario modelos.Usuario `json:"usuario"`
-	}{
-		Token:   token,
-		Usuario: usuarioCompleto,
-	}
-
-	respostas.JSON(w, http.StatusOK, resposta)
+	// Retorna os dados de autenticação incluindo a role
+	respostas.JSON(w, http.StatusOK, modelos.DadosAutenticacao{
+		ID:    usuarioID, 
+		Token: token,
+		Role:  usuarioSalvoNoBanco.Role,
+	})
 }

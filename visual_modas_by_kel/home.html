@@ -6,34 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="design/icone_visualmodasbykel.png">
     <link href="estilos.css" rel="stylesheet">
-    <title> Visual Modas By Kel </title>
+    <title>Visual Modas By Kel</title>
 </head>
 
 <body>
-    <!----------------------------------------------------------------------------------------->
-    <!---------------------------------- CABEÇALHO PRINCIPAL ---------------------------------->
-    <!----------------------------------------------------------------------------------------->
+    <!-- Cabeçalho Profissional -->
     <header class="header">
         <div class="header-content">
-            <a href="home.html" style="text-decoration:none;">
-                <span class="logo"
-                    style="position:static;transform:none;left:auto;z-index:auto;flex:0 0 auto;">
-                    VISUAL MODAS BY KEL
-                </span>
+            <a href="index.html" class="logo" aria-label="Visual Modas By Kel">
+                VISUAL MODAS BY KEL
             </a>
-            
-            <a href="home.html">
-                <img src="design/logo_visualmodasbykel.png" alt="Logo Decorativa" style="height:38px;">
+            <a href="index.html" aria-label="Logo Visual Modas By Kel">
+                <img src="design/logo_visualmodasbykel.png" alt="Logo Visual Modas By Kel" />
             </a>
-
-            <div class="header-icons" style="gap: 24px;">
-                <form style="display:inline; margin:0 16px 0 0; border-bottom: 1px solid #000;">
-                    <input type="text" placeholder="O que você procura?">
+            <div class="header-icons">
+                <form role="search" aria-label="Busca de produtos">
+                    <input type="text" placeholder="O que você procura?" aria-label="Buscar produto">
                 </form>
-                
-                <a href="login.html" style="font-size:12px;display:flex;align-items:center;gap:4px;">
+                <a href="login.html" title="Minha Conta">
                     <img src="design/icone_usuario.png" alt="Minha Conta">
-                    <span>Minha conta e<br><b style="color:#fff;">Meus pedidos</b></span>
+                    <span>Minha conta<br><b>Meus pedidos</b></span>
                 </a>
                 <a href="favoritos.html" title="Favoritos" id="abrir_favoritos">
                     <img src="design/icone_favoritos.png" alt="Favoritos">
@@ -41,6 +33,9 @@
                 <a href="sacola.html" title="Sacola" id="abrir_sacola">
                     <img src="design/icone_sacola.png" alt="Sacola">
                 </a>
+                <button class="menu-toggle" id="menuToggle" aria-label="Abrir/fechar menu" type="button">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
         </div>
         <nav class="header-filters" id="headerFilters">
@@ -57,33 +52,71 @@
             </ul>
         </nav>
     </header>
-    <!----------------------------------------------------------------------------------------->
-
-
     <script>
-        const catLabel = document.getElementById('comprar-categoria-label');
-        const catDropdown = document.getElementById('categorias-dropdown');
-        const hamburgerLi = catLabel.closest('li');
+        // Menu hamburguer responsivo
+        function toggleFilters() {
+            document.getElementById('headerFilters').classList.toggle('hide');
+        }
+        function handleMenuToggleDisplay() {
+            const btn = document.getElementById('menuToggle');
+            if (window.innerWidth <= 900) {
+                btn.style.display = 'inline-flex';
+            } else {
+                btn.style.display = 'none';
+                document.getElementById('headerFilters').classList.remove('hide');
+            }
+        }
+        document.getElementById('menuToggle').onclick = toggleFilters;
+        window.addEventListener('resize', handleMenuToggleDisplay);
+        window.addEventListener('DOMContentLoaded', handleMenuToggleDisplay);
 
-        function showDropdown() {
-            catDropdown.style.display = 'block';
-        }
-        function hideDropdown() {
-            catDropdown.style.display = 'none';
-        }
-        hamburgerLi.addEventListener('mouseenter', showDropdown);
-        hamburgerLi.addEventListener('mouseleave', hideDropdown);
+        // Ativa underline do filtro ativo
+        document.querySelectorAll('.header-filters a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                document.querySelectorAll('.header-filters a').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Esconde/mostra filtros suavemente ao rolar (sem travar)
+        (function() {
+            const filters = document.getElementById('headerFilters');
+            let lastScroll = window.scrollY;
+            let ticking = false;
+            let isHidden = false;
+
+            function onScroll() {
+                const current = window.scrollY;
+                if (current > lastScroll && current > 80 && !isHidden) {
+                    filters.classList.add('filters-hide-scroll');
+                    isHidden = true;
+                } else if (current < lastScroll && isHidden) {
+                    filters.classList.remove('filters-hide-scroll');
+                    isHidden = false;
+                }
+                lastScroll = current;
+                ticking = false;
+            }
+
+            window.addEventListener('scroll', function() {
+                if (!ticking) {
+                    window.requestAnimationFrame(onScroll);
+                    ticking = true;
+                }
+            });
+        })();
     </script>
-    
+
+    <!-- Banner Slideshow -->
     <div class="banner-slideshow">
         <div class="slides fade">
-            <img src="design/banner_01.png" class="banner-img">
+            <img src="design/banner_01.png" class="banner-img" alt="Banner 1">
         </div>
         <div class="slides fade">
-            <img src="design/banner_02.png" class="banner-img">
+            <img src="design/banner_02.png" class="banner-img" alt="Banner 2">
         </div>
         <div class="slides fade">
-            <img src="design/banner_03.png" class="banner-img">
+            <img src="design/banner_03.png" class="banner-img" alt="Banner 3">
         </div>
         <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
         <a class="next" onclick="plusSlides(1)">&#10095;</a>
@@ -91,14 +124,9 @@
     <script>
         let slideIndex = 1;
         showSlides(slideIndex);
-
-        function plusSlides(n) {
-            showSlides(slideIndex += n);
-        }
-
+        function plusSlides(n) { showSlides(slideIndex += n); }
         function showSlides(n) {
-            let i;
-            let slides = document.getElementsByClassName("slides");
+            let i, slides = document.getElementsByClassName("slides");
             if (n > slides.length) { slideIndex = 1 }
             if (n < 1) { slideIndex = slides.length }
             for (i = 0; i < slides.length; i++) {
@@ -106,17 +134,14 @@
             }
             slides[slideIndex - 1].style.display = "block";
         }
-
-        setInterval(() => {
-            plusSlides(1);
-        }, 10000);
+        setInterval(() => { plusSlides(1); }, 10000);
     </script>
 
-
+    <!-- Barra Institucional -->
     <div class="institutional-bar">
         <div class="institutional-container">
             <div class="inst-block">
-                <img src="design/icone_preco.png" width="32" alt="Logo">
+                <img src="design/icone_preco.png" width="32" alt="Desconto">
                 <div>
                     <span class="inst-title">10% OFF NA PRIMEIRA COMPRA</span>
                     <span class="inst-sub">USE O CUPOM BEMVINDOVM</span>
@@ -124,7 +149,7 @@
             </div>
             <div class="inst-divider"></div>
             <div class="inst-block">
-                <img src="design/icone_pix.png" width="32" alt="App">
+                <img src="design/icone_pix.png" width="32" alt="Pix">
                 <div>
                     <span class="inst-title">GANHE 5% OFF NO PIX</span>
                     <span class="inst-sub">EXCETO PEÇAS REMARCADAS</span>
@@ -132,7 +157,7 @@
             </div>
             <div class="inst-divider"></div>
             <div class="inst-block">
-                <img src="design/icone_entrega.png" width="32" alt="Loja">
+                <img src="design/icone_entrega.png" width="32" alt="Entrega">
                 <div>
                     <span class="inst-title">FRETE GRÁTIS</span>
                     <span class="inst-sub">EM COMPRAS ACIMA DE R$500 EM TODO O SITE</span>
@@ -140,7 +165,7 @@
             </div>
             <div class="inst-divider"></div>
             <div class="inst-block">
-                <img src="design/icone_loja.png" width="32" alt="Vale Presente">
+                <img src="design/icone_loja.png" width="32" alt="Retire na loja">
                 <div>
                     <span class="inst-title">COMPRE NO SITE E RETIRE NA LOJA</span>
                     <span class="inst-sub">GANHE 15% NA ESCOLHA DE NOVOS LOOKS</span>
@@ -149,9 +174,171 @@
         </div>
     </div>
 
+    <!-- Vitrine Principal -->
+    <section class="vitrine-cards">
+        <h2 class="vitrine-titulo">Destaques</h2>
+        <div class="cards-grid">
+            <!-- Card Exemplo 1 -->
+            <div class="produto-card">
+                <button class="produto-favorito" title="Favoritar">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                        <path class="favorito-icon" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                            stroke="#370400" stroke-width="1.5" fill="none"/>
+                    </svg>
+                </button>
+                <div class="produto-img-container">
+                    <img src="design/produto_exemplo_1.jpg" alt="Produto 1" class="produto-img img-primaria">
+                    <img src="design/produto_exemplo_1b.jpg" alt="Produto 1 - Verso" class="produto-img img-secundaria">
+                    <div class="produto-tamanhos">
+                        <span>PP</span>
+                        <span>P</span>
+                        <span>M</span>
+                        <span>G</span>
+                        <span>GG</span>
+                        <button class="produto-sacola" title="Adicionar à sacola">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="10" fill="#370400"/>
+                                <path d="M8 12h8M12 8v8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    </div>
+                </div>
+                <div class="produto-info">
+                    <span class="produto-nome">Saia Curta Cintura Alta</span>
+                    <span class="produto-preco">R$ 1.177,00</span>
+                    <span class="produto-parcela">Até 8x de R$ 147,12</span>
+                </div>
+            </div>
+            <!-- Card Exemplo 2 -->
+            <div class="produto-card">
+                <button class="produto-favorito" title="Favoritar">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                        <path class="favorito-icon" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                            stroke="#370400" stroke-width="1.5" fill="none"/>
+                    </svg>
+                </button>
+                <div class="produto-img-container">
+                    <img src="design/produto_exemplo_2.jpg" alt="Produto 2" class="produto-img img-primaria">
+                    <img src="design/produto_exemplo_2b.jpg" alt="Produto 2 - Verso" class="produto-img img-secundaria">
+                    <div class="produto-tamanhos">
+                        <span>PP</span>
+                        <span>P</span>
+                        <span>M</span>
+                        <span>G</span>
+                        <span>GG</span>
+                        <button class="produto-sacola" title="Adicionar à sacola">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="10" fill="#370400"/>
+                                <path d="M8 12h8M12 8v8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    </div>
+                </div>
+                <div class="produto-info">
+                    <span class="produto-nome">Blazer Alfaiataria Feminino</span>
+                    <span class="produto-preco">R$ 799,90</span>
+                    <span class="produto-parcela">Até 6x de R$ 133,32</span>
+                </div>
+            </div>
+            <!-- Card Exemplo 3 -->
+            <div class="produto-card">
+                <button class="produto-favorito" title="Favoritar">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                        <path class="favorito-icon" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                            stroke="#370400" stroke-width="1.5" fill="none"/>
+                    </svg>
+                </button>
+                <div class="produto-img-container">
+                    <img src="design/produto_exemplo_3.jpg" alt="Produto 3" class="produto-img img-primaria">
+                    <img src="design/produto_exemplo_3b.jpg" alt="Produto 3 - Verso" class="produto-img img-secundaria">
+                    <div class="produto-tamanhos">
+                        <span>PP</span>
+                        <span>P</span>
+                        <span>M</span>
+                        <span>G</span>
+                        <span>GG</span>
+                        <button class="produto-sacola" title="Adicionar à sacola">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="10" fill="#370400"/>
+                                <path d="M8 12h8M12 8v8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    </div>
+                </div>
+                <div class="produto-info">
+                    <span class="produto-nome">Calça Wide Leg Jeans</span>
+                    <span class="produto-preco">R$ 349,90</span>
+                    <span class="produto-parcela">Até 5x de R$ 69,98</span>
+                </div>
+            </div>
+            <!-- Card Exemplo 4 -->
+            <div class="produto-card">
+                <button class="produto-favorito" title="Favoritar">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                        <path class="favorito-icon" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                            stroke="#370400" stroke-width="1.5" fill="none"/>
+                    </svg>
+                </button>
+                <div class="produto-img-container">
+                    <img src="design/produto_exemplo_4.jpg" alt="Produto 4" class="produto-img img-primaria">
+                    <img src="design/produto_exemplo_4b.jpg" alt="Produto 4 - Verso" class="produto-img img-secundaria">
+                    <div class="produto-tamanhos">
+                        <span>PP</span>
+                        <span>P</span>
+                        <span>M</span>
+                        <span>G</span>
+                        <span>GG</span>
+                        <button class="produto-sacola" title="Adicionar à sacola">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="10" fill="#370400"/>
+                                <path d="M8 12h8M12 8v8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    </div>
+                </div>
+                <div class="produto-info">
+                    <span class="produto-nome">Camisa Social Feminina</span>
+                    <span class="produto-preco">R$ 259,90</span>
+                    <span class="produto-parcela">Até 4x de R$ 64,98</span>
+                </div>
+            </div>
+            <!-- Card Exemplo 5 -->
+            <div class="produto-card">
+                <button class="produto-favorito" title="Favoritar">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                        <path class="favorito-icon" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                            stroke="#370400" stroke-width="1.5" fill="none"/>
+                    </svg>
+                </button>
+                <div class="produto-img-container">
+                    <img src="design/produto_exemplo_5.jpg" alt="Produto 5" class="produto-img img-primaria">
+                    <img src="design/produto_exemplo_5b.jpg" alt="Produto 5 - Verso" class="produto-img img-secundaria">
+                    <div class="produto-tamanhos">
+                        <span>PP</span>
+                        <span>P</span>
+                        <span>M</span>
+                        <span>G</span>
+                        <span>GG</span>
+                        <button class="produto-sacola" title="Adicionar à sacola">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="10" fill="#370400"/>
+                                <path d="M8 12h8M12 8v8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    </div>
+                </div>
+                <div class="produto-info">
+                    <span class="produto-nome">Vestido Longo Estampado</span>
+                    <span class="produto-preco">R$ 1.299,90</span>
+                    <span class="produto-parcela">Até 10x de R$ 129,99</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Fim da Vitrine Principal -->
 
-
-
+    <!-- Rodapé Principal -->
+    <!-- Fim do Rodapé Principal -->
 </body>
 
 </html>

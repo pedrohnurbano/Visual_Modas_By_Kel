@@ -21,8 +21,13 @@ func NovoRepositorioDeUsuarios(db *sql.DB) *Usuarios {
 func (repositorio Usuarios) Criar(usuario modelos.Usuario) (uint64, error) {
 	log.Printf("Tentando criar usuário: %+v", usuario)
 	
+	// Garante que novos usuários sempre sejam criados como "user"
+	if usuario.Role == "" {
+		usuario.Role = "user"
+	}
+	
 	statement, erro := repositorio.db.Prepare(
-		"INSERT INTO usuarios (nome, sobrenome, email, senha, telefone, cpf) VALUES(?, ?, ?, ?, ?, ?)",
+		"INSERT INTO usuarios (nome, sobrenome, email, senha, telefone, cpf, role) VALUES(?, ?, ?, ?, ?, ?, ?)",
 	)
 	if erro != nil {
 		log.Printf("Erro ao preparar statement: %v", erro)
@@ -30,10 +35,10 @@ func (repositorio Usuarios) Criar(usuario modelos.Usuario) (uint64, error) {
 	}
 	defer statement.Close()
 
-	log.Printf("Statement preparado. Executando com valores: nome=%s, sobrenome=%s, email=%s, telefone=%s, cpf=%s", 
-		usuario.Nome, usuario.Sobrenome, usuario.Email, usuario.Telefone, usuario.CPF)
+	log.Printf("Statement preparado. Executando com valores: nome=%s, sobrenome=%s, email=%s, telefone=%s, cpf=%s, role=%s", 
+		usuario.Nome, usuario.Sobrenome, usuario.Email, usuario.Telefone, usuario.CPF, usuario.Role)
 
-	resultado, erro := statement.Exec(usuario.Nome, usuario.Sobrenome, usuario.Email, usuario.Senha, usuario.Telefone, usuario.CPF)
+	resultado, erro := statement.Exec(usuario.Nome, usuario.Sobrenome, usuario.Email, usuario.Senha, usuario.Telefone, usuario.CPF, usuario.Role)
 	if erro != nil {
 		log.Printf("Erro ao executar statement: %v", erro)
 		return 0, erro
@@ -45,7 +50,7 @@ func (repositorio Usuarios) Criar(usuario modelos.Usuario) (uint64, error) {
 		return 0, erro
 	}
 
-	log.Printf("Usuário inserido com sucesso. ID: %d", ultimoIDInserido)
+	log.Printf("Usuário inserido com sucesso. ID: %d, Role: %s", ultimoIDInserido, usuario.Role)
 	return uint64(ultimoIDInserido), nil
 }
 
@@ -54,7 +59,7 @@ func (repositorio Usuarios) Buscar(nomeOuEmail string) ([]modelos.Usuario, error
 	nomeOuEmail = fmt.Sprintf("%%%s%%", nomeOuEmail)
 	
 	linhas, erro := repositorio.db.Query(
-		"SELECT id, nome, sobrenome, email, telefone, cpf, criadoEm FROM usuarios WHERE nome LIKE ? OR sobrenome LIKE ? OR email LIKE ?",
+		"SELECT id, nome, sobrenome, email, telefone, cpf, role, criadoEm FROM usuarios WHERE nome LIKE ? OR sobrenome LIKE ? OR email LIKE ?",
 		nomeOuEmail, nomeOuEmail, nomeOuEmail,
 	)
 
@@ -75,6 +80,7 @@ func (repositorio Usuarios) Buscar(nomeOuEmail string) ([]modelos.Usuario, error
 			&usuario.Email,
 			&usuario.Telefone,
 			&usuario.CPF,
+			&usuario.Role,
 			&usuario.CriadoEm,
 		); erro != nil {
 			return nil, erro
@@ -89,7 +95,7 @@ func (repositorio Usuarios) Buscar(nomeOuEmail string) ([]modelos.Usuario, error
 // BuscarPorID traz um usuario pelo seu id
 func (repositorio Usuarios) BuscarPorID(ID uint64) (modelos.Usuario, error) {
 	linhas, erro := repositorio.db.Query(
-		"SELECT id, nome, sobrenome, email, telefone, cpf, criadoEm FROM usuarios WHERE id = ?",
+		"SELECT id, nome, sobrenome, email, telefone, cpf, role, criadoEm FROM usuarios WHERE id = ?",
 		ID,
 	)
 	if erro != nil {
@@ -107,6 +113,7 @@ func (repositorio Usuarios) BuscarPorID(ID uint64) (modelos.Usuario, error) {
 			&usuario.Email,
 			&usuario.Telefone,
 			&usuario.CPF,
+			&usuario.Role,
 			&usuario.CriadoEm,
 		); erro != nil {
 			return modelos.Usuario{}, erro
@@ -118,6 +125,7 @@ func (repositorio Usuarios) BuscarPorID(ID uint64) (modelos.Usuario, error) {
 
 // Atualizar altera as informações de um usuario no banco de dados
 func (repositorio Usuarios) Atualizar(ID uint64, usuario modelos.Usuario) error {
+	// Não permite atualizar a role através desta função
 	statement, erro := repositorio.db.Prepare(
 		"UPDATE usuarios SET nome = ?, sobrenome = ?, email = ?, telefone = ?, cpf = ? WHERE id = ?",
 	)
@@ -148,9 +156,9 @@ func (repositorio Usuarios) Deletar(ID uint64) error {
 	return nil
 }
 
-// BuscarPorEmail busca um usuário por email e retorna o seu id e senha com hash
+// BuscarPorEmail busca um usuário por email e retorna o seu id, senha e role
 func (repositorio Usuarios) BuscarPorEmail(email string) (modelos.Usuario, error) {
-	linha, erro := repositorio.db.Query("SELECT id, senha FROM usuarios WHERE email = ?", email)
+	linha, erro := repositorio.db.Query("SELECT id, senha, role FROM usuarios WHERE email = ?", email)
 	if erro != nil {
 		return modelos.Usuario{}, erro
 	}
@@ -159,7 +167,7 @@ func (repositorio Usuarios) BuscarPorEmail(email string) (modelos.Usuario, error
 	var usuario modelos.Usuario
 
 	if linha.Next() {
-		if erro = linha.Scan(&usuario.ID, &usuario.Senha); erro != nil {
+		if erro = linha.Scan(&usuario.ID, &usuario.Senha, &usuario.Role); erro != nil {
 			return modelos.Usuario{}, erro
 		}
 	}
@@ -169,7 +177,7 @@ func (repositorio Usuarios) BuscarPorEmail(email string) (modelos.Usuario, error
 
 // BuscarPorCPF busca um usuário por CPF (útil para verificar duplicatas)
 func (repositorio Usuarios) BuscarPorCPF(cpf string) (modelos.Usuario, error) {
-	linha, erro := repositorio.db.Query("SELECT id, nome, sobrenome, email, telefone, cpf, criadoEm FROM usuarios WHERE cpf = ?", cpf)
+	linha, erro := repositorio.db.Query("SELECT id, nome, sobrenome, email, telefone, cpf, role, criadoEm FROM usuarios WHERE cpf = ?", cpf)
 	if erro != nil {
 		return modelos.Usuario{}, erro
 	}
@@ -185,6 +193,7 @@ func (repositorio Usuarios) BuscarPorCPF(cpf string) (modelos.Usuario, error) {
 			&usuario.Email,
 			&usuario.Telefone,
 			&usuario.CPF,
+			&usuario.Role,
 			&usuario.CriadoEm,
 		); erro != nil {
 			return modelos.Usuario{}, erro
@@ -221,6 +230,21 @@ func (repositorio Usuarios) AtualizarSenha(usuarioID uint64, senha string) error
 	defer statement.Close()
 
 	if _, erro = statement.Exec(senha, usuarioID); erro != nil {
+		return erro
+	}
+
+	return nil
+}
+
+// AtualizarRole altera a role de um usuário (apenas para admins)
+func (repositorio Usuarios) AtualizarRole(usuarioID uint64, role string) error {
+	statement, erro := repositorio.db.Prepare("UPDATE usuarios SET role = ? WHERE id = ?")
+	if erro != nil {
+		return erro
+	}
+	defer statement.Close()
+
+	if _, erro = statement.Exec(role, usuarioID); erro != nil {
 		return erro
 	}
 

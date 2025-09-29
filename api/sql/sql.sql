@@ -11,10 +11,9 @@ CREATE TABLE usuarios (
     senha VARCHAR(255) NOT NULL,
     telefone VARCHAR(20) NOT NULL,
     cpf VARCHAR(14) NOT NULL UNIQUE,
+    role VARCHAR(20) NOT NULL DEFAULT 'user',
     criadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
-<<<<<<< Updated upstream
-=======
 
 DROP TABLE IF EXISTS produtos;
 
@@ -49,4 +48,3 @@ VALUES (
 );
 
 -- Trocar a senha acima por uma senha segura em produção
->>>>>>> Stashed changes

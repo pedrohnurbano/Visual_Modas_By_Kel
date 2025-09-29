@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
+	"visual_modas_by_kel/visual_modas_by_kel/src/config"
+	"visual_modas_by_kel/visual_modas_by_kel/src/respostas"
 )
 
 // CriarUsuario chama a API para cadastrar um usuário no banco de dados
@@ -22,14 +23,23 @@ func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if erro != nil {
-		log.Fatal(erro)
+		respostas.JSON(w, http.StatusBadRequest, respostas.ErroAPI{Erro: erro.Error()})
+		return
 	}
 
-	response, erro := http.Post("http://localhost:5000/usuarios", "application/json", bytes.NewBuffer(usuario))
+	url := fmt.Sprintf("%s/usuarios", config.APIURL)
+	response, erro := http.Post(url, "/application/json", bytes.NewBuffer(usuario))
+
 	if erro != nil {
-		log.Fatal(erro)
+		respostas.JSON(w, http.StatusInternalServerError, respostas.ErroAPI{Erro: erro.Error()})
+		return
 	}
 	defer response.Body.Close()
 
-	fmt.Println(response.Body)
+	if response.StatusCode >= 400 {
+		respostas.TratarStatusCodeDeErro(w, response)
+		return
+	}
+
+	respostas.JSON(w, response.StatusCode, nil)
 }
