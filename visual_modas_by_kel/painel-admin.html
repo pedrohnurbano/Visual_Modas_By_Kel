@@ -10,6 +10,8 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="estilos.css">
+    <!-- jQuery necessário para o cadastro-produto.js -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -96,19 +98,19 @@
 
                 <div class="painel-stats-grid">
                     <div class="painel-stat-card">
-                        <div class="painel-stat-value"><!-- VAR_VENDAS_MES --></div>
+                        <div class="painel-stat-value">R$ 12.450</div>
                         <div class="painel-stat-label">Vendas do Mês</div>
                     </div>
                     <div class="painel-stat-card">
-                        <div class="painel-stat-value"><!-- VAR_PRODUTOS_ATIVOS --></div>
+                        <div class="painel-stat-value">48</div>
                         <div class="painel-stat-label">Produtos Ativos</div>
                     </div>
                     <div class="painel-stat-card">
-                        <div class="painel-stat-value"><!-- VAR_PEDIDOS_PENDENTES --></div>
+                        <div class="painel-stat-value">12</div>
                         <div class="painel-stat-label">Pedidos Pendentes</div>
                     </div>
                     <div class="painel-stat-card">
-                        <div class="painel-stat-value"><!-- VAR_CLIENTES_CADASTRADOS --></div>
+                        <div class="painel-stat-value">256</div>
                         <div class="painel-stat-label">Clientes Cadastrados</div>
                     </div>
                 </div>
@@ -234,22 +236,22 @@
                     <p class="painel-admin-subtitle">Controle financeiro</p>
                 </div>
 
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value"><!-- VAR_RECEITA_TOTAL --></div>
-                        <div class="stat-label">Receita Total</div>
+                <div class="painel-stats-grid">
+                    <div class="painel-stat-card">
+                        <div class="painel-stat-value">R$ 125.450</div>
+                        <div class="painel-stat-label">Receita Total</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-value"><!-- VAR_RECEITA_LIQUIDA --></div>
-                        <div class="stat-label">Receita Líquida</div>
+                    <div class="painel-stat-card">
+                        <div class="painel-stat-value">R$ 85.230</div>
+                        <div class="painel-stat-label">Receita Líquida</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-value"><!-- VAR_CUSTOS --></div>
-                        <div class="stat-label">Custos</div>
+                    <div class="painel-stat-card">
+                        <div class="painel-stat-value">R$ 40.220</div>
+                        <div class="painel-stat-label">Custos</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-value"><!-- VAR_MARGEM_LUCRO --></div>
-                        <div class="stat-label">Margem de Lucro</div>
+                    <div class="painel-stat-card">
+                        <div class="painel-stat-value">68%</div>
+                        <div class="painel-stat-label">Margem de Lucro</div>
                     </div>
                 </div>
 
@@ -315,25 +317,24 @@
                     </div>
                     <div
                         style="padding: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                        <!-- Os botões podem ser preenchidos dinamicamente ou mantidos estáticos para gerar relatórios -->
-                        <div class="stat-card">
-                            <h3><!-- VAR_RELATORIO_1 --></h3>
-                            <p style="margin: 10px 0; color: #666;"><!-- VAR_DESC_RELATORIO_1 --></p>
+                        <div class="painel-stat-card">
+                            <h3>Vendas Mensais</h3>
+                            <p style="margin: 10px 0; color: #666;">Análise detalhada das vendas por mês</p>
                             <button class="painel-btn-primary">Gerar Relatório</button>
                         </div>
-                        <div class="stat-card">
-                            <h3><!-- VAR_RELATORIO_2 --></h3>
-                            <p style="margin: 10px 0; color: #666;"><!-- VAR_DESC_RELATORIO_2 --></p>
+                        <div class="painel-stat-card">
+                            <h3>Produtos Mais Vendidos</h3>
+                            <p style="margin: 10px 0; color: #666;">Ranking dos produtos com maior saída</p>
                             <button class="painel-btn-primary">Gerar Relatório</button>
                         </div>
-                        <div class="stat-card">
-                            <h3><!-- VAR_RELATORIO_3 --></h3>
-                            <p style="margin: 10px 0; color: #666;"><!-- VAR_DESC_RELATORIO_3 --></p>
+                        <div class="painel-stat-card">
+                            <h3>Análise de Clientes</h3>
+                            <p style="margin: 10px 0; color: #666;">Perfil e comportamento de compra</p>
                             <button class="painel-btn-primary">Gerar Relatório</button>
                         </div>
-                        <div class="stat-card">
-                            <h3><!-- VAR_RELATORIO_4 --></h3>
-                            <p style="margin: 10px 0; color: #666;"><!-- VAR_DESC_RELATORIO_4 --></p>
+                        <div class="painel-stat-card">
+                            <h3>Fluxo de Caixa</h3>
+                            <p style="margin: 10px 0; color: #666;">Entradas e saídas financeiras</p>
                             <button class="painel-btn-primary">Gerar Relatório</button>
                         </div>
                     </div>
@@ -342,6 +343,7 @@
         </main>
     </div>
 
+    <!-- Modal de Cadastro de Produto -->
     <div id="produto-modal" class="painel-modal">
         <div class="painel-modal-content">
             <div class="painel-modal-header">
@@ -355,12 +357,12 @@
                         <input type="text" id="nome-produto" class="painel-admin-form-input" required>
                     </div>
                     <div class="painel-admin-form-group">
-                        <label class="painel-admin-form-label">DescriÃ§Ã£o</label>
+                        <label class="painel-admin-form-label">Descrição</label>
                         <textarea id="descricao-produto" class="painel-admin-form-textarea" rows="4"
-                            placeholder="DescriÃ§Ã£o detalhada do produto..." required></textarea>
+                            placeholder="Descrição detalhada do produto..." required></textarea>
                     </div>
                     <div class="painel-admin-form-group">
-                        <label class="painel-admin-form-label">PreÃ§o (R$)</label>
+                        <label class="painel-admin-form-label">Preço (R$)</label>
                         <input type="number" id="preco-produto" step="0.01" class="painel-admin-form-input" required>
                     </div>
                     <div class="painel-admin-form-group">
@@ -382,11 +384,11 @@
                             <option value="">Selecione uma categoria</option>
                             <option value="Vestidos">Vestidos</option>
                             <option value="Blusas e Camisas">Blusas e Camisas</option>
-                            <option value="CalÃ§as">CalÃ§as</option>
+                            <option value="Calças">Calças</option>
                             <option value="Saias">Saias</option>
                             <option value="Shorts e Bermudas">Shorts e Bermudas</option>
                             <option value="Jaquetas e Casacos">Jaquetas e Casacos</option>
-                            <option value="MacacÃµes">MacacÃµes</option>
+                            <option value="Macacões">Macacões</option>
                             <option value="Blazers">Blazers</option>
                             <option value="Body">Body</option>
                             <option value="Regatas">Regatas</option>
@@ -394,11 +396,14 @@
                     </div>
                     <div class="painel-admin-form-group">
                         <label class="painel-admin-form-label">Foto</label>
-                        <div class="painel-file-upload"
-                            onclick="document.getElementById('foto-produto').click()">
-                            <input type="file" id="foto-produto" accept="image/jpeg,image/jpg,image/png,image/webp" required>
-                            <p>Clique para selecionar a foto</p>
-                            <small>Formatos aceitos: JPG, PNG, WEBP (mÃ¡x. 5MB)</small>
+                        <div class="painel-file-upload">
+                            <input type="file" id="foto-produto" accept="image/jpeg,image/jpg,image/png,image/webp"
+                                style="display: none;" required>
+                            <div onclick="document.getElementById('foto-produto').click()"
+                                style="cursor: pointer; padding: 20px; text-align: center; border: 2px dashed #ddd; border-radius: 4px;">
+                                <p>Clique para selecionar a foto</p>
+                                <small>Formatos aceitos: JPG, PNG, WEBP (máx. 5MB)</small>
+                            </div>
                         </div>
                         <div id="preview-imagem"></div>
                     </div>
@@ -412,6 +417,7 @@
         </div>
     </div>
 
+    <!-- Modal de Estoque -->
     <div id="estoque-modal" class="painel-modal">
         <div class="painel-modal-content">
             <div class="painel-modal-header">
@@ -430,6 +436,8 @@
                         <label class="painel-admin-form-label">Tipo de Movimentação</label>
                         <select class="painel-admin-form-select" required>
                             <option value="">Selecione o tipo</option>
+                            <option value="entrada">Entrada</option>
+                            <option value="saida">Saída</option>
                         </select>
                     </div>
                     <div class="painel-admin-form-group">
@@ -451,13 +459,17 @@
         </div>
     </div>
 
+    <!-- Importar o cadastro-produto.js -->
+    <script src="js/cadastro-produto.js"></script>
+
+    <!-- Scripts do painel admin -->
     <script>
+        // Navegação do menu
         document.querySelectorAll('.menu-item').forEach(item => {
             item.addEventListener('click', function (e) {
                 e.preventDefault();
 
                 document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-
                 this.classList.add('active');
 
                 document.querySelectorAll('.painel-admin-section').forEach(section => {
@@ -466,68 +478,89 @@
 
                 const sectionName = this.dataset.section;
                 document.getElementById(sectionName + '-section').classList.remove('painel-hidden');
+
+                // Se for a seção de produtos, carregar a lista
+                if (sectionName === 'produtos') {
+                    carregarProdutos();
+                }
             });
         });
 
+        // Funções do modal
         function openModal(modalId) {
             document.getElementById(modalId).style.display = 'block';
         }
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
+            // Limpar o formulário ao fechar
+            if (modalId === 'produto-modal') {
+                document.getElementById('produto-form').reset();
+                if (typeof imagemBase64 !== 'undefined') {
+                    imagemBase64 = "";
+                }
+                document.getElementById('preview-imagem').innerHTML = "";
+            }
         }
 
+        // Fechar modal ao clicar fora
         window.addEventListener('click', function (event) {
             if (event.target.classList.contains('painel-modal')) {
                 event.target.style.display = 'none';
             }
         });
 
-        function editProduct(id) {
-            alert('Editar produto ID: ' + id);
+        // Função para carregar produtos
+        function carregarProdutos() {
+            $.ajax({
+                url: '/api/produtos',
+                method: 'GET',
+                success: function (produtos) {
+                    const tbody = document.getElementById('produtos-list');
+                    tbody.innerHTML = '';
+
+                    if (!produtos || produtos.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="11" style="text-align: center;">Nenhum produto encontrado</td></tr>';
+                        return;
+                    }
+
+                    produtos.forEach(produto => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${produto.id || ''}</td>
+                            <td>PRD${String(produto.id || '').padStart(5, '0')}</td>
+                            <td>${produto.nome || ''}</td>
+                            <td>R$ ${(produto.preco || 0).toFixed(2)}</td>
+                            <td>${produto.tamanho || ''}</td>
+                            <td>-</td>
+                            <td>${produto.categoria || ''}</td>
+                            <td>-</td>
+                            <td>${produto.descricao ? produto.descricao.substring(0, 50) + '...' : ''}</td>
+                            <td>${produto.foto_url ? '<img src="' + produto.foto_url + '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">' : '-'}</td>
+                            <td>
+                                <button class="painel-btn-secondary" style="padding: 5px 10px; font-size: 12px;" onclick="editarProduto(${produto.id})">Editar</button>
+                                <button class="painel-btn-danger" style="padding: 5px 10px; font-size: 12px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;" onclick="deletarProduto(${produto.id})">Excluir</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Erro ao carregar produtos:", error);
+                    document.getElementById('produtos-list').innerHTML =
+                        '<tr><td colspan="11" style="text-align: center; color: red;">Erro ao carregar produtos</td></tr>';
+                }
+            });
         }
 
-        function deleteProduct(id) {
-            if (confirm('Tem certeza que deseja excluir este produto?')) {
-
-                alert('Produto excluído: ' + id);
-            }
-        }
-
-        document.getElementById('produto-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            const formData = new FormData(this);
-
-            setTimeout(() => {
-                alert('Produto adicionado com sucesso!');
-                closeModal('produto-modal');
-                this.reset();
-
-                updateProductsTable();
-            }, 1000);
-        });
-
-        document.getElementById('estoque-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            setTimeout(() => {
-                alert('Estoque atualizado com sucesso!');
-                closeModal('estoque-modal');
-                this.reset();
-            }, 1000);
-        });
-
-        function updateProductsTable() {
-            console.log('Atualizando tabela de produtos...');
-        }
-
+        // Função logout
         function logout() {
             if (confirm('Tem certeza que deseja sair do painel administrativo?')) {
                 window.location.href = 'login.html';
             }
         }
 
+        // Busca nas tabelas
         document.querySelectorAll('.painel-search-input').forEach(input => {
             input.addEventListener('input', function () {
                 const searchTerm = this.value.toLowerCase();
@@ -542,137 +575,82 @@
             });
         });
 
-        document.getElementById('product-images').addEventListener('change', function (e) {
-            const files = e.target.files;
-            if (files.length > 0) {
-                const fileNames = Array.from(files).map(file => file.name).join(', ');
-                const uploadDiv = this.parentElement;
-                uploadDiv.innerHTML = `
-                    <p><strong>Arquivos selecionados:</strong></p>
-                    <p>${fileNames}</p>
-                    <button type="button" onclick="document.getElementById('product-images').click()" class="btn-secondary" style="margin-top: 10px;">Alterar Seleção</button>
-                `;
-            }
+        // Formulário de estoque
+        document.getElementById('estoque-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            setTimeout(() => {
+                alert('Estoque atualizado com sucesso!');
+                closeModal('estoque-modal');
+                this.reset();
+            }, 1000);
         });
 
-        function carregarProdutos() {
-            fetch('/api/produtos')
-                .then(res => res.json())
-                .then(produtos => {
-                    const tbody = document.getElementById('produtos-list');
-                    tbody.innerHTML = '';
-                    produtos.forEach(prod => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td>${prod.codigo}</td>
-                            <td>${prod.sku}</td>
-                            <td>${prod.nome}</td>
-                            <td>R$ ${prod.preco.toFixed(2)}</td>
-                            <td>${prod.tamanho}</td>
-                            <td>${prod.cor || ''}</td>
-                            <td>${prod.categoria}</td>
-                            <td>${prod.marca}</td>
-                            <td>${prod.descricao}</td>
-                            <td>${prod.foto ? `<img src="${prod.foto}" class="product-image" alt="Foto">` : ''}</td>
-                            <td>
-                                <button class="btn-secondary" onclick="editProduct(${prod.codigo})">Editar</button>
-                                <button class="btn-danger" onclick="deleteProduct(${prod.codigo})">Excluir</button>
-                            </td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                });
-        }
-
-        document.querySelector('[data-section="produtos"]').addEventListener('click', carregarProdutos);
-
-        document.querySelector('#produto-form input[type="text"]:nth-of-type(3)').addEventListener('input', function () {
-            const name = this.value;
-            if (name.length >= 3) {
-                const sku = name.substring(0, 3).toUpperCase() + Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-                document.querySelector('#produto-form input[type="text"]:nth-of-type(2)').value = sku;
-            }
-        });
-
-        function calculateProfitMargin() {
-            const revenue = 125450;
-            const costs = 40220;
-            const profit = revenue - costs;
-            const margin = ((profit / revenue) * 100).toFixed(1);
-
-            document.querySelector('.stat-card:last-child .stat-value').textContent = margin + '%';
-        }
-
+        // Inicializar gráficos do dashboard
         document.addEventListener('DOMContentLoaded', function () {
-            calculateProfitMargin();
-
-            setInterval(() => {
-                const salesCard = document.querySelector('.stat-card .stat-value');
-                if (salesCard) {
-                    let currentValue = parseInt(salesCard.textContent.replace(/[R$.,\s]/g, ''));
-                    currentValue += Math.floor(Math.random() * 100);
-                    salesCard.textContent = 'R$ ' + currentValue.toLocaleString('pt-BR');
-                }
-            }, 30000);
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const ctxVendas = document.getElementById('grafico-vendas-mensais').getContext('2d');
-            new Chart(ctxVendas, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                    datasets: [{
-                        label: 'Vendas (R$)',
-                        data: [1200, 1500, 1800, 2100, 2500, 2300, 2700, 3000, 3200, 3100, 3500, 4000],
-                        borderColor: '#370400',
-                        backgroundColor: 'rgba(55,4,0,0.08)',
-                        tension: 0.3,
-                        fill: true,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#370400'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { display: false }
+            // Gráfico de vendas mensais
+            const ctxVendas = document.getElementById('grafico-vendas-mensais');
+            if (ctxVendas) {
+                new Chart(ctxVendas.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                        datasets: [{
+                            label: 'Vendas (R$)',
+                            data: [1200, 1500, 1800, 2100, 2500, 2300, 2700, 3000, 3200, 3100, 3500, 4000],
+                            borderColor: '#370400',
+                            backgroundColor: 'rgba(55,4,0,0.08)',
+                            tension: 0.3,
+                            fill: true,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#370400'
+                        }]
                     },
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
-
-            const ctxPedidos = document.getElementById('grafico-pedidos-status').getContext('2d');
-            new Chart(ctxPedidos, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Ativos', 'Pendentes'],
-                    datasets: [{
-                        data: [35, 12],
-                        backgroundColor: ['#370400', '#ffc107'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'bottom'
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true }
                         }
+                    }
+                });
+            }
+
+            // Gráfico de status dos pedidos
+            const ctxPedidos = document.getElementById('grafico-pedidos-status');
+            if (ctxPedidos) {
+                new Chart(ctxPedidos.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Ativos', 'Pendentes'],
+                        datasets: [{
+                            data: [35, 12],
+                            backgroundColor: ['#370400', '#ffc107'],
+                            borderWidth: 1
+                        }]
                     },
-                    cutout: '65%'
-                }
-            });
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom'
+                            }
+                        },
+                        cutout: '65%'
+                    }
+                });
+            }
         });
 
+        // Função para mobile sidebar
         function toggleMobileSidebar() {
-            const sidebar = document.querySelector('.admin-sidebar');
+            const sidebar = document.querySelector('.painel-admin-sidebar');
             sidebar.classList.toggle('mobile-open');
         }
 
+        // Adicionar botão hamburger em mobile
         if (window.innerWidth <= 768) {
             const header = document.querySelector('.header-content');
             const hamburger = document.createElement('button');
@@ -690,6 +668,7 @@
             header.insertBefore(hamburger, header.firstChild);
         }
 
+        // Validação de formulários
         function validateForm(form) {
             const requiredFields = form.querySelectorAll('[required]');
             let isValid = true;
@@ -706,7 +685,7 @@
             return isValid;
         }
 
-        // Add validation to all forms
+        // Adicionar validação a todos os formulários
         document.querySelectorAll('form').forEach(form => {
             form.addEventListener('submit', function (e) {
                 if (!validateForm(this)) {

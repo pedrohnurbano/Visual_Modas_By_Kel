@@ -1,79 +1,98 @@
-$("#produto-form").on("submit", criarProduto);
-
 // Variável global para armazenar a imagem em base64
 let imagemBase64 = "";
 
-// Handler para quando o usuário seleciona uma imagem
-$("#foto-produto").on("change", function(e) {
-    const arquivo = e.target.files[0];
-    
-    if (!arquivo) {
-        return;
-    }
-
-    // Validar tipo de arquivo
-    const tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-    if (!tiposPermitidos.includes(arquivo.type)) {
-        alert("Por favor, selecione apenas arquivos JPG, PNG ou WEBP!");
-        $(this).val('');
-        return;
-    }
-
-    // Validar tamanho (máximo 5MB)
-    const tamanhoMaximo = 5 * 1024 * 1024; // 5MB
-    if (arquivo.size > tamanhoMaximo) {
-        alert("A imagem deve ter no máximo 5MB!");
-        $(this).val('');
-        return;
-    }
-
-    // Converter para base64
-    const reader = new FileReader();
-    reader.onload = function(event) {
-        imagemBase64 = event.target.result;
+// Aguardar DOM carregar
+$(document).ready(function() {
+    // Handler para quando o usuário seleciona uma imagem
+    $("#foto-produto").on("change", function(e) {
+        const arquivo = e.target.files[0];
         
-        // Mostrar preview da imagem
-        $("#preview-imagem").html(`
-            <img src="${imagemBase64}" alt="Preview" style="max-width: 200px; max-height: 200px; margin-top: 10px; border-radius: 8px;">
-        `);
+        if (!arquivo) {
+            imagemBase64 = "";
+            $("#preview-imagem").html("");
+            return;
+        }
+
+        // Validar tipo de arquivo
+        const tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+        if (!tiposPermitidos.includes(arquivo.type)) {
+            alert("Por favor, selecione apenas arquivos JPG, PNG ou WEBP!");
+            $(this).val('');
+            imagemBase64 = "";
+            $("#preview-imagem").html("");
+            return;
+        }
+
+        // Validar tamanho (máximo 5MB)
+        const tamanhoMaximo = 5 * 1024 * 1024; // 5MB
+        if (arquivo.size > tamanhoMaximo) {
+            alert("A imagem deve ter no máximo 5MB!");
+            $(this).val('');
+            imagemBase64 = "";
+            $("#preview-imagem").html("");
+            return;
+        }
+
+        // Converter para base64
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            imagemBase64 = event.target.result;
+            
+            // Mostrar preview da imagem
+            $("#preview-imagem").html(`
+                <img src="${imagemBase64}" alt="Preview" style="max-width: 200px; max-height: 200px; margin-top: 10px; border-radius: 8px;">
+            `);
+            
+            console.log("Imagem carregada com sucesso!");
+        };
         
-        console.log("Imagem carregada com sucesso!");
-    };
-    
-    reader.onerror = function() {
-        alert("Erro ao carregar a imagem. Tente novamente.");
-        $("#foto-produto").val('');
-    };
-    
-    reader.readAsDataURL(arquivo);
+        reader.onerror = function() {
+            alert("Erro ao carregar a imagem. Tente novamente.");
+            $("#foto-produto").val('');
+            imagemBase64 = "";
+            $("#preview-imagem").html("");
+        };
+        
+        reader.readAsDataURL(arquivo);
+    });
+
+    // Handler do formulário
+    $("#produto-form").on("submit", function(evento) {
+        evento.preventDefault();
+        criarProduto();
+    });
 });
 
-function criarProduto(evento) {
-    evento.preventDefault();
-
+function criarProduto() {
     // Validações
-    if (!$("#nome-produto").val().trim()) {
+    const nome = $("#nome-produto").val().trim();
+    const descricao = $("#descricao-produto").val().trim();
+    const precoString = $("#preco-produto").val();
+    const tamanho = $("#tamanho-produto").val();
+    const categoria = $("#categoria-produto").val();
+
+    if (!nome) {
         alert("O nome do produto é obrigatório!");
         return;
     }
 
-    if (!$("#descricao-produto").val().trim()) {
+    if (!descricao) {
         alert("A descrição do produto é obrigatória!");
         return;
     }
 
-    const preco = parseFloat($("#preco-produto").val());
-    if (!preco || preco <= 0) {
+    const preco = parseFloat(precoString);
+    if (!preco || preco <= 0 || isNaN(preco)) {
         alert("Por favor, informe um preço válido!");
         return;
     }
 
-    if (!$("#tamanho-produto").val()) {
+    if (!tamanho) {
         alert("Por favor, selecione um tamanho!");
         return;
     }
 
-    if (!$("#categoria-produto").val()) {
+    if (!categoria) {
         alert("Por favor, selecione uma categoria!");
         return;
     }
@@ -84,21 +103,27 @@ function criarProduto(evento) {
     }
 
     // Adicionar loading state
-    const submitBtn = $("#produto-form").closest('.painel-modal-content').find('.painel-btn-primary[type="submit"]');
+    const submitBtn = $('.painel-btn-primary[form="produto-form"]');
     const originalText = submitBtn.text();
     submitBtn.text("Cadastrando...").prop("disabled", true);
+
+    // Preparar dados para envio
+    const dadosProduto = {
+        nome: nome,
+        descricao: descricao,
+        preco: preco, // Agora é número
+        tamanho: tamanho,
+        categoria: categoria,
+        foto_url: imagemBase64
+    };
+
+    console.log("Enviando produto:", dadosProduto);
 
     $.ajax({
         url: "/api/produtos",
         method: "POST",
-        data: {
-            nome: $("#nome-produto").val().trim(),
-            descricao: $("#descricao-produto").val().trim(),
-            preco: preco,
-            tamanho: $("#tamanho-produto").val(),
-            categoria: $("#categoria-produto").val(),
-            foto_url: imagemBase64
-        },
+        contentType: "application/json",
+        data: JSON.stringify(dadosProduto),
         success: function(response) {
             alert("Produto cadastrado com sucesso!");
             
@@ -110,7 +135,7 @@ function criarProduto(evento) {
             // Fechar modal
             closeModal('produto-modal');
             
-            // Atualizar tabela de produtos
+            // Atualizar tabela de produtos se estiver na página de produtos
             if (typeof carregarProdutos === 'function') {
                 carregarProdutos();
             }
@@ -125,7 +150,7 @@ function criarProduto(evento) {
                     const resposta = JSON.parse(xhr.responseText);
                     mensagem = resposta.erro || resposta.message || mensagem;
                 } catch (e) {
-                    // Se não conseguir fazer parse do JSON, usa mensagem padrão
+                    mensagem = xhr.responseText || mensagem;
                 }
             }
             alert(mensagem);
@@ -193,14 +218,59 @@ function deletarProduto(produtoId) {
     });
 }
 
-// Função auxiliar para exibir produtos (seu amigo vai implementar o HTML)
+// Função auxiliar para exibir produtos
 function exibirProdutos(produtos) {
-    // Esta função será customizada pelo seu amigo para exibir os produtos na tela
-    console.log("Produtos carregados:", produtos);
+    const tbody = document.getElementById('produtos-list');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+    
+    if (!produtos || produtos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align: center;">Nenhum produto encontrado</td></tr>';
+        return;
+    }
+
+    produtos.forEach(produto => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${produto.id || ''}</td>
+            <td>PRD${String(produto.id || '').padStart(5, '0')}</td>
+            <td>${produto.nome || ''}</td>
+            <td>R$ ${(produto.preco || 0).toFixed(2)}</td>
+            <td>${produto.tamanho || ''}</td>
+            <td>-</td>
+            <td>${produto.categoria || ''}</td>
+            <td>-</td>
+            <td>${produto.descricao ? produto.descricao.substring(0, 50) + '...' : ''}</td>
+            <td>${produto.foto_url ? '<img src="' + produto.foto_url + '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">' : '-'}</td>
+            <td>
+                <button class="painel-btn-secondary" style="padding: 5px 10px; font-size: 12px;" onclick="editarProduto(${produto.id})">Editar</button>
+                <button class="painel-btn-danger" style="padding: 5px 10px; font-size: 12px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;" onclick="deletarProduto(${produto.id})">Excluir</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
 }
 
 // Função auxiliar para exibir meus produtos
 function exibirMeusProdutos(produtos) {
-    // Esta função será customizada pelo seu amigo para exibir os produtos na tela
+    // Esta função será customizada conforme necessário
     console.log("Meus produtos:", produtos);
+    exibirProdutos(produtos); // Por enquanto, usa a mesma função
 }
+
+// Função para editar produto (placeholder)
+function editarProduto(produtoId) {
+    alert('Funcionalidade de edição em desenvolvimento. ID: ' + produtoId);
+}
+
+// Carregar produtos ao entrar na seção de produtos
+$(document).ready(function() {
+    // Se estiver na página de produtos, carregar automaticamente
+    if (window.location.pathname.includes('painel-admin')) {
+        // Adicionar listener para quando clicar em Produtos no menu
+        $('[data-section="produtos"]').on('click', function() {
+            setTimeout(carregarProdutos, 100);
+        });
+    }
+});

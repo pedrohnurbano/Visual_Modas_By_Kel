@@ -3,7 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
+	"strconv"
 	"visual_modas_by_kel/visual_modas_by_kel/src/config"
 	"visual_modas_by_kel/visual_modas_by_kel/src/cookies"
 	"visual_modas_by_kel/visual_modas_by_kel/src/modelos"
@@ -43,16 +45,36 @@ func CarregarPaginaMeusProdutos(w http.ResponseWriter, r *http.Request) {
 
 // CriarProduto chama a API para cadastrar um produto
 func CriarProduto(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
+	// Ler o corpo da requisição JSON
+	body, erro := io.ReadAll(r.Body)
+	if erro != nil {
+		respostas.JSON(w, http.StatusBadRequest, respostas.ErroAPI{Erro: "Erro ao ler dados"})
+		return
+	}
+	defer r.Body.Close()
 
-	// Montar JSON do produto
+	// Parse do JSON recebido
+	var dadosRecebidos map[string]interface{}
+	if erro := json.Unmarshal(body, &dadosRecebidos); erro != nil {
+		respostas.JSON(w, http.StatusBadRequest, respostas.ErroAPI{Erro: "Dados inválidos"})
+		return
+	}
+
+	// Validar e converter o preço para float64
+	preco, erro := converterParaFloat64(dadosRecebidos["preco"])
+	if erro != nil {
+		respostas.JSON(w, http.StatusBadRequest, respostas.ErroAPI{Erro: "Preço inválido"})
+		return
+	}
+
+	// Montar JSON do produto para enviar à API
 	produto := map[string]interface{}{
-		"nome":      r.FormValue("nome"),
-		"descricao": r.FormValue("descricao"),
-		"preco":     r.FormValue("preco"),
-		"tamanho":   r.FormValue("tamanho"),
-		"categoria": r.FormValue("categoria"),
-		"foto_url":  r.FormValue("foto_url"), // Já vem em base64 do frontend
+		"nome":      dadosRecebidos["nome"],
+		"descricao": dadosRecebidos["descricao"],
+		"preco":     preco,
+		"tamanho":   dadosRecebidos["tamanho"],
+		"categoria": dadosRecebidos["categoria"],
+		"foto_url":  dadosRecebidos["foto_url"], // Já vem em base64 do frontend
 	}
 
 	produtoJSON, erro := json.Marshal(produto)
@@ -74,7 +96,33 @@ func CriarProduto(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respostas.JSON(w, response.StatusCode, nil)
+	// Retornar sucesso
+	var produtoCriado modelos.Produto
+	if erro = json.NewDecoder(response.Body).Decode(&produtoCriado); erro != nil {
+		// Se não conseguir decodificar, ainda assim retorna sucesso
+		respostas.JSON(w, http.StatusCreated, map[string]string{"mensagem": "Produto criado com sucesso"})
+		return
+	}
+
+	respostas.JSON(w, response.StatusCode, produtoCriado)
+}
+
+// Função auxiliar para converter interface{} para float64
+func converterParaFloat64(valor interface{}) (float64, error) {
+	switch v := valor.(type) {
+	case float64:
+		return v, nil
+	case float32:
+		return float64(v), nil
+	case int:
+		return float64(v), nil
+	case int64:
+		return float64(v), nil
+	case string:
+		return strconv.ParseFloat(v, 64)
+	default:
+		return 0, fmt.Errorf("não foi possível converter %v para float64", valor)
+	}
 }
 
 // BuscarProdutos busca todos os produtos
