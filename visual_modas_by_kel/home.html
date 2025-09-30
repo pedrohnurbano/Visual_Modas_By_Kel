@@ -16,8 +16,8 @@
     <!-- Cabeçalho -->
     <header class="header">
         <div class="header-content">
-            <a href="index.html" class="logo" aria-label="Visual Modas By Kel">VISUAL MODAS BY KEL</a>
-            <a href="index.html" aria-label="Logo Visual Modas By Kel">
+            <a href="home.html" class="logo" aria-label="Visual Modas By Kel">VISUAL MODAS BY KEL</a>
+            <a href="home.html" aria-label="Logo Visual Modas By Kel">
                 <img src="design/logo_visualmodasbykel.png" alt="Logo Visual Modas By Kel" />
             </a>
             <div class="header-icons">
@@ -43,7 +43,9 @@
         </div>
         <nav class="header-filters" id="headerFilters" aria-label="Navegação principal">
             <ul>
-                <li><a href="#" class="active" data-category="all">CATEGORIAS</a></li>
+                <li id="categoriesMenuTrigger">
+                    <a href="#" class="active" data-category="all">CATEGORIAS</a>
+                </li>
                 <li><a href="#" data-category="new">NOVIDADES</a></li>
                 <li><a href="#" data-category="collection">COLEÇÃO</a></li>
                 <li><a href="#" data-category="trends">TENDÊNCIAS</a></li>
@@ -54,6 +56,66 @@
                 <li><a href="#" data-category="exclusive">EXCLUSIVOS</a></li>
             </ul>
         </nav>
+
+        <!-- Modal de Categorias -->
+        <div class="categories-modal" id="categoriesModal">
+            <div class="categories-modal-content">
+                <div class="categories-list">
+                    <ul>
+                        <li><a href="#todas-pecas">Todas as peças</a></li>
+                        <li><a href="#vestidos">Vestidos</a></li>
+                        <li><a href="#blusas">Blusas</a></li>
+                        <li><a href="#calcas">Calças</a></li>
+                        <li><a href="#bolsas-calcados">Bolsas e Calçados</a></li>
+                        <li><a href="#saias">Saias</a></li>
+                        <li><a href="#jeans">Jeans</a></li>
+                        <li><a href="#shorts-bermudas">Shorts e Bermudas</a></li>
+                        <li><a href="#jaquetas-casacos">Jaquetas e Casacos</a></li>
+                        <li><a href="#macacoes">Macacões</a></li>
+                        <li><a href="#blazers">Blazers</a></li>
+                        <li><a href="#conjuntos">Conjuntos</a></li>
+                        <li><a href="#acessorios">Acessórios</a></li>
+                        <li><a href="#lingerie">Lingerie</a></li>
+                        <li><a href="#fitness">Fitness</a></li>
+                    </ul>
+                </div>
+                <div class="categories-banner">
+                    <img src="design/banner_01.png" alt="Coleção Primavera/Verão">
+                    <div class="categories-banner-overlay">
+                        <h3 class="categories-banner-title">Nova Coleção</h3>
+                        <p class="categories-banner-subtitle">Primavera/Verão 2025</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal de Categorias -->
+            <div class="categories-modal" id="categoriesModal">
+                <button class="categories-modal-close" id="categoriesModalClose" aria-label="Fechar modal"
+                    title="Fechar"></button>
+                <div class="categories-modal-content">
+                    <div class="categories-list">
+                        <ul>
+                            <li><a href="roupas.html">Todas as peças</a></li>
+                            <li><a href="vestidos.html">Vestidos</a></li>
+                            <li><a href="blusas_camisas.html">Blusas e Camisas</a></li>
+                            <li><a href="calcas.html">Calças</a></li>
+                            <li><a href="saias.html">Saias</a></li>
+                            <li><a href="shorts_bermudas.html">Shorts e Bermudas</a></li>
+                            <li><a href="jaquetas_casacos.html">Jaquetas e Casacos</a></li>
+                            <li><a href="macacoes.html">Macacões</a></li>
+                            <li><a href="blazers.html">Blazers</a></li>
+                            <li><a href="body.html">Body</a></li>
+                            <li><a href="regatas.html">Regatas</a></li>
+                        </ul>
+                    </div>
+                    <div class="categories-banner">
+                        <img src="design/banner_categoria.png" alt="Coleção Primavera/Verão">
+                        <div class="categories-banner-overlay">
+                            <h3 class="categories-banner-title">Nova Coleção</h3>
+                            <p class="categories-banner-subtitle">Primavera/Verão 2026</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
     </header>
 
     <!-- Banner Slideshow -->
@@ -124,6 +186,13 @@
         </div>
     </section>
 
+    <a href="https://wa.me/5548999575303?text=Olá!%20Vim%20do%20site%20e%20gostaria%20de%20mais%20informações."
+        class="whatsapp-float" target="_blank" rel="noopener noreferrer" title="Fale conosco pelo WhatsApp"
+        aria-label="Abrir conversa no WhatsApp">
+        <img src="design/icone_whatsapp.png" alt="WhatsApp"
+            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22 viewBox=%220 0 24 24%22 fill=%22white%22%3E%3Cpath d=%22M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z%22/%3E%3C/svg%3E'">
+    </a>
+
     <!-- Rodapé Principal -->
     <footer class="footer">
         <div class="footer-container">
@@ -144,11 +213,11 @@
                 <!-- Contato -->
                 <div class="footer-section">
                     <h3>Contato</h3>
-                    <p><strong>WhatsApp:</strong> (48) 99999-9999</p>
+                    <p><strong>Telefone:</strong> (48) 9 9957-5303</p>
                     <p><strong>E-mail:</strong> contato@visualmodasbykel.com.br</p>
                     <p><strong>Horário de Atendimento:</strong><br>
-                        Segunda a Sexta: 9h às 18h<br>
-                        Sábado: 9h às 13h</p>
+                        Segunda a Sexta: 08h30 às 18h<br>
+                        Sábado: 08h30 às 17h</p>
                     <div class="footer-social">
                         <a href="#" title="Instagram" aria-label="Instagram">
                             <img src="design/icone_instagram.png" alt="Instagram">
@@ -156,8 +225,8 @@
                         <a href="#" title="Facebook" aria-label="Facebook">
                             <img src="design/icone_facebook.png" alt="Facebook">
                         </a>
-                        <a href="#" title="Pinterest" aria-label="Pinterest">
-                            <img src="design/icone_pinterest.png" alt="Pinterest">
+                        <a href="#" title="TikTok" aria-label="TikTok">
+                            <img src="design/icone_tiktok.png" alt="TikTok">
                         </a>
                     </div>
                 </div>
@@ -166,10 +235,7 @@
                 <div class="footer-section">
                     <h3>Formas de Pagamento</h3>
                     <div class="footer-payment">
-                        <img src="design/icone_visa.png" alt="Visa" title="Visa">
-                        <img src="design/icone_mastercard.png" alt="Mastercard" title="Mastercard">
                         <img src="design/icone_pix.png" alt="Pix" title="Pix">
-                        <img src="design/icone_boleto.png" alt="Boleto" title="Boleto">
                     </div>
                 </div>
             </div>
@@ -447,6 +513,64 @@
             });
         }
 
+        // ====================
+        // MODAL DE CATEGORIAS
+        // ====================
+        function initCategoriesModal() {
+            const trigger = document.getElementById('categoriesMenuTrigger');
+            const modal = document.getElementById('categoriesModal');
+
+            if (!trigger || !modal) return;
+            const closeBtn = document.getElementById('categoriesModalClose');
+
+            // Fechar modal ao clicar no X
+            if (closeBtn) {
+                closeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    modal.classList.remove('active');
+                    document.body.classList.remove('modal-open');
+                });
+            }
+
+            // Mostrar/esconder modal ao clicar em "CATEGORIAS"
+            trigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                modal.classList.toggle('active');
+
+                if (modal.classList.contains('active')) {
+                    document.body.classList.add('modal-open');
+                } else {
+                    document.body.classList.remove('modal-open');
+                }
+            });
+
+            // Fechar modal ao clicar fora
+            document.addEventListener('click', (e) => {
+                if (!trigger.contains(e.target) && !modal.contains(e.target)) {
+                    modal.classList.remove('active');
+                    document.body.classList.remove('modal-open');
+                }
+            });
+
+            // Fechar modal ao pressionar ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    modal.classList.remove('active');
+                    document.body.classList.remove('modal-open');
+                }
+            });
+
+            // Fechar modal ao clicar em um link de categoria
+            const categoryLinks = modal.querySelectorAll('.categories-list a');
+            categoryLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    modal.classList.remove('active');
+                    document.body.classList.remove('modal-open');
+                });
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             renderProducts();
 
@@ -463,6 +587,8 @@
             initScrollBehavior();
 
             initFilterLinks();
+
+            initCategoriesModal();
         });
     </script>
 </body>
