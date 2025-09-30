@@ -1,4 +1,4 @@
-$("#formulario-cadastro-produto").on("submit", criarProduto);
+$("#produto-form").on("submit", criarProduto);
 
 // Variável global para armazenar a imagem em base64
 let imagemBase64 = "";
@@ -34,7 +34,7 @@ $("#foto-produto").on("change", function(e) {
         
         // Mostrar preview da imagem
         $("#preview-imagem").html(`
-            <img src="${imagemBase64}" alt="Preview" style="max-width: 200px; max-height: 200px; margin-top: 10px;">
+            <img src="${imagemBase64}" alt="Preview" style="max-width: 200px; max-height: 200px; margin-top: 10px; border-radius: 8px;">
         `);
         
         console.log("Imagem carregada com sucesso!");
@@ -84,7 +84,7 @@ function criarProduto(evento) {
     }
 
     // Adicionar loading state
-    const submitBtn = $("#formulario-cadastro-produto button[type='submit']");
+    const submitBtn = $("#produto-form").closest('.painel-modal-content').find('.painel-btn-primary[type="submit"]');
     const originalText = submitBtn.text();
     submitBtn.text("Cadastrando...").prop("disabled", true);
 
@@ -103,12 +103,17 @@ function criarProduto(evento) {
             alert("Produto cadastrado com sucesso!");
             
             // Limpar formulário
-            $("#formulario-cadastro-produto")[0].reset();
+            $("#produto-form")[0].reset();
             imagemBase64 = "";
             $("#preview-imagem").html("");
             
-            // Redirecionar para meus produtos
-            window.location.href = "/meus-produtos";
+            // Fechar modal
+            closeModal('produto-modal');
+            
+            // Atualizar tabela de produtos
+            if (typeof carregarProdutos === 'function') {
+                carregarProdutos();
+            }
         },
         error: function(xhr, status, error) {
             console.error("Erro ao cadastrar produto:", error);

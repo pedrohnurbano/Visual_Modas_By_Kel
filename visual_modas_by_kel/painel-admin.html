@@ -350,81 +350,57 @@
             </div>
             <div class="painel-modal-body">
                 <form id="produto-form">
-                    <div class="painel-form-grid" style="grid-template-columns: 1fr 1fr;">
-                        <div>
-                            <div class="painel-admin-form-group">
-                                <label class="painel-admin-form-label">Código</label>
-                                <input type="text" class="painel-admin-form-input" required>
-                            </div>
-                            <div class="painel-admin-form-group">
-                                <label class="painel-admin-form-label">SKU</label>
-                                <input type="text" class="painel-admin-form-input" required>
-                            </div>
-                            <div class="painel-admin-form-group">
-                                <label class="painel-admin-form-label">Nome</label>
-                                <input type="text" class="painel-admin-form-input" required>
-                            </div>
-                            <div class="painel-admin-form-group">
-                                <label class="painel-admin-form-label">Preço (R$)</label>
-                                <input type="number" step="0.01" class="painel-admin-form-input" required>
-                            </div>
-                            <div class="painel-admin-form-group">
-                                <label class="painel-admin-form-label">Tamanho</label>
-                                <select class="painel-admin-form-select" required>
-                                    <option value="">Selecione o tamanho</option>
-                                    <option value="PP">PP</option>
-                                    <option value="P">P</option>
-                                    <option value="M">M</option>
-                                    <option value="G">G</option>
-                                    <option value="GG">GG</option>
-                                    <option value="XG">XG</option>
-                                    <option value="XGG">XGG</option>
-                                </select>
-                            </div>
-                            <div class="painel-admin-form-group">
-                                <label class="painel-admin-form-label">Cor</label>
-                                <input type="text" class="painel-admin-form-input" required
-                                    placeholder="Ex: Preto, Azul, Estampado">
-                            </div>
+                    <div class="painel-admin-form-group">
+                        <label class="painel-admin-form-label">Nome</label>
+                        <input type="text" id="nome-produto" class="painel-admin-form-input" required>
+                    </div>
+                    <div class="painel-admin-form-group">
+                        <label class="painel-admin-form-label">DescriÃ§Ã£o</label>
+                        <textarea id="descricao-produto" class="painel-admin-form-textarea" rows="4"
+                            placeholder="DescriÃ§Ã£o detalhada do produto..." required></textarea>
+                    </div>
+                    <div class="painel-admin-form-group">
+                        <label class="painel-admin-form-label">PreÃ§o (R$)</label>
+                        <input type="number" id="preco-produto" step="0.01" class="painel-admin-form-input" required>
+                    </div>
+                    <div class="painel-admin-form-group">
+                        <label class="painel-admin-form-label">Tamanho</label>
+                        <select id="tamanho-produto" class="painel-admin-form-select" required>
+                            <option value="">Selecione o tamanho</option>
+                            <option value="PP">PP</option>
+                            <option value="P">P</option>
+                            <option value="M">M</option>
+                            <option value="G">G</option>
+                            <option value="GG">GG</option>
+                            <option value="XG">XG</option>
+                            <option value="XGG">XGG</option>
+                        </select>
+                    </div>
+                    <div class="painel-admin-form-group">
+                        <label class="painel-admin-form-label">Categoria</label>
+                        <select id="categoria-produto" class="painel-admin-form-select" required>
+                            <option value="">Selecione uma categoria</option>
+                            <option value="Vestidos">Vestidos</option>
+                            <option value="Blusas e Camisas">Blusas e Camisas</option>
+                            <option value="CalÃ§as">CalÃ§as</option>
+                            <option value="Saias">Saias</option>
+                            <option value="Shorts e Bermudas">Shorts e Bermudas</option>
+                            <option value="Jaquetas e Casacos">Jaquetas e Casacos</option>
+                            <option value="MacacÃµes">MacacÃµes</option>
+                            <option value="Blazers">Blazers</option>
+                            <option value="Body">Body</option>
+                            <option value="Regatas">Regatas</option>
+                        </select>
+                    </div>
+                    <div class="painel-admin-form-group">
+                        <label class="painel-admin-form-label">Foto</label>
+                        <div class="painel-file-upload"
+                            onclick="document.getElementById('foto-produto').click()">
+                            <input type="file" id="foto-produto" accept="image/jpeg,image/jpg,image/png,image/webp" required>
+                            <p>Clique para selecionar a foto</p>
+                            <small>Formatos aceitos: JPG, PNG, WEBP (mÃ¡x. 5MB)</small>
                         </div>
-                        <div>
-                            <div class="painel-admin-form-group">
-                                <label class="painel-admin-form-label">Categoria</label>
-                                <select class="painel-admin-form-select" required>
-                                    <option value="">Selecione uma categoria</option>
-                                    <option value="Vestidos">Vestidos</option>
-                                    <option value="Blusas">Blusas</option>
-                                    <option value="Calças">Calças</option>
-                                    <option value="Saias">Saias</option>
-                                    <option value="Shorts e Bermudas">Shorts e Bermudas</option>
-                                    <option value="Jaquetas e Casacos">Jaquetas e Casacos</option>
-                                    <option value="Macacões">Macacões</option>
-                                    <option value="Blazers">Blazers</option>
-                                    <option value="Camisas">Camisas</option>
-                                    <option value="T-shirts">T-shirts</option>
-                                    <option value="Body">Body</option>
-                                    <option value="Regatas">Regatas</option>
-                                </select>
-                            </div>
-                            <div class="painel-admin-form-group">
-                                <label class="painel-admin-form-label">Marca</label>
-                                <input type="text" class="painel-admin-form-input" required>
-                            </div>
-                            <div class="painel-admin-form-group">
-                                <label class="painel-admin-form-label">Descrição</label>
-                                <textarea class="painel-admin-form-textarea" rows="4"
-                                    placeholder="Descrição detalhada do produto..." required></textarea>
-                            </div>
-                            <div class="painel-admin-form-group">
-                                <label class="painel-admin-form-label">Foto</label>
-                                <div class="painel-file-upload"
-                                    onclick="document.getElementById('product-images').click()">
-                                    <input type="file" id="product-images" accept="image/*" required>
-                                    <p>Clique para selecionar a foto</p>
-                                    <small>Formatos aceitos: JPG, PNG, WEBP</small>
-                                </div>
-                            </div>
-                        </div>
+                        <div id="preview-imagem"></div>
                     </div>
                 </form>
             </div>

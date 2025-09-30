@@ -1,6 +1,7 @@
 CREATE DATABASE IF NOT EXISTS visualmodasbykel;
 USE visualmodasbykel;
 
+DROP TABLE IF EXISTS produtos;
 DROP TABLE IF EXISTS usuarios;
 
 CREATE TABLE usuarios (
@@ -12,10 +13,11 @@ CREATE TABLE usuarios (
     telefone VARCHAR(20) NOT NULL,
     cpf VARCHAR(14) NOT NULL UNIQUE,
     role VARCHAR(20) NOT NULL DEFAULT 'user',
-    criadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    criadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_email (email),
+    INDEX idx_cpf (cpf),
+    INDEX idx_role (role)
 ) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS produtos;
 
 CREATE TABLE produtos (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -24,18 +26,19 @@ CREATE TABLE produtos (
     preco DECIMAL(10,2) NOT NULL,
     tamanho VARCHAR(10) NOT NULL,
     categoria VARCHAR(50) NOT NULL,
-    foto_url VARCHAR(500),
+    foto_url LONGTEXT,
     usuario_id INT NOT NULL,
     ativo BOOLEAN DEFAULT TRUE,
     criadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     atualizadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
     INDEX idx_categoria (categoria),
-    INDEX idx_ativo (ativo)
+    INDEX idx_ativo (ativo),
+    INDEX idx_usuario (usuario_id),
+    INDEX idx_tamanho (tamanho)
 ) ENGINE=InnoDB;
 
-ALTER TABLE produtos MODIFY foto_url LONGTEXT;
-
+-- Inserir usuário admin padrão
 INSERT INTO usuarios (nome, sobrenome, email, senha, telefone, cpf, role) 
 VALUES (
     'Admin', 
@@ -47,4 +50,5 @@ VALUES (
     'admin'
 );
 
--- Trocar a senha acima por uma senha segura em produção
+ -- Trocar por senha hasheada em produção
+ 
