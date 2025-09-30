@@ -110,8 +110,16 @@
 
     <!-- Vitrine Principal -->
     <section class="vitrine-cards">
-        <h2 class="vitrine-titulo">Destaques</h2>
-        <div class="cards-grid" id="productsGrid">
+        <h2 class="vitrine-titulo">NOVIDADES</h2>
+        <div class="cards-grid" id="productsGridNovidades">
+            <!-- Os produtos serão carregados via JavaScript -->
+        </div>
+    </section>
+
+    <!-- Vitrine Principal -->
+    <section class="vitrine-cards">
+        <h2 class="vitrine-titulo">DESTAQUES</h2>
+        <div class="cards-grid" id="productsGridDestaques">
             <!-- Os produtos serão carregados via JavaScript -->
         </div>
     </section>
@@ -199,22 +207,22 @@
             },
             {
                 id: 3,
-                name: "Calça Wide Leg Jeans",
-                price: 349.90,
-                installments: 5,
-                image1: "design/exemplo3.png",
-                image2: "design/exemplo3b.png",
+                name: "Vestido Midi Elegante",
+                price: 899.90,
+                installments: 7,
+                image1: "design/exemplo1.png",
+                image2: "design/exemplo1b.png",
                 sizes: ["PP", "P", "M", "G", "GG"]
             },
             {
                 id: 4,
-                name: "Camisa Social Feminina",
-                price: 259.90,
-                installments: 4,
-                image1: "design/exemplo4.png",
-                image2: "design/exemplo4b.png",
+                name: "Calça Pantalona Social",
+                price: 649.90,
+                installments: 5,
+                image1: "design/exemplo2.png",
+                image2: "design/exemplo2b.png",
                 sizes: ["PP", "P", "M", "G", "GG"]
-            },
+            }
         ];
 
         // ====================
@@ -284,40 +292,46 @@
         // RENDERIZAÇÃO DOS PRODUTOS
         // ====================
         function renderProducts() {
-            const grid = document.getElementById('productsGrid');
-            grid.innerHTML = products.map(product => {
+            const gridNovidades = document.getElementById('productsGridNovidades');
+            const gridDestaques = document.getElementById('productsGridDestaques');
+
+            const productHTML = products.map(product => {
                 const isFavorite = favorites.includes(product.id);
                 const installmentValue = (product.price / product.installments).toFixed(2);
 
                 return `
-                    <div class="produto-card">
-                        <button class="produto-favorito" title="${isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}" onclick="toggleFavorite(${product.id})">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                                <path class="favorito-icon" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                                    stroke="#370400" stroke-width="1.5" fill="${isFavorite ? '#370400' : 'none'}"/>
+            <div class="produto-card">
+                <button class="produto-favorito" title="${isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}" onclick="toggleFavorite(${product.id})">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                        <path class="favorito-icon" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                            stroke="#370400" stroke-width="1.5" fill="${isFavorite ? '#370400' : 'none'}"/>
+                    </svg>
+                </button>
+                <div class="produto-img-container">
+                    <img src="${product.image1}" alt="${product.name}" class="produto-img img-primaria" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22400%22%3E%3Crect fill=%22%23f8f8f8%22 width=%22300%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2218%22 fill=%22%23999%22%3EImagem não disponível%3C/text%3E%3C/svg%3E'">
+                    <img src="${product.image2}" alt="${product.name} - Verso" class="produto-img img-secundaria" onerror="this.src='${product.image1}'">
+                    <div class="produto-tamanhos">
+                        ${product.sizes.map(size => `<span onclick="addToCart(${product.id}, '${size}')">${size}</span>`).join('')}
+                        <button class="produto-sacola" title="Selecione um tamanho">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="10" fill="#370400"/>
+                                <path d="M8 12h8M12 8v8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
                             </svg>
                         </button>
-                        <div class="produto-img-container">
-                            <img src="${product.image1}" alt="${product.name}" class="produto-img img-primaria" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22400%22%3E%3Crect fill=%22%23f8f8f8%22 width=%22300%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2218%22 fill=%22%23999%22%3EImagem não disponível%3C/text%3E%3C/svg%3E'">
-                            <img src="${product.image2}" alt="${product.name} - Verso" class="produto-img img-secundaria" onerror="this.src='${product.image1}'">
-                            <div class="produto-tamanhos">
-                                ${product.sizes.map(size => `<span onclick="addToCart(${product.id}, '${size}')">${size}</span>`).join('')}
-                                <button class="produto-sacola" title="Selecione um tamanho">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                                        <circle cx="12" cy="12" r="10" fill="#370400"/>
-                                        <path d="M8 12h8M12 8v8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="produto-info">
-                            <span class="produto-nome">${product.name}</span>
-                            <span class="produto-preco">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
-                            <span class="produto-parcela">Até ${product.installments}x de R$ ${installmentValue.replace('.', ',')}</span>
-                        </div>
                     </div>
-                `;
+                </div>
+                <div class="produto-info">
+                    <span class="produto-nome">${product.name}</span>
+                    <span class="produto-preco">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
+                    <span class="produto-parcela">Até ${product.installments}x de R$ ${installmentValue.replace('.', ',')}</span>
+                </div>
+            </div>
+        `;
             }).join('');
+
+            // Renderiza nas duas seções
+            if (gridNovidades) gridNovidades.innerHTML = productHTML;
+            if (gridDestaques) gridDestaques.innerHTML = productHTML;
         }
 
         // ====================
@@ -391,23 +405,31 @@
         }
 
         function initScrollBehavior() {
-            const filters = document.getElementById('headerFilters');
-            let lastScroll = window.scrollY;
+            const header = document.querySelector('.header');
+            const footer = document.querySelector('.footer');
+            let lastScroll = 0;
             let ticking = false;
-            let isHidden = false;
 
             window.addEventListener('scroll', () => {
                 if (!ticking) {
                     window.requestAnimationFrame(() => {
-                        const current = window.scrollY;
-                        if (current > lastScroll && current > 80 && !isHidden) {
-                            filters.classList.add('filters-hide-scroll');
-                            isHidden = true;
-                        } else if (current < lastScroll && isHidden) {
-                            filters.classList.remove('filters-hide-scroll');
-                            isHidden = false;
+                        const currentScroll = window.scrollY;
+                        const footerRect = footer.getBoundingClientRect();
+                        const headerHeight = header.offsetHeight;
+
+                        // Se o rodapé está visível na tela
+                        if (footerRect.top <= headerHeight) {
+                            header.classList.add('header-hide');
+                        } else {
+                            // Esconde ao descer, mostra ao subir
+                            if (currentScroll > lastScroll && currentScroll > 100) {
+                                header.classList.add('header-hide');
+                            } else if (currentScroll < lastScroll) {
+                                header.classList.remove('header-hide');
+                            }
                         }
-                        lastScroll = current;
+
+                        lastScroll = currentScroll;
                         ticking = false;
                     });
                     ticking = true;
