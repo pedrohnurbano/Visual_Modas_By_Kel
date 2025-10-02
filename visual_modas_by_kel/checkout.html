@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="design/icone_visualmodasbykel.png">
+    <link href="estilos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Checkout - Visual Modas By Kel</title>
+</head>
+
+<body>
+    <!-- Cabeçalho de Checkout -->
+    <div class="checkout-header">
+        <div class="checkout-header-content">
+            <div class="checkout-logo-section">
+                <a href="home.html" class="checkout-logo">VISUAL MODAS BY KEL</a>
+            </div>
+
+            <nav class="checkout-steps" aria-label="Etapas do checkout">
+                <ul class="checkout-steps-list">
+                    <li class="checkout-step completed">
+                        <div class="checkout-step-number">1</div>
+                        <span class="checkout-step-label">Sacola</span>
+                    </li>
+                    <li class="checkout-step active" id="step2">
+                        <div class="checkout-step-number">2</div>
+                        <span class="checkout-step-label">Identificação</span>
+                    </li>
+                    <li class="checkout-step" id="step3">
+                        <div class="checkout-step-number">3</div>
+                        <span class="checkout-step-label">Entrega</span>
+                    </li>
+                    <li class="checkout-step" id="step4">
+                        <div class="checkout-step-number">4</div>
+                        <span class="checkout-step-label">Pagamento</span>
+                    </li>
+                    <li class="checkout-step" id="step5">
+                        <div class="checkout-step-number">5</div>
+                        <span class="checkout-step-label">Confirmação</span>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <main class="checkout-page">
+        <div class="checkout-container">
+            
+            <!-- ETAPA 2: IDENTIFICAÇÃO -->
+            <div class="checkout-section" id="sectionIdentificacao">
+                <div class="checkout-main-content">
+                    <h2 class="checkout-section-title">Identificação</h2>
+                    
+                    <form class="checkout-form" id="formIdentificacao">
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label class="form-label">E-mail</label>
+                                <input type="email" class="form-input" id="emailCliente" required placeholder="seu@email.com">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Nome Completo</label>
+                                <input type="text" class="form-input" id="nomeCliente" required placeholder="Nome completo">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">CPF</label>
+                                <input type="text" class="form-input" id="cpfCliente" required placeholder="000.000.000-00" maxlength="14">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Telefone</label>
+                                <input type="tel" class="form-input" id="telefoneCliente" required placeholder="(00) 00000-0000" maxlength="15">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Data de Nascimento</label>
+                                <input type="date" class="form-input" id="nascimentoCliente" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-checkout-next">Continuar para Entrega</button>
+                    </form>
+                </div>
+
+                <div class="checkout-sidebar">
+                    <div class="order-summary" id="orderSummary">
+                        <!-- Resumo será carregado via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ETAPA 3: ENTREGA -->
+            <div class="checkout-section hidden" id="sectionEntrega">
+                <div class="checkout-main-content">
+                    <h2 class="checkout-section-title">Endereço de Entrega</h2>
+                    
+                    <form class="checkout-form" id="formEntrega">
+                        <div class="form-row">
+                            <div class="form-group small">
+                                <label class="form-label">CEP</label>
+                                <input type="text" class="form-input" id="cep" required placeholder="00000-000" maxlength="9">
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn-buscar-cep" onclick="buscarCep()">Buscar CEP</button>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group large">
+                                <label class="form-label">Endereço</label>
+                                <input type="text" class="form-input" id="endereco" required placeholder="Rua, Avenida...">
+                            </div>
+                            <div class="form-group small">
+                                <label class="form-label">Número</label>
+                                <input type="text" class="form-input" id="numero" required placeholder="123">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Complemento</label>
+                                <input type="text" class="form-input" id="complemento" placeholder="Apto, Bloco...">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Bairro</label>
+                                <input type="text" class="form-input" id="bairro" required placeholder="Bairro">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Cidade</label>
+                                <input type="text" class="form-input" id="cidade" required placeholder="Cidade">
+                            </div>
+                            <div class="form-group small">
+                                <label class="form-label">Estado</label>
+                                <select class="form-input" id="estado" required>
+                                    <option value="">UF</option>
+                                    <option value="AC">AC</option>
+                                    <option value="AL">AL</option>
+                                    <option value="AP">AP</option>
+                                    <option value="AM">AM</option>
+                                    <option value="BA">BA</option>
+                                    <option value="CE">CE</option>
+                                    <option value="DF">DF</option>
+                                    <option value="ES">ES</option>
+                                    <option value="GO">GO</option>
+                                    <option value="MA">MA</option>
+                                    <option value="MT">MT</option>
+                                    <option value="MS">MS</option>
+                                    <option value="MG">MG</option>
+                                    <option value="PA">PA</option>
+                                    <option value="PB">PB</option>
+                                    <option value="PR">PR</option>
+                                    <option value="PE">PE</option>
+                                    <option value="PI">PI</option>
+                                    <option value="RJ">RJ</option>
+                                    <option value="RN">RN</option>
+                                    <option value="RS">RS</option>
+                                    <option value="RO">RO</option>
+                                    <option value="RR">RR</option>
+                                    <option value="SC">SC</option>
+                                    <option value="SP">SP</option>
+                                    <option value="SE">SE</option>
+                                    <option value="TO">TO</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-checkout-back" onclick="voltarEtapa(2)">Voltar</button>
+                            <button type="submit" class="btn-checkout-next">Continuar para Pagamento</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="checkout-sidebar">
+                    <div class="order-summary" id="orderSummary2">
+                        <!-- Resumo será carregado via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ETAPA 4: PAGAMENTO -->
+            <div class="checkout-section hidden" id="sectionPagamento">
+                <div class="checkout-main-content">
+                    <h2 class="checkout-section-title">Forma de Pagamento</h2>
+                    
+                    <div class="payment-options">
+                        <div class="payment-option" onclick="selecionarPagamento('mercadopago')">
+                            <input type="radio" name="payment" id="paymentMP" value="mercadopago">
+                            <label for="paymentMP">
+                                <div class="payment-icon">
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="#009ee3">
+                                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 9.75c-.232 2.296-2.15 3.857-4.69 3.857-2.54 0-4.305-1.561-4.072-3.857.232-2.296 2.15-3.857 4.69-3.857 2.54 0 4.305 1.561 4.072 3.857z"/>
+                                    </svg>
+                                </div>
+                                <div class="payment-info">
+                                    <strong>Mercado Pago</strong>
+                                    <span>Cartão, Pix, Boleto</span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="payment-option" onclick="selecionarPagamento('pix')">
+                            <input type="radio" name="payment" id="paymentPix" value="pix">
+                            <label for="paymentPix">
+                                <div class="payment-icon">
+                                    <img src="design/icone_pix.png" alt="Pix" style="width: 40px;">
+                                </div>
+                                <div class="payment-info">
+                                    <strong>PIX</strong>
+                                    <span>5% de desconto - Aprovação imediata</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Container para o Mercado Pago -->
+                    <div id="mercadoPagoContainer" class="hidden" style="margin-top: 30px;">
+                        <div id="form-checkout"></div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-checkout-back" onclick="voltarEtapa(3)">Voltar</button>
+                        <button type="button" class="btn-checkout-next" id="btnFinalizarPagamento" onclick="finalizarPagamento()">Finalizar Compra</button>
+                    </div>
+                </div>
+
+                <div class="checkout-sidebar">
+                    <div class="order-summary" id="orderSummary3">
+                        <!-- Resumo será carregado via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ETAPA 5: CONFIRMAÇÃO -->
+            <div class="checkout-section hidden" id="sectionConfirmacao">
+                <div class="checkout-main-content full-width">
+                    <div class="confirmation-content">
+                        <svg class="confirmation-icon" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        <h2 class="confirmation-title">Pedido Confirmado!</h2>
+                        <p class="confirmation-subtitle">Número do Pedido: <strong id="numeroPedido">#000000</strong></p>
+                        
+                        <div class="confirmation-details" id="confirmationDetails">
+                            <!-- Detalhes serão carregados via JS -->
+                        </div>
+
+                        <div class="confirmation-actions">
+                            <a href="home.html" class="btn-checkout-primary">Voltar para Home</a>
+                            <button onclick="window.print()" class="btn-checkout-secondary">Imprimir Pedido</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- SDK do Mercado Pago -->
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+
+    <script src="js/checkout.js"></script>
+</body>
+
+</html>

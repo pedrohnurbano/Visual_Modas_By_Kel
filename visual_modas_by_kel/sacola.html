@@ -13,48 +13,42 @@
 </head>
 
 <body>
-    <!-- Cabeçalho -->
-    <header class="header">
-        <div class="header-content">
-            <a href="home.html" class="logo" aria-label="Visual Modas By Kel">VISUAL MODAS BY KEL</a>
-            <a href="home.html" aria-label="Logo Visual Modas By Kel">
-                <img src="design/logo_visualmodasbykel.png" alt="Logo Visual Modas By Kel" />
-            </a>
-            <div class="header-icons">
-                <form role="search" aria-label="Busca de produtos" onsubmit="return false;">
-                    <input type="text" placeholder="O que você procura?" aria-label="Buscar produto" id="searchInput">
-                </form>
-                <a href="login.html" title="Minha Conta">
-                    <img src="design/icone_usuario.png" alt="Minha Conta">
-                    <span>Minha conta<br><b>Meus pedidos</b></span>
-                </a>
-                <a href="favoritos.html" title="Favoritos" id="abrir_favoritos">
-                    <img src="design/icone_favoritos.png" alt="Favoritos">
-                    <span id="favoritosCount" style="display:none;">0</span>
-                </a>
-                <a href="sacola.html" title="Sacola" id="abrir_sacola">
-                    <img src="design/icone_sacola.png" alt="Sacola">
-                    <span id="sacolaCount" style="display:none;">0</span>
-                </a>
-                <button class="menu-toggle" id="menuToggle" aria-label="Abrir/fechar menu" type="button">
-                    <span></span><span></span><span></span>
-                </button>
+
+    <!-- Cabeçalho de Checkout Colorido -->
+    <div class="checkout-header">
+        <div class="checkout-header-content">
+            <!-- Logo em Destaque -->
+            <div class="checkout-logo-section">
+                <a href="home.html" class="checkout-logo">VISUAL MODAS BY KEL</a>
             </div>
+
+            <!-- Etapas Compactas -->
+            <nav class="checkout-steps" aria-label="Etapas do checkout">
+                <ul class="checkout-steps-list">
+                    <li class="checkout-step active">
+                        <div class="checkout-step-number">1</div>
+                        <span class="checkout-step-label">Sacola</span>
+                    </li>
+                    <li class="checkout-step">
+                        <div class="checkout-step-number">2</div>
+                        <span class="checkout-step-label">Identificação</span>
+                    </li>
+                    <li class="checkout-step">
+                        <div class="checkout-step-number">3</div>
+                        <span class="checkout-step-label">Entrega</span>
+                    </li>
+                    <li class="checkout-step">
+                        <div class="checkout-step-number">4</div>
+                        <span class="checkout-step-label">Pagamento</span>
+                    </li>
+                    <li class="checkout-step">
+                        <div class="checkout-step-number">5</div>
+                        <span class="checkout-step-label">Confirmação</span>
+                    </li>
+                </ul>
+            </nav>
         </div>
-        <nav class="header-filters" id="headerFilters" aria-label="Navegação principal">
-            <ul>
-                <li><a href="home.html">CATEGORIAS</a></li>
-                <li><a href="home.html">NOVIDADES</a></li>
-                <li><a href="home.html">COLEÇÃO</a></li>
-                <li><a href="home.html">TENDÊNCIAS</a></li>
-                <li><a href="home.html">LOOKBOOK</a></li>
-                <li><a href="home.html">PROMOÇÕES</a></li>
-                <li><a href="home.html">INSPIRAÇÃO</a></li>
-                <li><a href="home.html">OUTLET</a></li>
-                <li><a href="home.html">EXCLUSIVOS</a></li>
-            </ul>
-        </nav>
-    </header>
+    </div>
 
     <!-- Conteúdo Principal -->
     <main class="sacola-page">
@@ -70,8 +64,8 @@
                     <!-- Estado Vazio -->
                     <div class="sacola-empty" id="sacolaEmpty">
                         <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
-                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                            <line x1="3" y1="6" x2="21" y2="6" />
                         </svg>
                         <h2>Sua sacola está vazia</h2>
                         <p>Adicione produtos incríveis e comece a montar seu look!</p>
@@ -110,14 +104,18 @@
 
                     <button class="btn-finalizar" onclick="finalizarCompra()">Finalizar Compra</button>
 
-                    <!-- <div class="cupom-section">
+                    <a href="home.html" class="btn-continuar-comprando-sacola">Escolher Mais Produtos</a>
+
+                    <!-- Descomente se quiser usar cupons
+                    <div class="cupom-section">
                         <label>Tem um cupom de desconto?</label>
                         <div class="cupom-input-wrapper">
                             <input type="text" id="cupomInput" placeholder="Digite o cupom" maxlength="20">
                             <button class="btn-aplicar-cupom" onclick="aplicarCupom()">Aplicar</button>
                         </div>
                         <div class="cupom-feedback" id="cupomFeedback"></div>
-                    </div> -->
+                    </div>
+                    -->
                 </div>
             </div>
         </div>
@@ -189,6 +187,121 @@
             'FRETEGRATIS': { tipo: 'frete', valor: 0, descricao: 'Frete grátis' }
         };
 
+        // DADOS DOS PRODUTOS (mesmo array da home.html)
+        const allProducts = [
+            {
+                id: 1,
+                name: "Vestido Midi Floral",
+                price: 899.90,
+                installments: 7,
+                image1: "design/ex-roupa1.png",
+                image2: "design/ex-roupa1b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            },
+            {
+                id: 2,
+                name: "Blusa Cropped Básica",
+                price: 449.90,
+                installments: 4,
+                image1: "design/ex-roupa2.png",
+                image2: "design/ex-roupa2b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            },
+            {
+                id: 3,
+                name: "Calça Wide Leg Alfaiataria",
+                price: 679.90,
+                installments: 5,
+                image1: "design/ex-roupa3.png",
+                image2: "design/ex-roupa3b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            },
+            {
+                id: 4,
+                name: "Saia Midi Plissada",
+                price: 559.90,
+                installments: 5,
+                image1: "design/ex-roupa4.png",
+                image2: "design/ex-roupa4b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            },
+            {
+                id: 5,
+                name: "Shorts Cintura Alta",
+                price: 399.90,
+                installments: 4,
+                image1: "design/ex-roupa5.png",
+                image2: "design/ex-roupa5b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            },
+            {
+                id: 6,
+                name: "Jaqueta Jeans Oversized",
+                price: 799.90,
+                installments: 6,
+                image1: "design/ex-roupa6.png",
+                image2: "design/ex-roupa6b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            },
+            {
+                id: 7,
+                name: "Macacão Longo Elegante",
+                price: 989.90,
+                installments: 8,
+                image1: "design/ex-roupa7.png",
+                image2: "design/ex-roupa7b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            },
+            {
+                id: 8,
+                name: "Blazer Alfaiataria Premium",
+                price: 849.90,
+                installments: 7,
+                image1: "design/ex-roupa8.png",
+                image2: "design/ex-roupa8b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            },
+            {
+                id: 9,
+                name: "Body Canelado Básico",
+                price: 329.90,
+                installments: 3,
+                image1: "design/ex-roupa9.png",
+                image2: "design/ex-roupa9b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            },
+            {
+                id: 10,
+                name: "Regata Ribana Alongada",
+                price: 279.90,
+                installments: 3,
+                image1: "design/ex-roupa10.png",
+                image2: "design/ex-roupa10b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            },
+            {
+                id: 11,
+                name: "Vestido Longo Festa",
+                price: 1199.90,
+                installments: 10,
+                image1: "design/ex-roupa11.png",
+                image2: "design/ex-roupa11b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            },
+            {
+                id: 12,
+                name: "Calça Cargo Moderna",
+                price: 629.90,
+                installments: 5,
+                image1: "design/ex-roupa12.png",
+                image2: "design/ex-roupa12b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            }
+        ];
+
+        // Tamanhos disponíveis
+        const availableSizes = ["PP", "P", "M", "G", "GG"];
+
         function loadCart() {
             const itemsWrapper = document.getElementById('sacolaItems');
             const emptyState = document.getElementById('sacolaEmpty');
@@ -204,7 +317,7 @@
                 emptyState.style.display = 'none';
                 itemsWrapper.style.display = 'block';
                 resumo.style.display = 'block';
-                
+
                 const totalItens = cart.reduce((sum, item) => sum + item.quantity, 0);
                 totalElement.textContent = `${totalItens} ${totalItens === 1 ? 'item' : 'itens'}`;
 
@@ -217,37 +330,87 @@
         }
 
         function createCartItem(item) {
+            // Busca os dados completos do produto
+            const productData = allProducts.find(p => p.id === item.id);
+
+            // Se não encontrar, usa os dados do localStorage
+            const productName = item.name || (productData ? productData.name : 'Produto');
+            const productPrice = item.price || (productData ? productData.price : 0);
+            const productImage = item.image || (productData ? productData.image1 : 'design/placeholder.png');
+
             return `
-                <div class="sacola-item">
-                    <div class="item-image">
-                        <img src="${item.image}" alt="${item.name}">
-                    </div>
-                    <div class="item-details">
-                        <h3 class="item-name">${item.name}</h3>
-                        <p class="item-size">Tamanho: <strong>${item.size}</strong></p>
-                        <p class="item-price">R$ ${item.price.toFixed(2).replace('.', ',')}</p>
-                        
-                        <div class="item-actions">
-                            <div class="quantity-control">
-                                <button class="btn-qty" onclick="updateQuantity(${item.id}, '${item.size}', -1)">−</button>
-                                <span class="qty-value">${item.quantity}</span>
-                                <button class="btn-qty" onclick="updateQuantity(${item.id}, '${item.size}', 1)">+</button>
-                            </div>
-                            <button class="btn-remove" onclick="removeFromCart(${item.id}, '${item.size}')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                </svg>
-                                Remover
-                            </button>
-                        </div>
-                    </div>
-                    <div class="item-total">
-                        <span class="item-total-label">Total</span>
-                        <span class="item-total-value">R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</span>
+        <div class="sacola-item" data-item-id="${item.id}-${item.size}">
+            <div class="item-image">
+                <img src="${productImage}" alt="${productName}">
+            </div>
+            <div class="item-details">
+                <h3 class="item-name">${productName}</h3>
+                
+                <!-- Seletor de Tamanho -->
+                <div class="item-size-selector">
+                    <span>Tamanho:</span>
+                    <div class="size-select-wrapper">
+                        <select class="size-select" onchange="changeItemSize(${item.id}, '${item.size}', this.value)">
+                            ${generateSizeOptions(item.id, item.size)}
+                        </select>
                     </div>
                 </div>
-            `;
+                
+                <div class="size-change-alert" id="alert-${item.id}-${item.size}">
+                    Tamanho alterado com sucesso!
+                </div>
+                
+                <p class="item-price">R$ ${productPrice.toFixed(2).replace('.', ',')}</p>
+                
+                <div class="item-actions">
+                    <div class="quantity-control">
+                        <button class="btn-qty" onclick="updateQuantity(${item.id}, '${item.size}', -1)">−</button>
+                        <span class="qty-value">${item.quantity}</span>
+                        <button class="btn-qty" onclick="updateQuantity(${item.id}, '${item.size}', 1)">+</button>
+                    </div>
+                    <button class="btn-remove" onclick="removeFromCart(${item.id}, '${item.size}')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        Remover
+                    </button>
+                </div>
+            </div>
+            <div class="item-total">
+                <span class="item-total-label">Total</span>
+                <span class="item-total-value">R$ ${(productPrice * item.quantity).toFixed(2).replace('.', ',')}</span>
+            </div>
+        </div>
+    `;
+        }
+
+        function generateSizeOptions(productId, currentSize) {
+            return availableSizes.map(size => {
+                const selected = size === currentSize ? 'selected' : '';
+                return `<option value="${size}" ${selected}>${size}</option>`;
+            }).join('');
+        }
+
+        function changeItemSize(productId, oldSize, newSize) {
+            if (oldSize === newSize) return;
+
+            const currentItem = cart.find(item => item.id === productId && item.size === oldSize);
+            if (!currentItem) return;
+
+            const existingItem = cart.find(item => item.id === productId && item.size === newSize);
+
+            if (existingItem) {
+                existingItem.quantity += currentItem.quantity;
+                cart = cart.filter(item => !(item.id === productId && item.size === oldSize));
+                showNotification(`Tamanho alterado! Quantidade do tamanho ${newSize} atualizada.`);
+            } else {
+                currentItem.size = newSize;
+                showNotification(`Tamanho alterado de ${oldSize} para ${newSize}!`);
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            loadCart();
         }
 
         function updateQuantity(productId, size, change) {
@@ -343,12 +506,8 @@
                 return;
             }
 
-            // Aqui você pode redirecionar para página de checkout
-            showNotification('Redirecionando para o checkout...');
-            setTimeout(() => {
-                // window.location.href = 'checkout.html';
-                alert('Função de checkout será implementada em breve!');
-            }, 1500);
+            // Redireciona para o checkout
+            window.location.href = 'checkout.html';
         }
 
         function updateFavoritesCount() {
