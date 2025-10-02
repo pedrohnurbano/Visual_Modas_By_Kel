@@ -59,63 +59,33 @@
 
         <!-- Modal de Categorias -->
         <div class="categories-modal" id="categoriesModal">
+            <button class="categories-modal-close" id="categoriesModalClose" aria-label="Fechar modal"
+                title="Fechar"></button>
             <div class="categories-modal-content">
                 <div class="categories-list">
                     <ul>
-                        <li><a href="#todas-pecas">Todas as peças</a></li>
-                        <li><a href="#vestidos">Vestidos</a></li>
-                        <li><a href="#blusas">Blusas</a></li>
-                        <li><a href="#calcas">Calças</a></li>
-                        <li><a href="#bolsas-calcados">Bolsas e Calçados</a></li>
-                        <li><a href="#saias">Saias</a></li>
-                        <li><a href="#jeans">Jeans</a></li>
-                        <li><a href="#shorts-bermudas">Shorts e Bermudas</a></li>
-                        <li><a href="#jaquetas-casacos">Jaquetas e Casacos</a></li>
-                        <li><a href="#macacoes">Macacões</a></li>
-                        <li><a href="#blazers">Blazers</a></li>
-                        <li><a href="#conjuntos">Conjuntos</a></li>
-                        <li><a href="#acessorios">Acessórios</a></li>
-                        <li><a href="#lingerie">Lingerie</a></li>
-                        <li><a href="#fitness">Fitness</a></li>
+                        <li><a href="roupas.html">Todas as peças</a></li>
+                        <li><a href="vestidos.html">Vestidos</a></li>
+                        <li><a href="blusas_camisas.html">Blusas e Camisas</a></li>
+                        <li><a href="calcas.html">Calças</a></li>
+                        <li><a href="saias.html">Saias</a></li>
+                        <li><a href="shorts_bermudas.html">Shorts e Bermudas</a></li>
+                        <li><a href="jaquetas_casacos.html">Jaquetas e Casacos</a></li>
+                        <li><a href="macacoes.html">Macacões</a></li>
+                        <li><a href="blazers.html">Blazers</a></li>
+                        <li><a href="body.html">Body</a></li>
+                        <li><a href="regatas.html">Regatas</a></li>
                     </ul>
                 </div>
                 <div class="categories-banner">
-                    <img src="design/banner_01.png" alt="Coleção Primavera/Verão">
+                    <img src="design/banner_categoria.png" alt="Coleção Primavera/Verão">
                     <div class="categories-banner-overlay">
                         <h3 class="categories-banner-title">Nova Coleção</h3>
-                        <p class="categories-banner-subtitle">Primavera/Verão 2025</p>
+                        <p class="categories-banner-subtitle">Primavera/Verão 2026</p>
                     </div>
                 </div>
             </div>
-            <!-- Modal de Categorias -->
-            <div class="categories-modal" id="categoriesModal">
-                <button class="categories-modal-close" id="categoriesModalClose" aria-label="Fechar modal"
-                    title="Fechar"></button>
-                <div class="categories-modal-content">
-                    <div class="categories-list">
-                        <ul>
-                            <li><a href="roupas.html">Todas as peças</a></li>
-                            <li><a href="vestidos.html">Vestidos</a></li>
-                            <li><a href="blusas_camisas.html">Blusas e Camisas</a></li>
-                            <li><a href="calcas.html">Calças</a></li>
-                            <li><a href="saias.html">Saias</a></li>
-                            <li><a href="shorts_bermudas.html">Shorts e Bermudas</a></li>
-                            <li><a href="jaquetas_casacos.html">Jaquetas e Casacos</a></li>
-                            <li><a href="macacoes.html">Macacões</a></li>
-                            <li><a href="blazers.html">Blazers</a></li>
-                            <li><a href="body.html">Body</a></li>
-                            <li><a href="regatas.html">Regatas</a></li>
-                        </ul>
-                    </div>
-                    <div class="categories-banner">
-                        <img src="design/banner_categoria.png" alt="Coleção Primavera/Verão">
-                        <div class="categories-banner-overlay">
-                            <h3 class="categories-banner-title">Nova Coleção</h3>
-                            <p class="categories-banner-subtitle">Primavera/Verão 2026</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        </div>
     </header>
 
     <!-- Banner Slideshow -->
@@ -178,11 +148,123 @@
         </div>
     </section>
 
+    <!-- Banner Promocional -->
+    <section class="promotional-banner">
+        <div class="promotional-banner-content">
+            <img src="design/banner_promocional.png" alt="Banner Promocional" class="promotional-banner-img">
+            <div class="promotional-banner-overlay">
+                <h2 class="promotional-banner-title">COLEÇÃO EXCLUSIVA</h2>
+                <p class="promotional-banner-subtitle">Até 30% OFF em peças selecionadas</p>
+                <a href="#" class="promotional-banner-btn">CONFERIR AGORA</a>
+            </div>
+        </div>
+    </section>
+
     <!-- Vitrine Principal -->
     <section class="vitrine-cards">
         <h2 class="vitrine-titulo">DESTAQUES</h2>
         <div class="cards-grid" id="productsGridDestaques">
             <!-- Os produtos serão carregados via JavaScript -->
+        </div>
+    </section>
+
+    <!-- Banner Duplo -->
+    <section class="dual-banner">
+        <div class="dual-banner-content">
+            <a href="#" class="dual-banner-item">
+                <img src="design/banner_duplo_1.png" alt="Banner 1" class="dual-banner-img">
+            </a>
+            <a href="#" class="dual-banner-item">
+                <img src="design/banner_duplo_2.png" alt="Banner 2" class="dual-banner-img">
+            </a>
+        </div>
+    </section>
+
+    <!-- Seção de Benefícios -->
+    <section class="benefits-section">
+        <div class="benefits-container">
+            <div class="benefit-card">
+                <img src="design/icone_troca.png" alt="Troca Grátis" class="benefit-icon">
+                <h3 class="benefit-title">TROCA GRÁTIS</h3>
+                <p class="benefit-text">30 dias para trocar ou devolver</p>
+            </div>
+            <div class="benefit-card">
+                <img src="design/icone_atendimento.png" alt="Atendimento" class="benefit-icon">
+                <h3 class="benefit-title">ATENDIMENTO VIP</h3>
+                <p class="benefit-text">Consultoria de moda personalizada</p>
+            </div>
+            <div class="benefit-card">
+                <img src="design/icone_qualidade.png" alt="Qualidade" class="benefit-icon">
+                <h3 class="benefit-title">QUALIDADE PREMIUM</h3>
+                <p class="benefit-text">Tecidos selecionados e acabamento impecável</p>
+            </div>
+            <div class="benefit-card">
+                <img src="design/icone_seguranca.png" alt="Segurança" class="benefit-icon">
+                <h3 class="benefit-title">COMPRA SEGURA</h3>
+                <p class="benefit-text">Ambiente 100% protegido</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galeria Instagram -->
+    <section class="instagram-section">
+        <div class="instagram-container">
+            <h2 class="instagram-title">
+                <img src="design/icone_instagram.png" alt="Instagram" class="instagram-icon">
+                @VISUALMODASBYKEL
+            </h2>
+            <p class="instagram-subtitle">Inspire-se com nossos looks e marque a gente!</p>
+            <div class="instagram-grid">
+                <a href="#" class="instagram-item" target="_blank" rel="noopener noreferrer">
+                    <img src="design/insta_1.png" alt="Look 1" class="instagram-img">
+                    <div class="instagram-overlay">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                            <path
+                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </svg>
+                    </div>
+                </a>
+                <a href="#" class="instagram-item" target="_blank" rel="noopener noreferrer">
+                    <img src="design/insta_2.png" alt="Look 2" class="instagram-img">
+                    <div class="instagram-overlay">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                            <path
+                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </svg>
+                    </div>
+                </a>
+                <a href="#" class="instagram-item" target="_blank" rel="noopener noreferrer">
+                    <img src="design/insta_3.png" alt="Look 3" class="instagram-img">
+                    <div class="instagram-overlay">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                            <path
+                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </svg>
+                    </div>
+                </a>
+                <a href="#" class="instagram-item" target="_blank" rel="noopener noreferrer">
+                    <img src="design/insta_4.png" alt="Look 4" class="instagram-img">
+                    <div class="instagram-overlay">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                            <path
+                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </svg>
+                    </div>
+                </a>
+                <a href="#" class="instagram-item" target="_blank" rel="noopener noreferrer">
+                    <img src="design/insta_5.png" alt="Look 5" class="instagram-img">
+                    <div class="instagram-overlay">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                            <path
+                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </svg>
+                    </div>
+                </a>
+            </div>
+            <a href="https://www.instagram.com/visualmodasbykel" target="_blank" rel="noopener noreferrer"
+                class="instagram-follow-btn">
+                SEGUIR NO INSTAGRAM
+            </a>
         </div>
     </section>
 
@@ -249,52 +331,125 @@
     </footer>
 
     <script>
-        // ====================
         // DADOS DOS PRODUTOS
-        // ====================
-        const products = [
+        const productsNovidades = [
             {
                 id: 1,
-                name: "Saia Curta Cintura Alta",
-                price: 1177.00,
-                installments: 8,
-                image1: "design/exemplo1.png",
-                image2: "design/exemplo1b.png",
+                name: "Vestido Midi Floral",
+                price: 899.90,
+                installments: 7,
+                image1: "design/ex-roupa1.png",
+                image2: "design/ex-roupa1b.png",
                 sizes: ["PP", "P", "M", "G", "GG"]
             },
             {
                 id: 2,
-                name: "Blazer Alfaiataria Feminino",
-                price: 799.90,
-                installments: 6,
-                image1: "design/exemplo2.png",
-                image2: "design/exemplo2b.png",
+                name: "Blusa Cropped Básica",
+                price: 449.90,
+                installments: 4,
+                image1: "design/ex-roupa2.png",
+                image2: "design/ex-roupa2b.png",
                 sizes: ["PP", "P", "M", "G", "GG"]
             },
             {
                 id: 3,
-                name: "Vestido Midi Elegante",
-                price: 899.90,
-                installments: 7,
-                image1: "design/exemplo1.png",
-                image2: "design/exemplo1b.png",
+                name: "Calça Wide Leg Alfaiataria",
+                price: 679.90,
+                installments: 5,
+                image1: "design/ex-roupa3.png",
+                image2: "design/ex-roupa3b.png",
                 sizes: ["PP", "P", "M", "G", "GG"]
             },
             {
                 id: 4,
-                name: "Calça Pantalona Social",
-                price: 649.90,
+                name: "Saia Midi Plissada",
+                price: 559.90,
                 installments: 5,
-                image1: "design/exemplo2.png",
-                image2: "design/exemplo2b.png",
+                image1: "design/ex-roupa4.png",
+                image2: "design/ex-roupa4b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            },
+            {
+                id: 5,
+                name: "Shorts Cintura Alta",
+                price: 399.90,
+                installments: 4,
+                image1: "design/ex-roupa5.png",
+                image2: "design/ex-roupa5b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            },
+            {
+                id: 6,
+                name: "Jaqueta Jeans Oversized",
+                price: 799.90,
+                installments: 6,
+                image1: "design/ex-roupa6.png",
+                image2: "design/ex-roupa6b.png",
                 sizes: ["PP", "P", "M", "G", "GG"]
             }
         ];
 
-        // ====================
-        // GERENCIAMENTO DE FAVORITOS (SEM localStorage)
-        // ====================
-        let favorites = [];
+        const productsDestaques = [
+            {
+                id: 7,
+                name: "Macacão Longo Elegante",
+                price: 989.90,
+                installments: 8,
+                image1: "design/ex-roupa7.png",
+                image2: "design/ex-roupa7b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            },
+            {
+                id: 8,
+                name: "Blazer Alfaiataria Premium",
+                price: 849.90,
+                installments: 7,
+                image1: "design/ex-roupa8.png",
+                image2: "design/ex-roupa8b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            },
+            {
+                id: 9,
+                name: "Body Canelado Básico",
+                price: 329.90,
+                installments: 3,
+                image1: "design/ex-roupa9.png",
+                image2: "design/ex-roupa9b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            },
+            {
+                id: 10,
+                name: "Regata Ribana Alongada",
+                price: 279.90,
+                installments: 3,
+                image1: "design/ex-roupa10.png",
+                image2: "design/ex-roupa10b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            },
+            {
+                id: 11,
+                name: "Vestido Longo Festa",
+                price: 1199.90,
+                installments: 10,
+                image1: "design/ex-roupa11.png",
+                image2: "design/ex-roupa11b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            },
+            {
+                id: 12,
+                name: "Calça Cargo Moderna",
+                price: 629.90,
+                installments: 5,
+                image1: "design/ex-roupa12.png",
+                image2: "design/ex-roupa12b.png",
+                sizes: ["PP", "P", "M", "G", "GG"]
+            }
+        ];
+
+        const allProducts = [...productsNovidades, ...productsDestaques];
+
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
         function toggleFavorite(productId) {
             const index = favorites.indexOf(productId);
@@ -303,6 +458,7 @@
             } else {
                 favorites.push(productId);
             }
+            localStorage.setItem('favorites', JSON.stringify(favorites)); // ADICIONAR ESTA LINHA
             updateFavoritesCount();
             renderProducts();
         }
@@ -316,14 +472,10 @@
                 count.style.display = 'none';
             }
         }
-
-        // ====================
-        // GERENCIAMENTO DA SACOLA (SEM localStorage)
-        // ====================
-        let cart = [];
-
         function addToCart(productId, size) {
-            const product = products.find(p => p.id === productId);
+            const product = allProducts.find(p => p.id === productId); // CORRETO
+            // Estava: const product = products.find(p => p.id === productId); // ERRADO
+
             if (!product) return;
 
             const existingItem = cart.find(item => item.id === productId && item.size === size);
@@ -341,6 +493,8 @@
             }
             updateCartCount();
             showNotification('Produto adicionado à sacola!');
+
+            localStorage.setItem('cart', JSON.stringify(cart)); // ADICIONAR após modificar o cart
         }
 
         function updateCartCount() {
@@ -354,69 +508,147 @@
             }
         }
 
-        // ====================
-        // RENDERIZAÇÃO DOS PRODUTOS
-        // ====================
+        function createProductCard(product) {
+            const isFavorite = favorites.includes(product.id);
+            const installmentValue = (product.price / product.installments).toFixed(2);
+
+            return `
+        <div class="produto-card" data-product-id="${product.id}">
+            <button class="produto-favorito" title="${isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}" onclick="toggleFavorite(${product.id})">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        stroke="#370400" stroke-width="1.5" fill="${isFavorite ? '#370400' : 'none'}"/>
+                </svg>
+            </button>
+            <div class="produto-img-container">
+                <img src="${product.image1}" alt="${product.name}" class="produto-img img-primaria" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22400%22%3E%3Crect fill=%22%23f8f8f8%22 width=%22300%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2218%22 fill=%22%23999%22%3EImagem não disponível%3C/text%3E%3C/svg%3E'">
+                <img src="${product.image2}" alt="${product.name} - Verso" class="produto-img img-secundaria" onerror="this.src='${product.image1}'">
+                <div class="produto-tamanhos">
+                    ${product.sizes.map(size => `<span class="size-option" data-size="${size}" onclick="selectSize(${product.id}, '${size}')">${size}</span>`).join('')}
+                    <button class="produto-sacola" title="Adicionar à sacola" onclick="addSelectedToCart(${product.id})">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="produto-info">
+                <span class="produto-nome">${product.name}</span>
+                <span class="produto-preco">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
+                <span class="produto-parcela">Até ${product.installments}x de R$ ${installmentValue.replace('.', ',')}</span>
+            </div>
+        </div>
+    `;
+        }
+
+        // Armazena temporariamente o tamanho selecionado de cada produto
+        let selectedSizes = {};
+
+        function selectSize(productId, size) {
+            // Remove seleção anterior deste produto
+            document.querySelectorAll(`[data-product-id="${productId}"] .size-option`).forEach(el => {
+                el.classList.remove('selected');
+            });
+
+            // Adiciona classe selected ao tamanho clicado
+            event.target.classList.add('selected');
+
+            // Armazena o tamanho selecionado
+            selectedSizes[productId] = size;
+        }
+
+        function addSelectedToCart(productId) {
+            const selectedSize = selectedSizes[productId];
+
+            if (!selectedSize) {
+                showNotification('Por favor, selecione um tamanho primeiro!');
+                return;
+            }
+
+            addToCart(productId, selectedSize);
+
+            // Remove a seleção após adicionar
+            delete selectedSizes[productId];
+            document.querySelectorAll(`[data-product-id="${productId}"] .size-option`).forEach(el => {
+                el.classList.remove('selected');
+            });
+        }
+
         function renderProducts() {
             const gridNovidades = document.getElementById('productsGridNovidades');
             const gridDestaques = document.getElementById('productsGridDestaques');
 
-            const productHTML = products.map(product => {
-                const isFavorite = favorites.includes(product.id);
-                const installmentValue = (product.price / product.installments).toFixed(2);
+            if (gridNovidades) {
+                gridNovidades.innerHTML = productsNovidades.map(product => createProductCard(product)).join('');
+            }
 
-                return `
-            <div class="produto-card">
-                <button class="produto-favorito" title="${isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}" onclick="toggleFavorite(${product.id})">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                        <path class="favorito-icon" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                            stroke="#370400" stroke-width="1.5" fill="${isFavorite ? '#370400' : 'none'}"/>
-                    </svg>
-                </button>
-                <div class="produto-img-container">
-                    <img src="${product.image1}" alt="${product.name}" class="produto-img img-primaria" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22400%22%3E%3Crect fill=%22%23f8f8f8%22 width=%22300%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2218%22 fill=%22%23999%22%3EImagem não disponível%3C/text%3E%3C/svg%3E'">
-                    <img src="${product.image2}" alt="${product.name} - Verso" class="produto-img img-secundaria" onerror="this.src='${product.image1}'">
-                    <div class="produto-tamanhos">
-                        ${product.sizes.map(size => `<span onclick="addToCart(${product.id}, '${size}')">${size}</span>`).join('')}
-                        <button class="produto-sacola" title="Selecione um tamanho">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                                <circle cx="12" cy="12" r="10" fill="#370400"/>
-                                <path d="M8 12h8M12 8v8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-                <div class="produto-info">
-                    <span class="produto-nome">${product.name}</span>
-                    <span class="produto-preco">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
-                    <span class="produto-parcela">Até ${product.installments}x de R$ ${installmentValue.replace('.', ',')}</span>
-                </div>
-            </div>
-        `;
-            }).join('');
+            if (gridDestaques) {
+                gridDestaques.innerHTML = productsDestaques.map(product => createProductCard(product)).join('');
+            }
 
-            // Renderiza nas duas seções
-            if (gridNovidades) gridNovidades.innerHTML = productHTML;
-            if (gridDestaques) gridDestaques.innerHTML = productHTML;
+            initCarousels();
         }
 
-        // ====================
-        // NOTIFICAÇÕES
-        // ====================
+        function initCarousels() {
+            const carousels = [
+                { grid: document.getElementById('productsGridNovidades'), section: 'novidades' },
+                { grid: document.getElementById('productsGridDestaques'), section: 'destaques' }
+            ];
+
+            carousels.forEach(({ grid, section }) => {
+                if (!grid || grid.parentElement.classList.contains('products-carousel-wrapper')) return;
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'products-carousel-wrapper';
+
+                const btnPrev = document.createElement('button');
+                btnPrev.className = 'carousel-btn carousel-btn-prev';
+                btnPrev.innerHTML = '<svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>';
+                btnPrev.onclick = () => scrollCarousel(grid, -1);
+
+                const btnNext = document.createElement('button');
+                btnNext.className = 'carousel-btn carousel-btn-next';
+                btnNext.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>';
+                btnNext.onclick = () => scrollCarousel(grid, 1);
+
+                grid.parentNode.insertBefore(wrapper, grid);
+                wrapper.appendChild(btnPrev);
+                wrapper.appendChild(grid);
+                wrapper.appendChild(btnNext);
+
+                updateCarouselButtons(grid, btnPrev, btnNext);
+                grid.addEventListener('scroll', () => updateCarouselButtons(grid, btnPrev, btnNext));
+            });
+        }
+
+        function scrollCarousel(grid, direction) {
+            const scrollAmount = 300;
+            grid.scrollBy({
+                left: direction * scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+
+        function updateCarouselButtons(grid, btnPrev, btnNext) {
+            btnPrev.disabled = grid.scrollLeft <= 0;
+            btnNext.disabled = grid.scrollLeft >= grid.scrollWidth - grid.clientWidth - 1;
+        }
+
         function showNotification(message) {
             const notification = document.createElement('div');
             notification.style.cssText = `
-                position: fixed;
-                top: 80px;
-                right: 20px;
-                background: #370400;
-                color: white;
-                padding: 15px 25px;
-                border-radius: 4px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                z-index: 10000;
-                animation: slideIn 0.3s ease-out;
-            `;
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: #370400;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 4px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        animation: slideIn 0.3s ease-out;
+    `;
             notification.textContent = message;
             document.body.appendChild(notification);
 
@@ -434,13 +666,8 @@
             if (n > slides.length) slideIndex = 1;
             if (n < 1) slideIndex = slides.length;
 
-            Array.from(slides).forEach(slide => {
-                slide.classList.remove('active');
-            });
-
-            if (slides.length > 0) {
-                slides[slideIndex - 1].classList.add('active');
-            }
+            Array.from(slides).forEach(slide => slide.classList.remove('active'));
+            if (slides.length > 0) slides[slideIndex - 1].classList.add('active');
         }
 
         function plusSlides(n) {
@@ -450,9 +677,7 @@
         }
 
         function startSlideTimer() {
-            slideTimer = setInterval(() => {
-                showSlides(slideIndex += 1);
-            }, 10000);
+            slideTimer = setInterval(() => showSlides(slideIndex += 1), 10000);
         }
 
         function toggleFilters() {
@@ -483,11 +708,9 @@
                         const footerRect = footer.getBoundingClientRect();
                         const headerHeight = header.offsetHeight;
 
-                        // Se o rodapé está visível na tela
                         if (footerRect.top <= headerHeight) {
                             header.classList.add('header-hide');
                         } else {
-                            // Esconde ao descer, mostra ao subir
                             if (currentScroll > lastScroll && currentScroll > 100) {
                                 header.classList.add('header-hide');
                             } else if (currentScroll < lastScroll) {
@@ -513,17 +736,13 @@
             });
         }
 
-        // ====================
-        // MODAL DE CATEGORIAS
-        // ====================
         function initCategoriesModal() {
             const trigger = document.getElementById('categoriesMenuTrigger');
             const modal = document.getElementById('categoriesModal');
-
             if (!trigger || !modal) return;
+
             const closeBtn = document.getElementById('categoriesModalClose');
 
-            // Fechar modal ao clicar no X
             if (closeBtn) {
                 closeBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -532,7 +751,6 @@
                 });
             }
 
-            // Mostrar/esconder modal ao clicar em "CATEGORIAS"
             trigger.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -545,7 +763,6 @@
                 }
             });
 
-            // Fechar modal ao clicar fora
             document.addEventListener('click', (e) => {
                 if (!trigger.contains(e.target) && !modal.contains(e.target)) {
                     modal.classList.remove('active');
@@ -553,7 +770,6 @@
                 }
             });
 
-            // Fechar modal ao pressionar ESC
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
                     modal.classList.remove('active');
@@ -561,7 +777,6 @@
                 }
             });
 
-            // Fechar modal ao clicar em um link de categoria
             const categoryLinks = modal.querySelectorAll('.categories-list a');
             categoryLinks.forEach(link => {
                 link.addEventListener('click', () => {
@@ -573,21 +788,15 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             renderProducts();
-
             updateFavoritesCount();
             updateCartCount();
-
             showSlides(slideIndex);
             startSlideTimer();
-
             document.getElementById('menuToggle').onclick = toggleFilters;
             window.addEventListener('resize', handleMenuToggleDisplay);
             handleMenuToggleDisplay();
-
             initScrollBehavior();
-
             initFilterLinks();
-
             initCategoriesModal();
         });
     </script>
