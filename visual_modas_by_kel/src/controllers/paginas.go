@@ -2,11 +2,18 @@ package controllers
 
 import (
 	"net/http"
+	"visual_modas_by_kel/visual_modas_by_kel/src/cookies"
 	"visual_modas_by_kel/visual_modas_by_kel/src/utils"
 )
 
 // CarregarTelaDeLogin vai carregar a tela de login
 func CarregarTelaDeLogin(w http.ResponseWriter, r *http.Request) {
+	cookie, _ := cookies.Ler(r)
+
+	if cookie["token"] != "" {
+		http.Redirect(w, r, "/home", http.StatusFound)
+		return
+	}
 	utils.ExecutarTemplate(w, "login.html", nil)
 }
 
@@ -15,7 +22,7 @@ func CarregarPaginaDeCadastroDeUsuario(w http.ResponseWriter, r *http.Request) {
 	utils.ExecutarTemplate(w, "cadastro.html", nil)
 }
 
-//CarregarPaginaPrincipal carrega a página principal
-func CarregarPaginaPrincipal(w http.ResponseWriter, r *http.Request)  {
+// CarregarPaginaPrincipal carrega a página principal
+func CarregarPaginaPrincipal(w http.ResponseWriter, r *http.Request) {
 	utils.ExecutarTemplate(w, "home.html", nil)
 }
