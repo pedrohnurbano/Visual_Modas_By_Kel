@@ -34,7 +34,7 @@
                     <span>Minha conta e<br><b style="color:#fff;">Meus pedidos</b></span>
                 </a>
 
-                <a href="/logout" style="font-size:12px;display:flex;align-items:center;gap:4px;" onclick="logout()">
+                <a href="login.html" style="font-size:12px;display:flex;align-items:center;gap:4px;" onclick="logout()">
                     <img src="design/icone_sair.png" alt="Sair">
                     <span><b style="color:#fff;">Sair</b></span>
                 </a>
@@ -153,7 +153,7 @@
                         <thead>
                             <tr>
                                 <th>Código</th>
-                                <th>SKU</th>
+                                <th>Seção</th> <!-- ALTERADO DE "SKU" -->
                                 <th>Nome</th>
                                 <th>Preço</th>
                                 <th>Tamanho</th>
@@ -395,6 +395,14 @@
                         </select>
                     </div>
                     <div class="painel-admin-form-group">
+                        <label class="painel-admin-form-label">Seção</label>
+                        <select id="secao-produto" class="painel-admin-form-select" required>
+                            <option value="Geral">Geral</option>
+                            <option value="Novidades">Novidades</option>
+                            <option value="Destaques">Destaques</option>
+                        </select>
+                    </div>
+                    <div class="painel-admin-form-group">
                         <label class="painel-admin-form-label">Foto</label>
                         <div class="painel-file-upload">
                             <input type="file" id="foto-produto" accept="image/jpeg,image/jpg,image/png,image/webp"
@@ -528,7 +536,7 @@
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                             <td>${produto.id || ''}</td>
-                            <td>PRD${String(produto.id || '').padStart(5, '0')}</td>
+                            <td>${produto.secao || '-'}</td>  <!-- ALTERADO -->
                             <td>${produto.nome || ''}</td>
                             <td>R$ ${(produto.preco || 0).toFixed(2)}</td>
                             <td>${produto.tamanho || ''}</td>

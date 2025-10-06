@@ -2,11 +2,11 @@
 let imagemBase64 = "";
 
 // Aguardar DOM carregar
-$(document).ready(function() {
+$(document).ready(function () {
     // Handler para quando o usuário seleciona uma imagem
-    $("#foto-produto").on("change", function(e) {
+    $("#foto-produto").on("change", function (e) {
         const arquivo = e.target.files[0];
-        
+
         if (!arquivo) {
             imagemBase64 = "";
             $("#preview-imagem").html("");
@@ -35,29 +35,29 @@ $(document).ready(function() {
 
         // Converter para base64
         const reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onload = function (event) {
             imagemBase64 = event.target.result;
-            
+
             // Mostrar preview da imagem
             $("#preview-imagem").html(`
                 <img src="${imagemBase64}" alt="Preview" style="max-width: 200px; max-height: 200px; margin-top: 10px; border-radius: 8px;">
             `);
-            
+
             console.log("Imagem carregada com sucesso!");
         };
-        
-        reader.onerror = function() {
+
+        reader.onerror = function () {
             alert("Erro ao carregar a imagem. Tente novamente.");
             $("#foto-produto").val('');
             imagemBase64 = "";
             $("#preview-imagem").html("");
         };
-        
+
         reader.readAsDataURL(arquivo);
     });
 
     // Handler do formulário
-    $("#produto-form").on("submit", function(evento) {
+    $("#produto-form").on("submit", function (evento) {
         evento.preventDefault();
         criarProduto();
     });
@@ -70,6 +70,7 @@ function criarProduto() {
     const precoString = $("#preco-produto").val();
     const tamanho = $("#tamanho-produto").val();
     const categoria = $("#categoria-produto").val();
+    const secao = $("#secao-produto").val();
 
     if (!nome) {
         alert("O nome do produto é obrigatório!");
@@ -102,6 +103,11 @@ function criarProduto() {
         return;
     }
 
+    if (!secao) {
+        alert("Por favor, selecione uma seção!");
+        return;
+    }
+
     // Adicionar loading state
     const submitBtn = $('.painel-btn-primary[form="produto-form"]');
     const originalText = submitBtn.text();
@@ -114,6 +120,7 @@ function criarProduto() {
         preco: preco, // Agora é número
         tamanho: tamanho,
         categoria: categoria,
+        secao: secao,  // NOVO CAMPO
         foto_url: imagemBase64
     };
 
@@ -124,26 +131,26 @@ function criarProduto() {
         method: "POST",
         contentType: "application/json",
         data: JSON.stringify(dadosProduto),
-        success: function(response) {
+        success: function (response) {
             alert("Produto cadastrado com sucesso!");
-            
+
             // Limpar formulário
             $("#produto-form")[0].reset();
             imagemBase64 = "";
             $("#preview-imagem").html("");
-            
+
             // Fechar modal
             closeModal('produto-modal');
-            
+
             // Atualizar tabela de produtos se estiver na página de produtos
             if (typeof carregarProdutos === 'function') {
                 carregarProdutos();
             }
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.error("Erro ao cadastrar produto:", error);
             console.log("Response:", xhr.responseText);
-            
+
             let mensagem = "Erro ao cadastrar produto. Tente novamente.";
             if (xhr.responseText) {
                 try {
@@ -155,7 +162,7 @@ function criarProduto() {
             }
             alert(mensagem);
         },
-        complete: function() {
+        complete: function () {
             submitBtn.text(originalText).prop("disabled", false);
         }
     });
@@ -166,10 +173,10 @@ function buscarProdutos(filtro = "") {
     $.ajax({
         url: `/api/produtos?filtro=${filtro}`,
         method: "GET",
-        success: function(produtos) {
+        success: function (produtos) {
             exibirProdutos(produtos);
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.error("Erro ao buscar produtos:", error);
             alert("Erro ao carregar produtos.");
         }
@@ -181,10 +188,10 @@ function buscarMeusProdutos() {
     $.ajax({
         url: "/api/meus-produtos",
         method: "GET",
-        success: function(produtos) {
+        success: function (produtos) {
             exibirMeusProdutos(produtos);
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.error("Erro ao buscar produtos:", error);
             alert("Erro ao carregar seus produtos.");
         }
@@ -200,18 +207,18 @@ function deletarProduto(produtoId) {
     $.ajax({
         url: `/api/produtos/${produtoId}`,
         method: "DELETE",
-        success: function() {
+        success: function () {
             alert("Produto deletado com sucesso!");
             buscarMeusProdutos(); // Recarregar lista
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.error("Erro ao deletar produto:", error);
             let mensagem = "Erro ao deletar produto.";
             if (xhr.responseText) {
                 try {
                     const resposta = JSON.parse(xhr.responseText);
                     mensagem = resposta.erro || mensagem;
-                } catch (e) {}
+                } catch (e) { }
             }
             alert(mensagem);
         }
@@ -224,7 +231,7 @@ function exibirProdutos(produtos) {
     if (!tbody) return;
 
     tbody.innerHTML = '';
-    
+
     if (!produtos || produtos.length === 0) {
         tbody.innerHTML = '<tr><td colspan="11" style="text-align: center;">Nenhum produto encontrado</td></tr>';
         return;
@@ -234,7 +241,7 @@ function exibirProdutos(produtos) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${produto.id || ''}</td>
-            <td>PRD${String(produto.id || '').padStart(5, '0')}</td>
+            <td>${produto.secao || '-'}</td>  
             <td>${produto.nome || ''}</td>
             <td>R$ ${(produto.preco || 0).toFixed(2)}</td>
             <td>${produto.tamanho || ''}</td>
@@ -265,11 +272,11 @@ function editarProduto(produtoId) {
 }
 
 // Carregar produtos ao entrar na seção de produtos
-$(document).ready(function() {
+$(document).ready(function () {
     // Se estiver na página de produtos, carregar automaticamente
     if (window.location.pathname.includes('painel-admin')) {
         // Adicionar listener para quando clicar em Produtos no menu
-        $('[data-section="produtos"]').on('click', function() {
+        $('[data-section="produtos"]').on('click', function () {
             setTimeout(carregarProdutos, 100);
         });
     }
