@@ -516,32 +516,131 @@
 
             return `
     <div class="produto-card" data-product-id="${product.id}">
-        <button class="produto-favorito ${isFavorite ? 'favorito-active' : ''}" title="${isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}" onclick="toggleFavorite(${product.id})">
+        <!-- Botão Favorito -->
+        <button class="produto-favorito ${isFavorite ? 'favorito-active' : ''}" 
+                title="${isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}" 
+                onclick="toggleFavorite(${product.id})">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
                     stroke="#370400" stroke-width="1.5" fill="${isFavorite ? '#370400' : 'none'}"/>
             </svg>
         </button>
+
+        <!-- Botão Sacola (NOVO - ao lado do coração) -->
+        <button class="produto-sacola-topo" 
+                title="Adicionar à sacola" 
+                onclick="abrirModalTamanho(${product.id})">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#370400" stroke-width="1.5">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+            </svg>
+        </button>
+
+        <!-- Imagem do Produto -->
         <div class="produto-img-container">
-            <img src="${product.image1}" alt="${product.name}" class="produto-img img-primaria" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22400%22%3E%3Crect fill=%22%23f8f8f8%22 width=%22300%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2218%22 fill=%22%23999%22%3EImagem não disponível%3C/text%3E%3C/svg%3E'">
-            <img src="${product.image2}" alt="${product.name} - Verso" class="produto-img img-secundaria" onerror="this.src='${product.image1}'">
-            <div class="produto-tamanhos">
-                ${product.sizes.map(size => `<span class="size-option" data-size="${size}" onclick="selectSize(${product.id}, '${size}')">${size}</span>`).join('')}
-                <button class="produto-sacola" title="Adicionar à sacola" onclick="addSelectedToCart(${product.id})">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                        <line x1="3" y1="6" x2="21" y2="6"/>
-                    </svg>
-                </button>
-            </div>
+            <img src="${product.image1}" alt="${product.name}" class="produto-img img-primaria">
+            <img src="${product.image2}" alt="${product.name} - Verso" class="produto-img img-secundaria">
         </div>
+
+        <!-- Informações do Produto -->
         <div class="produto-info">
             <span class="produto-nome">${product.name}</span>
             <span class="produto-preco">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
             <span class="produto-parcela">Até ${product.installments}x de R$ ${installmentValue.replace('.', ',')}</span>
+            
+            <!-- Botão Comprar (NOVO) -->
+            <button class="produto-btn-comprar" onclick="abrirModalTamanho(${product.id})">
+                Comprar
+            </button>
         </div>
     </div>
-`;
+    `;
+        }
+
+        function abrirModalTamanho(productId) {
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) return;
+
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    `;
+
+            modal.innerHTML = `
+        <div style="background: #fff; padding: 40px; border-radius: 8px; max-width: 400px; width: 90%;">
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #370400; margin-bottom: 20px;">
+                Selecione o Tamanho
+            </h3>
+            <p style="font-size: 14px; color: #666; margin-bottom: 25px;">
+                ${product.name}
+            </p>
+            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 30px;">
+                ${product.sizes.map(size => `
+                    <button class="size-modal-btn" data-size="${size}" 
+                            style="padding: 12px; background: #fff; border: 1.5px solid #e0e0e0; 
+                                   border-radius: 4px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                        ${size}
+                    </button>
+                `).join('')}
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <button onclick="this.closest('[style*=fixed]').remove()" 
+                        style="flex: 1; padding: 14px; background: transparent; color: #370400; 
+                               border: 1.5px solid #370400; border-radius: 4px; cursor: pointer; 
+                               font-weight: 600; text-transform: uppercase;">
+                    Cancelar
+                </button>
+                <button id="confirmarTamanho" disabled 
+                        style="flex: 1; padding: 14px; background: #ccc; color: #fff; 
+                               border: none; border-radius: 4px; cursor: not-allowed; 
+                               font-weight: 600; text-transform: uppercase;">
+                    Adicionar à Sacola
+                </button>
+            </div>
+        </div>
+    `;
+
+            document.body.appendChild(modal);
+
+            let selectedSize = null;
+            const confirmBtn = modal.querySelector('#confirmarTamanho');
+
+            modal.querySelectorAll('.size-modal-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    modal.querySelectorAll('.size-modal-btn').forEach(b => {
+                        b.style.background = '#fff';
+                        b.style.borderColor = '#e0e0e0';
+                        b.style.color = '#370400';
+                    });
+                    this.style.background = '#370400';
+                    this.style.borderColor = '#370400';
+                    this.style.color = '#fff';
+                    selectedSize = this.dataset.size;
+                    confirmBtn.disabled = false;
+                    confirmBtn.style.background = '#370400';
+                    confirmBtn.style.cursor = 'pointer';
+                });
+            });
+
+            confirmBtn.addEventListener('click', () => {
+                if (selectedSize) {
+                    addToCart(productId, selectedSize);
+                    modal.remove();
+                }
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
         }
 
         function selectSize(productId, size) {

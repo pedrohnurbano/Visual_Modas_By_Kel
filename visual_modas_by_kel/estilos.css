@@ -2790,81 +2790,6 @@ body.modal-open {
     background: rgba(55, 4, 0, 0.9);
 }
 
-/* Melhorias nos Tamanhos - Estilo Lança Perfume */
-.produto-tamanhos {
-    font-size: 11px;
-    padding: 0 12px;
-    bottom: 0;
-    border-radius: 0;
-    height: 0;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(8px);
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
-    z-index: 3;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s ease, height 0.25s ease;
-}
-
-.produto-card:hover .produto-tamanhos {
-    opacity: 1;
-    pointer-events: auto;
-    height: 42px;
-    min-height: 42px;
-}
-
-.produto-tamanhos span {
-    font-size: 12px;
-    padding: 6px 14px;
-    border-radius: 4px;
-    background: #fff;
-    border: 1.5px solid #e0e0e0;
-    font-weight: 600;
-    letter-spacing: 0.8px;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    color: #370400;
-    min-width: 38px;
-    text-align: center;
-}
-
-.produto-tamanhos span:hover {
-    background: #370400;
-    color: #fff;
-    border-color: #370400;
-    transform: translateY(-2px);
-    box-shadow: 0 2px 6px rgba(55, 4, 0, 0.25);
-}
-
-.produto-sacola {
-    width: 28px;
-    height: 28px;
-    margin-left: 8px;
-    background: #370400;
-    border: none;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    padding: 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.produto-sacola:hover {
-    background: #c9a063;
-    transform: scale(1.15);
-    box-shadow: 0 3px 8px rgba(201, 160, 99, 0.4);
-}
-
 @media (max-width: 768px) {
     .products-carousel-wrapper {
         padding: 0 40px;
@@ -5409,4 +5334,57 @@ input:checked+.slider:before {
         padding: 10px 20px;
         font-size: 12px;
     }
+}
+
+/* Botão Comprar - substitui a área de tamanhos */
+.produto-btn-comprar {
+    width: 100%;
+    padding: 14px;
+    background: #370400;
+    color: #fff;
+    border: none;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 12px;
+    border-radius: 4px;
+}
+
+.produto-btn-comprar:hover {
+    background: #c9a063;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(201, 160, 99, 0.4);
+}
+
+/* Ícone da Sacola ao lado do Favorito */
+.produto-sacola-topo {
+    position: absolute;
+    top: 14px;
+    right: 54px; /* Posiciona à esquerda do coração */
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.produto-sacola-topo:hover {
+    background: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.produto-sacola-topo svg {
+    width: 18px;
+    height: 18px;
 }
