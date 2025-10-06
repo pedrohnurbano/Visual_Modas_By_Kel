@@ -54,9 +54,3 @@ func FazerLogin(w http.ResponseWriter, r *http.Request) {
 	// Retornar os dados incluindo a role para o JavaScript
 	respostas.JSON(w, http.StatusOK, dadosAutenticacao)
 }
-
-// FazerLogout remove os dados de autenticação salvos no cookie
-func FazerLogout(w http.ResponseWriter, r *http.Request) {
-	cookies.Deletar(w)
-	http.Redirect(w, r, "/login", http.StatusFound)
-}

@@ -2,6 +2,7 @@ package cookies
 
 import (
 	"net/http"
+	"time"
 	"visual_modas_by_kel/visual_modas_by_kel/src/config"
 
 	"github.com/gorilla/securecookie"
@@ -57,13 +58,13 @@ func Ler(r *http.Request) (map[string]string, error) {
 	return valores, nil
 }
 
-// Deletar remove o cookie de autenticação
+// Deletar remove os valores armazenados no cookie
 func Deletar(w http.ResponseWriter) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "dados",
 		Value:    "",
 		Path:     "/",
 		HttpOnly: true,
-		MaxAge:   -1,
+		Expires:  time.Unix(0, 0),
 	})
 }
