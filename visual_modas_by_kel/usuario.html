@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Conta | Visual Modas By Kel</title>
+    <link rel="icon" type="image/png" href="design/icone_visualmodasbykel.png">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="estilos.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="home.html" style="text-decoration:none;">
+                <span class="logo" style="position:static;transform:none;left:auto;z-index:auto;flex:0 0 auto;">
+                    VISUAL MODAS BY KEL
+                </span>
+            </a>
+
+            <a href="home.html">
+                <img src="design/logo_visualmodasbykel.png" alt="Logo Decorativa" style="height:38px;">
+            </a>
+
+            <div class="header-icons" style="gap: 24px;">
+                <form style="display:inline; margin:0 16px 0 0; border-bottom: 1px solid #000;">
+                    <input type="text" placeholder="O que você procura?">
+                </form>
+
+                <a href="usuario.html" style="font-size:12px;display:flex;align-items:center;gap:4px;">
+                    <img src="design/icone_usuario.png" alt="Minha Conta">
+                    <span>Minha conta e<br><b style="color:#fff;">Meus pedidos</b></span>
+                </a>
+                <a href="favoritos.html" title="Favoritos" id="abrir_favoritos">
+                    <img src="design/icone_favoritos.png" alt="Favoritos">
+                </a>
+                <a href="sacola.html" title="Sacola" id="abrir_sacola">
+                    <img src="design/icone_sacola.png" alt="Sacola">
+                </a>
+            </div>
+        </div>
+        <nav class="header-filters" id="headerFilters">
+            <ul>
+                <li><a href="home.html">CATEGORIAS</a></li>
+                <li><a href="#">NOVIDADES</a></li>
+                <li><a href="#">COLEÇÃO</a></li>
+                <li><a href="#">TENDÊNCIAS</a></li>
+                <li><a href="#">LOOKBOOK</a></li>
+                <li><a href="#">PROMOÇÕES</a></li>
+                <li><a href="#">INSPIRAÇÃO</a></li>
+                <li><a href="#">OUTLET</a></li>
+                <li><a href="#">EXCLUSIVOS</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="usuario-page">
+        <div class="usuario-container">
+            <!-- Cabeçalho da Página -->
+            <div class="usuario-header">
+                <div class="usuario-welcome">
+                    <h1 class="usuario-title">Olá, <span id="userName">Usuário</span>!</h1>
+                    <p class="usuario-subtitle">Gerencie suas informações e pedidos</p>
+                </div>
+                <button class="btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            </div>
+
+            <div class="usuario-content">
+                <!-- Menu Lateral -->
+                <aside class="usuario-sidebar">
+                    <nav class="usuario-menu">
+                        <button class="menu-item active" data-section="dados-pessoais">
+                            <i class="fas fa-user"></i>
+                            <span>Dados Pessoais</span>
+                        </button>
+                        <button class="menu-item" data-section="enderecos">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Endereços</span>
+                        </button>
+                        <button class="menu-item" data-section="pedidos">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span>Meus Pedidos</span>
+                        </button>
+                        <button class="menu-item" data-section="favoritos">
+                            <i class="fas fa-heart"></i>
+                            <span>Favoritos</span>
+                        </button>
+                        <button class="menu-item" data-section="seguranca">
+                            <i class="fas fa-lock"></i>
+                            <span>Segurança</span>
+                        </button>
+                        <button class="menu-item" data-section="configuracoes">
+                            <i class="fas fa-cog"></i>
+                            <span>Configurações</span>
+                        </button>
+                    </nav>
+                </aside>
+
+                <!-- Conteúdo Principal -->
+                <div class="usuario-main">
+                    <!-- Seção: Dados Pessoais -->
+                    <section class="usuario-section active" id="dados-pessoais">
+                        <div class="section-header">
+                            <h2 class="section-title">Dados Pessoais</h2>
+                            <button class="btn-edit" id="btnEditarDados">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                        </div>
+
+                        <div class="dados-view" id="dadosView">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <label>Nome Completo</label>
+                                    <p id="viewNome">-</p>
+                                </div>
+                                <div class="info-item">
+                                    <label>CPF</label>
+                                    <p id="viewCpf">-</p>
+                                </div>
+                                <div class="info-item">
+                                    <label>E-mail</label>
+                                    <p id="viewEmail">-</p>
+                                </div>
+                                <div class="info-item">
+                                    <label>Telefone</label>
+                                    <p id="viewTelefone">-</p>
+                                </div>
+                                <div class="info-item">
+                                    <label>Data de Nascimento</label>
+                                    <p id="viewDataNasc">-</p>
+                                </div>
+                                <div class="info-item">
+                                    <label>Gênero</label>
+                                    <p id="viewGenero">-</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form class="dados-edit hidden" id="dadosEdit">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Nome</label>
+                                    <input type="text" id="editNome" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Sobrenome</label>
+                                    <input type="text" id="editSobrenome" class="form-input" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">CPF</label>
+                                    <input type="text" id="editCpf" class="form-input" maxlength="14" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Telefone</label>
+                                    <input type="text" id="editTelefone" class="form-input" maxlength="15" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Data de Nascimento</label>
+                                    <input type="date" id="editDataNasc" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Gênero</label>
+                                    <select id="editGenero" class="form-input">
+                                        <option value="">Selecione</option>
+                                        <option value="feminino">Feminino</option>
+                                        <option value="masculino">Masculino</option>
+                                        <option value="outro">Outro</option>
+                                        <option value="prefiro-nao-informar">Prefiro não informar</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group full-width">
+                                    <label class="form-label">E-mail</label>
+                                    <input type="email" id="editEmail" class="form-input" required>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn-secondary" onclick="cancelarEdicaoDados()">Cancelar</button>
+                                <button type="submit" class="btn-primary">Salvar Alterações</button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <!-- Seção: Endereços -->
+                    <section class="usuario-section" id="enderecos">
+                        <div class="section-header">
+                            <h2 class="section-title">Meus Endereços</h2>
+                            <button class="btn-add" onclick="abrirModalEndereco()">
+                                <i class="fas fa-plus"></i> Adicionar Endereço
+                            </button>
+                        </div>
+
+                        <div class="enderecos-grid" id="enderecosGrid">
+                            <!-- Endereços serão carregados aqui -->
+                        </div>
+
+                        <div class="empty-state" id="enderecosEmpty" style="display:none;">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <p>Você ainda não cadastrou nenhum endereço</p>
+                            <button class="btn-primary" onclick="abrirModalEndereco()">Adicionar Primeiro Endereço</button>
+                        </div>
+                    </section>
+
+                    <!-- Seção: Pedidos -->
+                    <section class="usuario-section" id="pedidos">
+                        <div class="section-header">
+                            <h2 class="section-title">Meus Pedidos</h2>
+                            <div class="pedidos-filter">
+                                <select id="filterPedidos" class="form-input">
+                                    <option value="todos">Todos os pedidos</option>
+                                    <option value="em-processamento">Em processamento</option>
+                                    <option value="enviado">Enviado</option>
+                                    <option value="entregue">Entregue</option>
+                                    <option value="cancelado">Cancelado</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="pedidos-lista" id="pedidosLista">
+                            <!-- Pedidos serão carregados aqui -->
+                        </div>
+
+                        <div class="empty-state" id="pedidosEmpty" style="display:none;">
+                            <i class="fas fa-shopping-bag"></i>
+                            <p>Você ainda não realizou nenhum pedido</p>
+                            <a href="home.html" class="btn-primary">Começar a Comprar</a>
+                        </div>
+                    </section>
+
+                    <!-- Seção: Favoritos -->
+                    <section class="usuario-section" id="favoritos">
+                        <div class="section-header">
+                            <h2 class="section-title">Meus Favoritos</h2>
+                        </div>
+
+                        <div class="favoritos-grid" id="favoritosGrid">
+                            <!-- Favoritos serão carregados aqui -->
+                        </div>
+
+                        <div class="empty-state" id="favoritosEmpty" style="display:none;">
+                            <i class="fas fa-heart"></i>
+                            <p>Você ainda não tem produtos favoritos</p>
+                            <a href="home.html" class="btn-primary">Explorar Produtos</a>
+                        </div>
+                    </section>
+
+                    <!-- Seção: Segurança -->
+                    <section class="usuario-section" id="seguranca">
+                        <div class="section-header">
+                            <h2 class="section-title">Segurança</h2>
+                        </div>
+
+                        <form id="formAlterarSenha" class="security-form">
+                            <h3>Alterar Senha</h3>
+                            <div class="form-group">
+                                <label class="form-label">Senha Atual</label>
+                                <div class="password-container">
+                                    <input type="password" id="senhaAtual" class="form-input" required>
+                                    <span class="password-toggle" onclick="togglePasswordField('senhaAtual', this)">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Nova Senha</label>
+                                <div class="password-container">
+                                    <input type="password" id="novaSenha" class="form-input" required>
+                                    <span class="password-toggle" onclick="togglePasswordField('novaSenha', this)">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
+                                </div>
+                                <small class="form-hint">Mínimo de 8 caracteres</small>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Confirmar Nova Senha</label>
+                                <div class="password-container">
+                                    <input type="password" id="confirmarNovaSenha" class="form-input" required>
+                                    <span class="password-toggle" onclick="togglePasswordField('confirmarNovaSenha', this)">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-primary">Atualizar Senha</button>
+                        </form>
+                    </section>
+
+                    <!-- Seção: Configurações -->
+                    <section class="usuario-section" id="configuracoes">
+                        <div class="section-header">
+                            <h2 class="section-title">Configurações da Conta</h2>
+                        </div>
+
+                        <div class="config-section">
+                            <h3>Notificações</h3>
+                            <div class="config-item">
+                                <div class="config-info">
+                                    <strong>E-mails promocionais</strong>
+                                    <p>Receba ofertas exclusivas e novidades</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="emailPromocional" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="config-item">
+                                <div class="config-info">
+                                    <strong>Atualizações de pedidos</strong>
+                                    <p>Receba notificações sobre seus pedidos</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="emailPedidos" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="config-section danger-zone">
+                            <h3>Zona de Perigo</h3>
+                            <div class="config-item">
+                                <div class="config-info">
+                                    <strong>Excluir Conta</strong>
+                                    <p>Esta ação é irreversível. Todos os seus dados serão permanentemente removidos.</p>
+                                </div>
+                                <button class="btn-danger" onclick="confirmarExclusaoConta()">
+                                    <i class="fas fa-trash"></i> Excluir Conta
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal: Adicionar/Editar Endereço -->
+    <div class="modal" id="modalEndereco">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalEnderecoTitulo">Adicionar Endereço</h3>
+                <button class="modal-close" onclick="fecharModalEndereco()">&times;</button>
+            </div>
+            <form id="formEndereco">
+                <input type="hidden" id="enderecoId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">CEP</label>
+                        <input type="text" id="enderecoCep" class="form-input" maxlength="9" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn-buscar-cep" onclick="buscarCep()">
+                            <i class="fas fa-search"></i> Buscar
+                        </button>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="flex: 2;">
+                        <label class="form-label">Rua</label>
+                        <input type="text" id="enderecoRua" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Número</label>
+                        <input type="text" id="enderecoNumero" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Complemento</label>
+                    <input type="text" id="enderecoComplemento" class="form-input">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Bairro</label>
+                        <input type="text" id="enderecoBairro" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cidade</label>
+                        <input type="text" id="enderecoCidade" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Estado</label>
+                        <select id="enderecoEstado" class="form-input" required>
+                            <option value="">UF</option>
+                            <option value="AC">AC</option>
+                            <option value="AL">AL</option>
+                            <option value="AP">AP</option>
+                            <option value="AM">AM</option>
+                            <option value="BA">BA</option>
+                            <option value="CE">CE</option>
+                            <option value="DF">DF</option>
+                            <option value="ES">ES</option>
+                            <option value="GO">GO</option>
+                            <option value="MA">MA</option>
+                            <option value="MT">MT</option>
+                            <option value="MS">MS</option>
+                            <option value="MG">MG</option>
+                            <option value="PA">PA</option>
+                            <option value="PB">PB</option>
+                            <option value="PR">PR</option>
+                            <option value="PE">PE</option>
+                            <option value="PI">PI</option>
+                            <option value="RJ">RJ</option>
+                            <option value="RN">RN</option>
+                            <option value="RS">RS</option>
+                            <option value="RO">RO</option>
+                            <option value="RR">RR</option>
+                            <option value="SC">SC</option>
+                            <option value="SP">SP</option>
+                            <option value="SE">SE</option>
+                            <option value="TO">TO</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="checkbox-container">
+                    <div class="custom-checkbox">
+                        <input type="checkbox" id="enderecoPrincipal">
+                        <div class="checkbox-mark"></div>
+                    </div>
+                    <label class="checkbox-label" for="enderecoPrincipal">
+                        Definir como endereço principal
+                    </label>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="fecharModalEndereco()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar Endereço</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmar Exclusão de Conta -->
+    <div class="modal" id="modalExcluirConta">
+        <div class="modal-content modal-danger">
+            <div class="modal-header">
+                <h3>Excluir Conta</h3>
+                <button class="modal-close" onclick="fecharModalExcluirConta()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="warning-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <p><strong>Atenção!</strong> Esta ação não pode ser desfeita.</p>
+                <p>Ao excluir sua conta, você perderá:</p>
+                <ul>
+                    <li>Histórico de pedidos</li>
+                    <li>Endereços salvos</li>
+                    <li>Lista de favoritos</li>
+                    <li>Cupons e descontos</li>
+                </ul>
+                <div class="form-group">
+                    <label class="form-label">Digite sua senha para confirmar:</label>
+                    <input type="password" id="senhaExclusao" class="form-input" required>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="fecharModalExcluirConta()">Cancelar</button>
+                <button type="button" class="btn-danger" onclick="excluirConta()">Sim, Excluir Minha Conta</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Institucional</h3>
+                    <ul>
+                        <li><a href="#">Sobre Nós</a></li>
+                        <li><a href="#">Nossa História</a></li>
+                        <li><a href="#">Trabalhe Conosco</a></li>
+                        <li><a href="#">Lojas Físicas</a></li>
+                        <li><a href="#">Política de Privacidade</a></li>
+                        <li><a href="#">Termos de Uso</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Contato</h3>
+                    <p><strong>Telefone:</strong> (48) 9 9957-5303</p>
+                    <p><strong>E-mail:</strong> contato@visualmodasbykel.com.br</p>
+                    <p><strong>Horário de Atendimento:</strong><br>
+                        Segunda a Sexta: 08h30 às 18h<br>
+                        Sábado: 08h30 às 17h</p>
+                    <div class="footer-social">
+                        <a href="https://www.instagram.com/visualmodasbykel/" title="Instagram">
+                            <img src="design/icone_instagram.png" alt="Instagram">
+                        </a>
+                        <a href="https://www.facebook.com/visualmodasevoce/?locale=pt_BR" title="Facebook">
+                            <img src="design/icone_facebook.png" alt="Facebook">
+                        </a>
+                        <a href="https://www.tiktok.com/@visualmodasbykel" title="TikTok">
+                            <img src="design/icone_tiktok.png" alt="TikTok">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Formas de Pagamento</h3>
+                    <div class="footer-payment">
+                        <img src="design/icone_pix.png" alt="Pix" title="Pix">
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Visual Modas By Kel - Todos os direitos reservados</p>
+                <p>CNPJ: 00.000.000/0001-00 | Criciúma - SC</p>
+                <p>Desenvolvido por <a href="#">Visual Modas By Kel</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/usuario.js"></script>
+</body>
+
+</html>
