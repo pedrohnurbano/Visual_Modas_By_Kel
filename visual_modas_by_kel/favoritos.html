@@ -69,7 +69,8 @@
             <!-- Estado Vazio -->
             <div class="favoritos-empty" id="favoritosEmpty">
                 <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                 </svg>
                 <h2>Você ainda não tem favoritos</h2>
                 <p>Adicione produtos aos seus favoritos clicando no ícone de coração</p>
@@ -277,35 +278,43 @@
 
         function createFavoriteCard(product) {
             const installmentValue = (product.price / product.installments).toFixed(2);
+            const tamanhoFixo = product.sizes[2]; // Tamanho padrão "M"
 
             return `
-                <div class="produto-card" data-product-id="${product.id}">
-                    <button class="produto-favorito favorito-active" title="Remover dos favoritos" onclick="toggleFavorite(${product.id})">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                                stroke="#370400" stroke-width="1.5" fill="#370400"/>
-                        </svg>
-                    </button>
-                    <div class="produto-img-container">
-                        <img src="${product.image1}" alt="${product.name}" class="produto-img img-primaria">
-                        <img src="${product.image2}" alt="${product.name} - Verso" class="produto-img img-secundaria">
-                        <div class="produto-tamanhos">
-                            ${product.sizes.map(size => `<span class="size-option" data-size="${size}" onclick="selectSize(${product.id}, '${size}')">${size}</span>`).join('')}
-                            <button class="produto-sacola" title="Adicionar à sacola" onclick="addSelectedToCart(${product.id})">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                                    <line x1="3" y1="6" x2="21" y2="6"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="produto-info">
-                        <span class="produto-nome">${product.name}</span>
-                        <span class="produto-preco">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
-                        <span class="produto-parcela">Até ${product.installments}x de R$ ${installmentValue.replace('.', ',')}</span>
-                    </div>
-                </div>
-            `;
+        <div class="produto-card" data-product-id="${product.id}">
+            <button class="produto-favorito favorito-active" title="Remover dos favoritos" onclick="toggleFavorite(${product.id})">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        stroke="#370400" stroke-width="1.5" fill="#370400"/>
+                </svg>
+            </button>
+            
+            <button class="produto-sacola-topo" 
+                    title="Adicionar à sacola" 
+                    onclick="addToCart(${product.id}, '${tamanhoFixo}')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#370400" stroke-width="1.5">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                </svg>
+            </button>
+            
+            <div class="produto-img-container">
+                <img src="${product.image1}" alt="${product.name}" class="produto-img img-primaria">
+                <img src="${product.image2}" alt="${product.name} - Verso" class="produto-img img-secundaria">
+            </div>
+            <div class="produto-info">
+                <span class="produto-nome">${product.name}</span>
+                <span class="produto-preco">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
+                <span class="produto-parcela">Até ${product.installments}x de R$ ${installmentValue.replace('.', ',')}</span>
+                <span style="font-size: 12px; color: #666; margin-top: 6px; display: block;">
+                    Tamanho: ${tamanhoFixo}
+                </span>
+                <button class="produto-btn-comprar" onclick="addToCart(${product.id}, '${tamanhoFixo}')">
+                    Comprar
+                </button>
+            </div>
+        </div>
+    `;
         }
 
         function toggleFavorite(productId) {
@@ -329,29 +338,6 @@
             } else {
                 count.style.display = 'none';
             }
-        }
-
-        function selectSize(productId, size) {
-            document.querySelectorAll(`[data-product-id="${productId}"] .size-option`).forEach(el => {
-                el.classList.remove('selected');
-            });
-            event.target.classList.add('selected');
-            selectedSizes[productId] = size;
-        }
-
-        function addSelectedToCart(productId) {
-            const selectedSize = selectedSizes[productId];
-
-            if (!selectedSize) {
-                showNotification('Por favor, selecione um tamanho primeiro!');
-                return;
-            }
-
-            addToCart(productId, selectedSize);
-            delete selectedSizes[productId];
-            document.querySelectorAll(`[data-product-id="${productId}"] .size-option`).forEach(el => {
-                el.classList.remove('selected');
-            });
         }
 
         function addToCart(productId, size) {

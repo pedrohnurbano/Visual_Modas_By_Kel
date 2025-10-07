@@ -5359,11 +5359,12 @@ input:checked+.slider:before {
     box-shadow: 0 4px 12px rgba(201, 160, 99, 0.4);
 }
 
-/* Ícone da Sacola ao lado do Favorito */
+/* Ícone da Sacola embaixo do Coração */
 .produto-sacola-topo {
     position: absolute;
-    top: 14px;
-    right: 54px; /* Posiciona à esquerda do coração */
+    top: 54px;
+    /* Posiciona embaixo do coração (32px altura + 14px top + 8px gap) */
+    right: 14px;
     width: 32px;
     height: 32px;
     background: rgba(255, 255, 255, 0.95);
@@ -5376,6 +5377,17 @@ input:checked+.slider:before {
     justify-content: center;
     transition: all 0.2s;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    /* Invisível por padrão */
+    pointer-events: none;
+    /* Não clicável quando invisível */
+}
+
+.produto-card:hover .produto-sacola-topo {
+    opacity: 1;
+    /* Visível no hover */
+    pointer-events: auto;
+    /* Clicável no hover */
 }
 
 .produto-sacola-topo:hover {
@@ -5387,4 +5399,53 @@ input:checked+.slider:before {
 .produto-sacola-topo svg {
     width: 18px;
     height: 18px;
+}
+
+/* Indicadores de Slides */
+.banner-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dot:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: scale(1.2);
+}
+
+.dot.active {
+    background: #c9a063;
+    border-color: #c9a063;
+    width: 30px;
+    border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+    .banner-dots {
+        bottom: 15px;
+        gap: 8px;
+    }
+
+    .dot {
+        width: 8px;
+        height: 8px;
+    }
+
+    .dot.active {
+        width: 24px;
+    }
 }

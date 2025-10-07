@@ -514,47 +514,79 @@
             const isFavorite = favorites.includes(product.id);
             const installmentValue = (product.price / product.installments).toFixed(2);
 
+            // Define um tamanho fixo para cada produto (exemplo)
+            // Futuramente virá do banco de dados
+            const tamanhoFixo = product.sizes[2]; // Pega o tamanho "M" como padrão
+
             return `
-    <div class="produto-card" data-product-id="${product.id}">
-        <!-- Botão Favorito -->
-        <button class="produto-favorito ${isFavorite ? 'favorito-active' : ''}" 
-                title="${isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}" 
-                onclick="toggleFavorite(${product.id})">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                    stroke="#370400" stroke-width="1.5" fill="${isFavorite ? '#370400' : 'none'}"/>
-            </svg>
-        </button>
-
-        <!-- Botão Sacola (NOVO - ao lado do coração) -->
-        <button class="produto-sacola-topo" 
-                title="Adicionar à sacola" 
-                onclick="abrirModalTamanho(${product.id})">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#370400" stroke-width="1.5">
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                <line x1="3" y1="6" x2="21" y2="6"/>
-            </svg>
-        </button>
-
-        <!-- Imagem do Produto -->
-        <div class="produto-img-container">
-            <img src="${product.image1}" alt="${product.name}" class="produto-img img-primaria">
-            <img src="${product.image2}" alt="${product.name} - Verso" class="produto-img img-secundaria">
-        </div>
-
-        <!-- Informações do Produto -->
-        <div class="produto-info">
-            <span class="produto-nome">${product.name}</span>
-            <span class="produto-preco">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
-            <span class="produto-parcela">Até ${product.installments}x de R$ ${installmentValue.replace('.', ',')}</span>
-            
-            <!-- Botão Comprar (NOVO) -->
-            <button class="produto-btn-comprar" onclick="abrirModalTamanho(${product.id})">
-                Comprar
+        <div class="produto-card" data-product-id="${product.id}">
+            <!-- Botão Favorito -->
+            <button class="produto-favorito ${isFavorite ? 'favorito-active' : ''}" 
+                    title="${isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}" 
+                    onclick="toggleFavorite(${product.id})">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        stroke="#370400" stroke-width="1.5" fill="${isFavorite ? '#370400' : 'none'}"/>
+                </svg>
             </button>
+
+            <!-- Botão Sacola (embaixo do coração, visível apenas no hover) -->
+            <button class="produto-sacola-topo" 
+                    title="Adicionar à sacola" 
+                    onclick="adicionarDiretoNaSacola(${product.id}, '${tamanhoFixo}')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#370400" stroke-width="1.5">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                </svg>
+            </button>
+
+            <!-- Imagem do Produto -->
+            <div class="produto-img-container">
+                <img src="${product.image1}" alt="${product.name}" class="produto-img img-primaria">
+                <img src="${product.image2}" alt="${product.name} - Verso" class="produto-img img-secundaria">
+            </div>
+
+            <!-- Informações do Produto -->
+            <div class="produto-info">
+                <span class="produto-nome">${product.name}</span>
+                <span class="produto-preco">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
+                <span class="produto-parcela">Até ${product.installments}x de R$ ${installmentValue.replace('.', ',')}</span>
+                
+                <!-- Informação de Tamanho (apenas visual) -->
+                <span style="font-size: 12px; color: #666; margin-top: 6px; display: block;">
+                    Tamanho: ${tamanhoFixo}
+                </span>
+                
+                <!-- Botão Comprar -->
+                <button class="produto-btn-comprar" onclick="adicionarDiretoNaSacola(${product.id}, '${tamanhoFixo}')">
+                    Comprar
+                </button>
+            </div>
         </div>
-    </div>
     `;
+        }
+
+        function adicionarDiretoNaSacola(productId, size) {
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) return;
+
+            const existingItem = cart.find(item => item.id === productId && item.size === size);
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({
+                    id: productId,
+                    name: product.name,
+                    price: product.price,
+                    size: size,
+                    quantity: 1,
+                    image: product.image1
+                });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            showNotification('Produto adicionado à sacola!');
         }
 
         function abrirModalTamanho(productId) {
