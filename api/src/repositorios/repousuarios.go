@@ -203,6 +203,7 @@ func (repositorio Usuarios) BuscarPorCPF(cpf string) (modelos.Usuario, error) {
 	return usuario, nil
 }
 
+// BuscarSenha retorna a senha de um usuário pelo seu ID
 func (repositorio Usuarios) BuscarSenha(usuarioID uint64) (string, error) {
 	linha, erro := repositorio.db.Query("SELECT senha FROM usuarios WHERE id = ?", usuarioID)
 	if erro != nil {

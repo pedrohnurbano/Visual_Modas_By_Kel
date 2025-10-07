@@ -8,16 +8,17 @@ import (
 
 // Produto representa um produto no sistema
 type Produto struct {
-	ID          uint64    `json:"id,omitempty"`
-	Nome        string    `json:"nome,omitempty"`
-	Descricao   string    `json:"descricao,omitempty"`
-	Preco       float64   `json:"preco,omitempty"`
-	Tamanho     string    `json:"tamanho,omitempty"`
-	Categoria   string    `json:"categoria,omitempty"`
-	FotoURL     string    `json:"foto_url,omitempty"`
-	UsuarioID   uint64    `json:"usuario_id,omitempty"`
-	Ativo       bool      `json:"ativo"`
-	CriadoEm    time.Time `json:"criadoEm,omitempty"`
+	ID           uint64    `json:"id,omitempty"`
+	Nome         string    `json:"nome,omitempty"`
+	Descricao    string    `json:"descricao,omitempty"`
+	Preco        float64   `json:"preco,omitempty"`
+	Tamanho      string    `json:"tamanho,omitempty"`
+	Categoria    string    `json:"categoria,omitempty"`
+	Secao        string    `json:"secao,omitempty"`
+	FotoURL      string    `json:"foto_url,omitempty"`
+	UsuarioID    uint64    `json:"usuario_id,omitempty"`
+	Ativo        bool      `json:"ativo"`
+	CriadoEm     time.Time `json:"criadoEm,omitempty"`
 	AtualizadoEm time.Time `json:"atualizadoEm,omitempty"`
 }
 
@@ -36,6 +37,13 @@ var CategoriasValidas = []string{
 	"Blazers",
 	"Body",
 	"Regatas",
+}
+
+// SecoesValidas lista todas as seções permitidas
+var SecoesValidas = []string{
+	"Geral",
+	"Novidades",
+	"Destaques",
 }
 
 // Preparar valida e formata o produto
@@ -97,6 +105,22 @@ func (produto *Produto) validar(etapa string) error {
 		return errors.New("categoria inválida")
 	}
 
+	if produto.Secao == "" {
+		return errors.New("a seção é obrigatória")
+	}
+
+	// Validar seção
+	secaoValida := false
+	for _, s := range SecoesValidas {
+		if produto.Secao == s {
+			secaoValida = true
+			break
+		}
+	}
+	if !secaoValida {
+		return errors.New("seção inválida. Use: Geral, Novidades ou Destaques")
+	}
+
 	if etapa == "cadastro" && produto.UsuarioID == 0 {
 		return errors.New("o ID do usuário é obrigatório")
 	}
@@ -109,5 +133,6 @@ func (produto *Produto) formatar() {
 	produto.Descricao = strings.TrimSpace(produto.Descricao)
 	produto.Tamanho = strings.TrimSpace(produto.Tamanho)
 	produto.Categoria = strings.TrimSpace(produto.Categoria)
+	produto.Secao = strings.TrimSpace(produto.Secao)
 	produto.FotoURL = strings.TrimSpace(produto.FotoURL)
 }

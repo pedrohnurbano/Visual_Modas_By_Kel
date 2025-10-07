@@ -74,6 +74,7 @@ func CriarProduto(w http.ResponseWriter, r *http.Request) {
 		"preco":     preco,
 		"tamanho":   dadosRecebidos["tamanho"],
 		"categoria": dadosRecebidos["categoria"],
+		"secao":     dadosRecebidos["secao"],
 		"foto_url":  dadosRecebidos["foto_url"], // Já vem em base64 do frontend
 	}
 
@@ -178,6 +179,33 @@ func BuscarProduto(w http.ResponseWriter, r *http.Request) {
 	respostas.JSON(w, http.StatusOK, produto)
 }
 
+// BuscarProdutosPorSecao busca produtos por seção
+func BuscarProdutosPorSecao(w http.ResponseWriter, r *http.Request) {
+	parametros := mux.Vars(r)
+	secao := parametros["secao"]
+
+	url := fmt.Sprintf("%s/produtos/secao/%s", config.APIURL, secao)
+	response, erro := http.Get(url)
+	if erro != nil {
+		respostas.JSON(w, http.StatusInternalServerError, respostas.ErroAPI{Erro: erro.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		respostas.TratarStatusCodeDeErro(w, response)
+		return
+	}
+
+	var produtos []modelos.Produto
+	if erro = json.NewDecoder(response.Body).Decode(&produtos); erro != nil {
+		respostas.JSON(w, http.StatusUnprocessableEntity, respostas.ErroAPI{Erro: erro.Error()})
+		return
+	}
+
+	respostas.JSON(w, http.StatusOK, produtos)
+}
+
 // BuscarMeusProdutos busca os produtos do usuário logado
 func BuscarMeusProdutos(w http.ResponseWriter, r *http.Request) {
 	url := fmt.Sprintf("%s/meus-produtos", config.APIURL)
@@ -207,15 +235,37 @@ func AtualizarProduto(w http.ResponseWriter, r *http.Request) {
 	parametros := mux.Vars(r)
 	produtoID := parametros["produtoId"]
 
-	r.ParseForm()
+	// Ler o corpo da requisição JSON
+	body, erro := io.ReadAll(r.Body)
+	if erro != nil {
+		respostas.JSON(w, http.StatusBadRequest, respostas.ErroAPI{Erro: "Erro ao ler dados"})
+		return
+	}
+	defer r.Body.Close()
 
+	// Parse do JSON recebido
+	var dadosRecebidos map[string]interface{}
+	if erro := json.Unmarshal(body, &dadosRecebidos); erro != nil {
+		respostas.JSON(w, http.StatusBadRequest, respostas.ErroAPI{Erro: "Dados inválidos"})
+		return
+	}
+
+	// Validar e converter o preço para float64
+	preco, erro := converterParaFloat64(dadosRecebidos["preco"])
+	if erro != nil {
+		respostas.JSON(w, http.StatusBadRequest, respostas.ErroAPI{Erro: "Preço inválido"})
+		return
+	}
+
+	// Montar JSON do produto
 	produto := map[string]interface{}{
-		"nome":      r.FormValue("nome"),
-		"descricao": r.FormValue("descricao"),
-		"preco":     r.FormValue("preco"),
-		"tamanho":   r.FormValue("tamanho"),
-		"categoria": r.FormValue("categoria"),
-		"foto_url":  r.FormValue("foto_url"),
+		"nome":      dadosRecebidos["nome"],
+		"descricao": dadosRecebidos["descricao"],
+		"preco":     preco,
+		"tamanho":   dadosRecebidos["tamanho"],
+		"categoria": dadosRecebidos["categoria"],
+		"secao":     dadosRecebidos["secao"],
+		"foto_url":  dadosRecebidos["foto_url"],
 	}
 
 	produtoJSON, erro := json.Marshal(produto)

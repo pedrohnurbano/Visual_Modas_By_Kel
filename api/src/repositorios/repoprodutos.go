@@ -19,7 +19,7 @@ func NovoRepositorioDeProdutos(db *sql.DB) *Produtos {
 // Criar insere um produto no banco de dados
 func (repositorio Produtos) Criar(produto modelos.Produto) (uint64, error) {
 	statement, erro := repositorio.db.Prepare(
-		"INSERT INTO produtos (nome, descricao, preco, tamanho, categoria, foto_url, usuario_id, ativo) VALUES(?, ?, ?, ?, ?, ?, ?, ?)",
+		"INSERT INTO produtos (nome, descricao, preco, tamanho, categoria, secao, foto_url, usuario_id, ativo) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)",
 	)
 	if erro != nil {
 		return 0, erro
@@ -32,6 +32,7 @@ func (repositorio Produtos) Criar(produto modelos.Produto) (uint64, error) {
 		produto.Preco,
 		produto.Tamanho,
 		produto.Categoria,
+		produto.Secao,
 		produto.FotoURL,
 		produto.UsuarioID,
 		true, // ativo por padrão
@@ -53,11 +54,11 @@ func (repositorio Produtos) Buscar(filtro string) ([]modelos.Produto, error) {
 	filtro = fmt.Sprintf("%%%s%%", filtro)
 	
 	linhas, erro := repositorio.db.Query(
-		`SELECT id, nome, descricao, preco, tamanho, categoria, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
+		`SELECT id, nome, descricao, preco, tamanho, categoria, secao, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
 		FROM produtos 
-		WHERE ativo = true AND (nome LIKE ? OR descricao LIKE ? OR categoria LIKE ?)
+		WHERE ativo = true AND (nome LIKE ? OR descricao LIKE ? OR categoria LIKE ? OR secao LIKE ?)
 		ORDER BY criadoEm DESC`,
-		filtro, filtro, filtro,
+		filtro, filtro, filtro, filtro,
 	)
 	if erro != nil {
 		return nil, erro
@@ -75,6 +76,7 @@ func (repositorio Produtos) Buscar(filtro string) ([]modelos.Produto, error) {
 			&produto.Preco,
 			&produto.Tamanho,
 			&produto.Categoria,
+			&produto.Secao,
 			&produto.FotoURL,
 			&produto.UsuarioID,
 			&produto.Ativo,
@@ -93,7 +95,7 @@ func (repositorio Produtos) Buscar(filtro string) ([]modelos.Produto, error) {
 // BuscarPorID retorna um produto específico
 func (repositorio Produtos) BuscarPorID(ID uint64) (modelos.Produto, error) {
 	linha := repositorio.db.QueryRow(
-		`SELECT id, nome, descricao, preco, tamanho, categoria, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
+		`SELECT id, nome, descricao, preco, tamanho, categoria, secao, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
 		FROM produtos WHERE id = ?`,
 		ID,
 	)
@@ -106,6 +108,7 @@ func (repositorio Produtos) BuscarPorID(ID uint64) (modelos.Produto, error) {
 		&produto.Preco,
 		&produto.Tamanho,
 		&produto.Categoria,
+		&produto.Secao,
 		&produto.FotoURL,
 		&produto.UsuarioID,
 		&produto.Ativo,
@@ -119,7 +122,7 @@ func (repositorio Produtos) BuscarPorID(ID uint64) (modelos.Produto, error) {
 // BuscarPorCategoria retorna produtos de uma categoria específica
 func (repositorio Produtos) BuscarPorCategoria(categoria string) ([]modelos.Produto, error) {
 	linhas, erro := repositorio.db.Query(
-		`SELECT id, nome, descricao, preco, tamanho, categoria, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
+		`SELECT id, nome, descricao, preco, tamanho, categoria, secao, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
 		FROM produtos 
 		WHERE ativo = true AND categoria = ?
 		ORDER BY criadoEm DESC`,
@@ -141,6 +144,48 @@ func (repositorio Produtos) BuscarPorCategoria(categoria string) ([]modelos.Prod
 			&produto.Preco,
 			&produto.Tamanho,
 			&produto.Categoria,
+			&produto.Secao,
+			&produto.FotoURL,
+			&produto.UsuarioID,
+			&produto.Ativo,
+			&produto.CriadoEm,
+			&produto.AtualizadoEm,
+		); erro != nil {
+			return nil, erro
+		}
+
+		produtos = append(produtos, produto)
+	}
+
+	return produtos, nil
+}
+
+// BuscarPorSecao retorna produtos de uma seção específica
+func (repositorio Produtos) BuscarPorSecao(secao string) ([]modelos.Produto, error) {
+	linhas, erro := repositorio.db.Query(
+		`SELECT id, nome, descricao, preco, tamanho, categoria, secao, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
+		FROM produtos 
+		WHERE ativo = true AND secao = ?
+		ORDER BY criadoEm DESC`,
+		secao,
+	)
+	if erro != nil {
+		return nil, erro
+	}
+	defer linhas.Close()
+
+	var produtos []modelos.Produto
+
+	for linhas.Next() {
+		var produto modelos.Produto
+		if erro = linhas.Scan(
+			&produto.ID,
+			&produto.Nome,
+			&produto.Descricao,
+			&produto.Preco,
+			&produto.Tamanho,
+			&produto.Categoria,
+			&produto.Secao,
 			&produto.FotoURL,
 			&produto.UsuarioID,
 			&produto.Ativo,
@@ -159,7 +204,7 @@ func (repositorio Produtos) BuscarPorCategoria(categoria string) ([]modelos.Prod
 // BuscarPorUsuario retorna todos os produtos de um usuário
 func (repositorio Produtos) BuscarPorUsuario(usuarioID uint64) ([]modelos.Produto, error) {
 	linhas, erro := repositorio.db.Query(
-		`SELECT id, nome, descricao, preco, tamanho, categoria, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
+		`SELECT id, nome, descricao, preco, tamanho, categoria, secao, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
 		FROM produtos 
 		WHERE usuario_id = ?
 		ORDER BY criadoEm DESC`,
@@ -181,6 +226,7 @@ func (repositorio Produtos) BuscarPorUsuario(usuarioID uint64) ([]modelos.Produt
 			&produto.Preco,
 			&produto.Tamanho,
 			&produto.Categoria,
+			&produto.Secao,
 			&produto.FotoURL,
 			&produto.UsuarioID,
 			&produto.Ativo,
@@ -200,7 +246,7 @@ func (repositorio Produtos) BuscarPorUsuario(usuarioID uint64) ([]modelos.Produt
 func (repositorio Produtos) Atualizar(ID uint64, produto modelos.Produto) error {
 	statement, erro := repositorio.db.Prepare(
 		`UPDATE produtos 
-		SET nome = ?, descricao = ?, preco = ?, tamanho = ?, categoria = ?, foto_url = ? 
+		SET nome = ?, descricao = ?, preco = ?, tamanho = ?, categoria = ?, secao = ?, foto_url = ? 
 		WHERE id = ?`,
 	)
 	if erro != nil {
@@ -214,6 +260,7 @@ func (repositorio Produtos) Atualizar(ID uint64, produto modelos.Produto) error 
 		produto.Preco,
 		produto.Tamanho,
 		produto.Categoria,
+		produto.Secao,
 		produto.FotoURL,
 		ID,
 	); erro != nil {

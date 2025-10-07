@@ -10,6 +10,7 @@ type Produto struct {
 	Preco        float64   `json:"preco,omitempty"`
 	Tamanho      string    `json:"tamanho,omitempty"`
 	Categoria    string    `json:"categoria,omitempty"`
+	Secao        string    `json:"secao,omitempty"`
 	FotoURL      string    `json:"foto_url,omitempty"`
 	UsuarioID    uint64    `json:"usuario_id,omitempty"`
 	Ativo        bool      `json:"ativo"`

@@ -267,6 +267,7 @@ func DeletarUsuario(w http.ResponseWriter, r *http.Request) {
 	respostas.JSON(w, http.StatusNoContent, nil)
 }
 
+// AtualizarSenha altera a senha de um usuário no banco
 func AtualizarSenha(w http.ResponseWriter, r *http.Request) {
 	usuarioIDNoToken, erro := autenticacao.ExtrairUsuarioID(r)
 	if erro != nil {

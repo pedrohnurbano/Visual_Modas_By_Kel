@@ -54,6 +54,14 @@ var rotasProdutos = []Rota{
 		RequerAutenticacao: false,
 		RequerAdmin:        false,
 	},
+	// API: Buscar produtos por seção
+	{
+		URI:                "/api/produtos/secao/{secao}",
+		Metodo:             http.MethodGet,
+		Funcao:             controllers.BuscarProdutosPorSecao,
+		RequerAutenticacao: false,
+		RequerAdmin:        false,
+	},
 	// API: Buscar meus produtos
 	{
 		URI:                "/api/meus-produtos",

@@ -26,6 +26,7 @@ CREATE TABLE produtos (
     preco DECIMAL(10,2) NOT NULL,
     tamanho VARCHAR(10) NOT NULL,
     categoria VARCHAR(50) NOT NULL,
+    secao VARCHAR(50) NOT NULL DEFAULT 'Geral',
     foto_url LONGTEXT,
     usuario_id INT NOT NULL,
     ativo BOOLEAN DEFAULT TRUE,
@@ -33,6 +34,7 @@ CREATE TABLE produtos (
     atualizadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
     INDEX idx_categoria (categoria),
+    INDEX idx_secao (secao),
     INDEX idx_ativo (ativo),
     INDEX idx_usuario (usuario_id),
     INDEX idx_tamanho (tamanho)
@@ -50,5 +52,4 @@ VALUES (
     'admin'
 );
 
- -- Trocar por senha hasheada em produção
- 
+-- Trocar por senha hasheada em produção

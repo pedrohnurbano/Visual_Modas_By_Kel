@@ -34,6 +34,13 @@ var rotasProdutos = []Rota{
 		Funcao:             controllers.BuscarProdutosPorCategoria,
 		RequerAutenticacao: false,
 	},
+	// Buscar produtos por seção
+	{
+		URI:                "/produtos/secao/{secao}",
+		Metodo:             http.MethodGet,
+		Funcao:             controllers.BuscarProdutosPorSecao,
+		RequerAutenticacao: false,
+	},
 	// Atualizar produto
 	{
 		URI:                "/produtos/{produtoId}",
