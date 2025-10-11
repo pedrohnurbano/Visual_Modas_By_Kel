@@ -544,7 +544,7 @@
                             <td>${produto.categoria || ''}</td>
                             <td>-</td>
                             <td>${produto.descricao ? produto.descricao.substring(0, 50) + '...' : ''}</td>
-                            <td>${produto.foto_url ? '<img src="' + produto.foto_url + '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">' : '-'}</td>
+                            <td>${produto.foto_url ? '<img src="' + (produto.foto_url.startsWith('http') ? produto.foto_url : (produto.foto_url.startsWith('/') ? 'http://localhost:5000' + produto.foto_url : 'http://localhost:5000/' + produto.foto_url)) + '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">' : '-'}</td>
                             <td>
                                 <button class="painel-btn-secondary" style="padding: 5px 10px; font-size: 12px;" onclick="editarProduto(${produto.id})">Editar</button>
                                 <button class="painel-btn-danger" style="padding: 5px 10px; font-size: 12px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;" onclick="deletarProduto(${produto.id})">Excluir</button>

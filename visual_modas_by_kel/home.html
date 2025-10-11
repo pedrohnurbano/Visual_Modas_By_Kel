@@ -398,10 +398,11 @@
             if (existingItem) {
                 existingItem.quantity++;
             } else {
-                // Usar a foto do banco de dados
+                // Usar a foto do banco de dados - buscar diretamente da API
                 let fotoUrl = product.foto_url;
                 if (fotoUrl && !fotoUrl.startsWith('http') && !fotoUrl.startsWith('data:')) {
-                    fotoUrl = fotoUrl.startsWith('/') ? fotoUrl : '/' + fotoUrl;
+                    // Se for URL relativa, buscar da API (porta 5000)
+                    fotoUrl = fotoUrl.startsWith('/') ? `http://localhost:5000${fotoUrl}` : `http://localhost:5000/${fotoUrl}`;
                 }
                 
                 cart.push({
@@ -439,10 +440,11 @@
             // Usar o tamanho do banco de dados
             const tamanho = product.tamanho || 'M';
             
-            // Usar a foto do banco de dados (se for URL relativa, adicionar prefixo)
+            // Usar a foto do banco de dados - buscar diretamente da API
             let fotoUrl = product.foto_url;
             if (fotoUrl && !fotoUrl.startsWith('http') && !fotoUrl.startsWith('data:')) {
-                fotoUrl = fotoUrl.startsWith('/') ? fotoUrl : '/' + fotoUrl;
+                // Se for URL relativa, buscar da API (porta 5000)
+                fotoUrl = fotoUrl.startsWith('/') ? `http://localhost:5000${fotoUrl}` : `http://localhost:5000/${fotoUrl}`;
             }
 
             return `
@@ -501,10 +503,11 @@
             if (existingItem) {
                 existingItem.quantity++;
             } else {
-                // Usar a foto do banco de dados
+                // Usar a foto do banco de dados - buscar diretamente da API
                 let fotoUrl = product.foto_url;
                 if (fotoUrl && !fotoUrl.startsWith('http') && !fotoUrl.startsWith('data:')) {
-                    fotoUrl = fotoUrl.startsWith('/') ? fotoUrl : '/' + fotoUrl;
+                    // Se for URL relativa, buscar da API (porta 5000)
+                    fotoUrl = fotoUrl.startsWith('/') ? `http://localhost:5000${fotoUrl}` : `http://localhost:5000/${fotoUrl}`;
                 }
                 
                 cart.push({
