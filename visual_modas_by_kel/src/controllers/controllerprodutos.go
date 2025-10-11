@@ -206,6 +206,51 @@ func BuscarProdutosPorSecao(w http.ResponseWriter, r *http.Request) {
 	respostas.JSON(w, http.StatusOK, produtos)
 }
 
+// BuscarProdutosHome busca produtos para exibir na home (Destaques e Novidades)
+func BuscarProdutosHome(w http.ResponseWriter, r *http.Request) {
+	// Buscar produtos de Destaques
+	urlDestaques := fmt.Sprintf("%s/produtos/secao/Destaques", config.APIURL)
+	responseDestaques, erro := http.Get(urlDestaques)
+	if erro != nil {
+		respostas.JSON(w, http.StatusInternalServerError, respostas.ErroAPI{Erro: erro.Error()})
+		return
+	}
+	defer responseDestaques.Body.Close()
+
+	var produtosDestaques []modelos.Produto
+	if responseDestaques.StatusCode == 200 {
+		erro = json.NewDecoder(responseDestaques.Body).Decode(&produtosDestaques)
+		if erro != nil {
+			fmt.Printf("Erro ao decodificar destaques: %v\n", erro)
+		}
+	}
+
+	// Buscar produtos de Novidades
+	urlNovidades := fmt.Sprintf("%s/produtos/secao/Novidades", config.APIURL)
+	responseNovidades, erro := http.Get(urlNovidades)
+	if erro != nil {
+		respostas.JSON(w, http.StatusInternalServerError, respostas.ErroAPI{Erro: erro.Error()})
+		return
+	}
+	defer responseNovidades.Body.Close()
+
+	var produtosNovidades []modelos.Produto
+	if responseNovidades.StatusCode == 200 {
+		erro = json.NewDecoder(responseNovidades.Body).Decode(&produtosNovidades)
+		if erro != nil {
+			fmt.Printf("Erro ao decodificar novidades: %v\n", erro)
+		}
+	}
+
+	// Montar resposta com ambas as seções
+	resposta := map[string]interface{}{
+		"destaques": produtosDestaques,
+		"novidades": produtosNovidades,
+	}
+
+	respostas.JSON(w, http.StatusOK, resposta)
+}
+
 // BuscarMeusProdutos busca os produtos do usuário logado
 func BuscarMeusProdutos(w http.ResponseWriter, r *http.Request) {
 	url := fmt.Sprintf("%s/meus-produtos", config.APIURL)

@@ -332,126 +332,39 @@
     </footer>
 
     <script>
-        // DADOS DOS PRODUTOS
-        const productsNovidades = [
-            {
-                id: 1,
-                name: "Vestido Midi Floral",
-                price: 899.90,
-                installments: 7,
-                image1: "design/ex-roupa1.png",
-                image2: "design/ex-roupa1b.png",
-                sizes: ["PP", "P", "M", "G", "GG"]
-            },
-            {
-                id: 2,
-                name: "Blusa Cropped Básica",
-                price: 449.90,
-                installments: 4,
-                image1: "design/ex-roupa2.png",
-                image2: "design/ex-roupa2b.png",
-                sizes: ["PP", "P", "M", "G", "GG"]
-            },
-            {
-                id: 3,
-                name: "Calça Wide Leg Alfaiataria",
-                price: 679.90,
-                installments: 5,
-                image1: "design/ex-roupa3.png",
-                image2: "design/ex-roupa3b.png",
-                sizes: ["PP", "P", "M", "G", "GG"]
-            },
-            {
-                id: 4,
-                name: "Saia Midi Plissada",
-                price: 559.90,
-                installments: 5,
-                image1: "design/ex-roupa4.png",
-                image2: "design/ex-roupa4b.png",
-                sizes: ["PP", "P", "M", "G", "GG"]
-            },
-            {
-                id: 5,
-                name: "Shorts Cintura Alta",
-                price: 399.90,
-                installments: 4,
-                image1: "design/ex-roupa5.png",
-                image2: "design/ex-roupa5b.png",
-                sizes: ["PP", "P", "M", "G", "GG"]
-            },
-            {
-                id: 6,
-                name: "Jaqueta Jeans Oversized",
-                price: 799.90,
-                installments: 6,
-                image1: "design/ex-roupa6.png",
-                image2: "design/ex-roupa6b.png",
-                sizes: ["PP", "P", "M", "G", "GG"]
-            }
-        ];
-
-        const productsDestaques = [
-            {
-                id: 7,
-                name: "Macacão Longo Elegante",
-                price: 989.90,
-                installments: 8,
-                image1: "design/ex-roupa7.png",
-                image2: "design/ex-roupa7b.png",
-                sizes: ["PP", "P", "M", "G", "GG"]
-            },
-            {
-                id: 8,
-                name: "Blazer Alfaiataria Premium",
-                price: 849.90,
-                installments: 7,
-                image1: "design/ex-roupa8.png",
-                image2: "design/ex-roupa8b.png",
-                sizes: ["PP", "P", "M", "G", "GG"]
-            },
-            {
-                id: 9,
-                name: "Body Canelado Básico",
-                price: 329.90,
-                installments: 3,
-                image1: "design/ex-roupa9.png",
-                image2: "design/ex-roupa9b.png",
-                sizes: ["PP", "P", "M", "G", "GG"]
-            },
-            {
-                id: 10,
-                name: "Regata Ribana Alongada",
-                price: 279.90,
-                installments: 3,
-                image1: "design/ex-roupa10.png",
-                image2: "design/ex-roupa10b.png",
-                sizes: ["PP", "P", "M", "G", "GG"]
-            },
-            {
-                id: 11,
-                name: "Vestido Longo Festa",
-                price: 1199.90,
-                installments: 10,
-                image1: "design/ex-roupa11.png",
-                image2: "design/ex-roupa11b.png",
-                sizes: ["PP", "P", "M", "G", "GG"]
-            },
-            {
-                id: 12,
-                name: "Calça Cargo Moderna",
-                price: 629.90,
-                installments: 5,
-                image1: "design/ex-roupa12.png",
-                image2: "design/ex-roupa12b.png",
-                sizes: ["PP", "P", "M", "G", "GG"]
-            }
-        ];
-
-        const allProducts = [...productsNovidades, ...productsDestaques];
+        // DADOS DOS PRODUTOS - Agora carregados do banco de dados
+        let productsNovidades = [];
+        let productsDestaques = [];
+        let allProducts = [];
 
         let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let selectedSizes = {};
+
+        // Função para carregar produtos do banco de dados
+        async function carregarProdutosHome() {
+            try {
+                const response = await fetch('/api/produtos/home');
+                if (!response.ok) {
+                    throw new Error(`Erro ao carregar produtos: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                productsNovidades = data.novidades || [];
+                productsDestaques = data.destaques || [];
+                allProducts = [...productsNovidades, ...productsDestaques];
+                
+                // Atualizar a interface
+                renderProducts();
+            } catch (error) {
+                console.error('Erro ao carregar produtos:', error);
+                // Em caso de erro, manter arrays vazios
+                productsNovidades = [];
+                productsDestaques = [];
+                allProducts = [];
+                renderProducts();
+            }
+        }
 
         function toggleFavorite(productId) {
             const index = favorites.indexOf(productId);
@@ -485,13 +398,19 @@
             if (existingItem) {
                 existingItem.quantity++;
             } else {
+                // Usar a foto do banco de dados
+                let fotoUrl = product.foto_url;
+                if (fotoUrl && !fotoUrl.startsWith('http') && !fotoUrl.startsWith('data:')) {
+                    fotoUrl = fotoUrl.startsWith('/') ? fotoUrl : '/' + fotoUrl;
+                }
+                
                 cart.push({
                     id: productId,
-                    name: product.name,
-                    price: product.price,
+                    name: product.nome,
+                    price: product.preco,
                     size: size,
                     quantity: 1,
-                    image: product.image1
+                    image: fotoUrl || 'design/ex-roupa1.png'
                 });
             }
             localStorage.setItem('cart', JSON.stringify(cart));
@@ -512,11 +431,19 @@
 
         function createProductCard(product) {
             const isFavorite = favorites.includes(product.id);
-            const installmentValue = (product.price / product.installments).toFixed(2);
-
-            // Define um tamanho fixo para cada produto (exemplo)
-            // Futuramente virá do banco de dados
-            const tamanhoFixo = product.sizes[2]; // Pega o tamanho "M" como padrão
+            
+            // Calcular parcelas (assumindo até 10x sem juros)
+            const maxInstallments = Math.min(10, Math.floor(product.preco / 50));
+            const installmentValue = (product.preco / maxInstallments).toFixed(2);
+            
+            // Usar o tamanho do banco de dados
+            const tamanho = product.tamanho || 'M';
+            
+            // Usar a foto do banco de dados (se for URL relativa, adicionar prefixo)
+            let fotoUrl = product.foto_url;
+            if (fotoUrl && !fotoUrl.startsWith('http') && !fotoUrl.startsWith('data:')) {
+                fotoUrl = fotoUrl.startsWith('/') ? fotoUrl : '/' + fotoUrl;
+            }
 
             return `
         <div class="produto-card" data-product-id="${product.id}">
@@ -533,7 +460,7 @@
             <!-- Botão Sacola (embaixo do coração, visível apenas no hover) -->
             <button class="produto-sacola-topo" 
                     title="Adicionar à sacola" 
-                    onclick="adicionarDiretoNaSacola(${product.id}, '${tamanhoFixo}')">
+                    onclick="adicionarDiretoNaSacola(${product.id}, '${tamanho}')">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#370400" stroke-width="1.5">
                     <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
                     <line x1="3" y1="6" x2="21" y2="6"/>
@@ -542,23 +469,23 @@
 
             <!-- Imagem do Produto -->
             <div class="produto-img-container">
-                <img src="${product.image1}" alt="${product.name}" class="produto-img img-primaria">
-                <img src="${product.image2}" alt="${product.name} - Verso" class="produto-img img-secundaria">
+                <img src="${fotoUrl || 'design/ex-roupa1.png'}" alt="${product.nome}" class="produto-img img-primaria">
+                <img src="${fotoUrl || 'design/ex-roupa1b.png'}" alt="${product.nome} - Verso" class="produto-img img-secundaria">
             </div>
 
             <!-- Informações do Produto -->
             <div class="produto-info">
-                <span class="produto-nome">${product.name}</span>
-                <span class="produto-preco">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
-                <span class="produto-parcela">Até ${product.installments}x de R$ ${installmentValue.replace('.', ',')}</span>
+                <span class="produto-nome">${product.nome}</span>
+                <span class="produto-preco">R$ ${product.preco.toFixed(2).replace('.', ',')}</span>
+                <span class="produto-parcela">Até ${maxInstallments}x de R$ ${installmentValue.replace('.', ',')}</span>
                 
-                <!-- Informação de Tamanho (apenas visual) -->
+                <!-- Informação de Tamanho -->
                 <span style="font-size: 12px; color: #666; margin-top: 6px; display: block;">
-                    Tamanho: ${tamanhoFixo}
+                    Tamanho: ${tamanho}
                 </span>
                 
                 <!-- Botão Comprar -->
-                <button class="produto-btn-comprar" onclick="adicionarDiretoNaSacola(${product.id}, '${tamanhoFixo}')">
+                <button class="produto-btn-comprar" onclick="adicionarDiretoNaSacola(${product.id}, '${tamanho}')">
                     Comprar
                 </button>
             </div>
@@ -574,13 +501,19 @@
             if (existingItem) {
                 existingItem.quantity++;
             } else {
+                // Usar a foto do banco de dados
+                let fotoUrl = product.foto_url;
+                if (fotoUrl && !fotoUrl.startsWith('http') && !fotoUrl.startsWith('data:')) {
+                    fotoUrl = fotoUrl.startsWith('/') ? fotoUrl : '/' + fotoUrl;
+                }
+                
                 cart.push({
                     id: productId,
-                    name: product.name,
-                    price: product.price,
+                    name: product.nome,
+                    price: product.preco,
                     size: size,
                     quantity: 1,
-                    image: product.image1
+                    image: fotoUrl || 'design/ex-roupa1.png'
                 });
             }
 
@@ -592,6 +525,9 @@
         function abrirModalTamanho(productId) {
             const product = allProducts.find(p => p.id === productId);
             if (!product) return;
+
+            // Tamanhos padrão para seleção
+            const tamanhosDisponiveis = ['PP', 'P', 'M', 'G', 'GG'];
 
             const modal = document.createElement('div');
             modal.style.cssText = `
@@ -613,10 +549,10 @@
                 Selecione o Tamanho
             </h3>
             <p style="font-size: 14px; color: #666; margin-bottom: 25px;">
-                ${product.name}
+                ${product.nome}
             </p>
             <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 30px;">
-                ${product.sizes.map(size => `
+                ${tamanhosDisponiveis.map(size => `
                     <button class="size-modal-btn" data-size="${size}" 
                             style="padding: 12px; background: #fff; border: 1.5px solid #e0e0e0; 
                                    border-radius: 4px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
@@ -910,7 +846,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            renderProducts();
+            // Carregar produtos do banco de dados
+            carregarProdutosHome();
             updateFavoritesCount();
             updateCartCount();
             showSlides(slideIndex);

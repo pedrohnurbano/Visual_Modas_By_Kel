@@ -2,6 +2,7 @@ package rotas
 
 import (
 	"net/http"
+	"strings"
 	"visual_modas_by_kel/visual_modas_by_kel/src/middlewares"
 
 	"github.com/gorilla/mux"
@@ -44,9 +45,18 @@ func Configurar(router *mux.Router) *mux.Router {
 		}
 	}
 
-	// Serve arquivos estáticos (CSS, JS, imagens)
+	// Serve arquivos estáticos (CSS, JS, imagens) - APENAS para arquivos que não são rotas da API
 	fileServer := http.FileServer(http.Dir("./"))
-	router.PathPrefix("/").Handler(fileServer)
+	router.PathPrefix("/").Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verificar se é uma rota da API
+		if strings.HasPrefix(r.URL.Path, "/api/") {
+			// Se for rota da API, não servir arquivo estático
+			http.NotFound(w, r)
+			return
+		}
+		// Para outras rotas, servir arquivo estático
+		fileServer.ServeHTTP(w, r)
+	}))
 
 	return router
 }

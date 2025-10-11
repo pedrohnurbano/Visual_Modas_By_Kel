@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -23,17 +24,37 @@ var (
 func Carregar() {
 	var erro error
 
+	// Tentar carregar .env, mas não falhar se não existir
 	if erro = godotenv.Load(); erro != nil {
-		log.Fatalf("Erro ao carregar as variáveis de ambiente: %v", erro)
+		log.Printf("Arquivo .env não encontrado, usando valores padrão: %v", erro)
 	}
 
-	Porta, erro = strconv.Atoi(os.Getenv("APP_PORT"))
-	if erro != nil {
-		log.Fatalf("Erro ao converter a porta da aplicação: %v", erro)
+	// Usar valores padrão se as variáveis de ambiente não estiverem definidas
+	if os.Getenv("APP_PORT") != "" {
+		Porta, erro = strconv.Atoi(os.Getenv("APP_PORT"))
+		if erro != nil {
+			log.Fatalf("Erro ao converter a porta da aplicação: %v", erro)
+		}
+	} else {
+		Porta = 3000 // Valor padrão
 	}
 
-	APIURL = os.Getenv("API_URL")
-	HashKey = []byte(os.Getenv("HASH_KEY"))
-	BlockKey = []byte(os.Getenv("BLOCK_KEY"))
+	if os.Getenv("API_URL") != "" {
+		APIURL = os.Getenv("API_URL")
+	}
+	// APIURL já tem valor padrão definido acima
 
+	if os.Getenv("HASH_KEY") != "" {
+		HashKey = []byte(os.Getenv("HASH_KEY"))
+	} else {
+		HashKey = []byte("minha-chave-hash-super-secreta")
+	}
+
+	if os.Getenv("BLOCK_KEY") != "" {
+		BlockKey = []byte(os.Getenv("BLOCK_KEY"))
+	} else {
+		BlockKey = []byte("minha-chave-block-super-secreta-32-chars")
+	}
+
+	fmt.Printf("Configuração carregada - Porta: %d, API URL: %s\n", Porta, APIURL)
 }

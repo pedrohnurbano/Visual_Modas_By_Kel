@@ -46,11 +46,11 @@ var rotasProdutos = []Rota{
 		RequerAutenticacao: false,
 		RequerAdmin:        false,
 	},
-	// API: Buscar produto específico
+	// API: Buscar produtos para home (Destaques e Novidades) - DEVE VIR ANTES das rotas com parâmetros
 	{
-		URI:                "/api/produtos/{produtoId}",
+		URI:                "/api/produtos/home",
 		Metodo:             http.MethodGet,
-		Funcao:             controllers.BuscarProduto,
+		Funcao:             controllers.BuscarProdutosHome,
 		RequerAutenticacao: false,
 		RequerAdmin:        false,
 	},
@@ -59,6 +59,14 @@ var rotasProdutos = []Rota{
 		URI:                "/api/produtos/secao/{secao}",
 		Metodo:             http.MethodGet,
 		Funcao:             controllers.BuscarProdutosPorSecao,
+		RequerAutenticacao: false,
+		RequerAdmin:        false,
+	},
+	// API: Buscar produto específico - DEVE VIR POR ÚLTIMO das rotas /api/produtos/*
+	{
+		URI:                "/api/produtos/{produtoId}",
+		Metodo:             http.MethodGet,
+		Funcao:             controllers.BuscarProduto,
 		RequerAutenticacao: false,
 		RequerAdmin:        false,
 	},
