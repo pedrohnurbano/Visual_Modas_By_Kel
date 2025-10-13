@@ -1,6 +1,7 @@
 CREATE DATABASE IF NOT EXISTS visualmodasbykel;
 USE visualmodasbykel;
 
+DROP TABLE IF EXISTS favoritos;
 DROP TABLE IF EXISTS produtos;
 DROP TABLE IF EXISTS usuarios;
 
@@ -38,6 +39,18 @@ CREATE TABLE produtos (
     INDEX idx_ativo (ativo),
     INDEX idx_usuario (usuario_id),
     INDEX idx_tamanho (tamanho)
+) ENGINE=InnoDB;
+
+CREATE TABLE favoritos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    produto_id INT NOT NULL,
+    criadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_favorito (usuario_id, produto_id),
+    INDEX idx_usuario (usuario_id),
+    INDEX idx_produto (produto_id)
 ) ENGINE=InnoDB;
 
 -- Inserir usuário admin padrão

@@ -28,7 +28,7 @@
                     <img src="design/icone_usuario.png" alt="Minha Conta">
                     <span>Minha conta<br><b>Meus pedidos</b></span>
                 </a>
-                <a href="favoritos.html" title="Favoritos" id="abrir_favoritos">
+                <a href="/favoritos" title="Favoritos" id="abrir_favoritos">
                     <img src="design/icone_favoritos.png" alt="Favoritos">
                     <span id="favoritosCount" style="display:none;">0</span>
                 </a>
@@ -136,9 +136,11 @@
         </div>
     </footer>
 
+    <script src="js/jquery.min.js"></script>
+    <script src="js/favoritos.js"></script>
     <script>
-        // DADOS DOS PRODUTOS (mesmos da home)
-        const allProducts = [
+        // Backup: DADOS DOS PRODUTOS (mesmos da home) - não mais necessário
+        const allProducts_OLD = [
             {
                 id: 1,
                 name: "Vestido Midi Floral",
@@ -249,118 +251,8 @@
             }
         ];
 
-        // Gerenciamento de Favoritos
-        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        // Carrinho (mantém localStorage por enquanto)
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        let selectedSizes = {};
-
-        function loadFavorites() {
-            const grid = document.getElementById('favoritosGrid');
-            const empty = document.getElementById('favoritosEmpty');
-            const total = document.getElementById('favoritosTotal');
-
-            if (favorites.length === 0) {
-                empty.style.display = 'flex';
-                grid.style.display = 'none';
-                total.textContent = '0 itens salvos';
-            } else {
-                empty.style.display = 'none';
-                grid.style.display = 'grid';
-                total.textContent = `${favorites.length} ${favorites.length === 1 ? 'item salvo' : 'itens salvos'}`;
-
-                const favoriteProducts = allProducts.filter(p => favorites.includes(p.id));
-                grid.innerHTML = favoriteProducts.map(product => createFavoriteCard(product)).join('');
-            }
-
-            updateFavoritesCount();
-            updateCartCount();
-        }
-
-        function createFavoriteCard(product) {
-            const installmentValue = (product.price / product.installments).toFixed(2);
-            const tamanhoFixo = product.sizes[2]; // Tamanho padrão "M"
-
-            return `
-        <div class="produto-card" data-product-id="${product.id}">
-            <button class="produto-favorito favorito-active" title="Remover dos favoritos" onclick="toggleFavorite(${product.id})">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                        stroke="#370400" stroke-width="1.5" fill="#370400"/>
-                </svg>
-            </button>
-            
-            <button class="produto-sacola-topo" 
-                    title="Adicionar à sacola" 
-                    onclick="addToCart(${product.id}, '${tamanhoFixo}')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#370400" stroke-width="1.5">
-                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                    <line x1="3" y1="6" x2="21" y2="6"/>
-                </svg>
-            </button>
-            
-            <div class="produto-img-container">
-                <img src="${product.image1}" alt="${product.name}" class="produto-img img-primaria">
-                <img src="${product.image2}" alt="${product.name} - Verso" class="produto-img img-secundaria">
-            </div>
-            <div class="produto-info">
-                <span class="produto-nome">${product.name}</span>
-                <span class="produto-preco">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
-                <span class="produto-parcela">Até ${product.installments}x de R$ ${installmentValue.replace('.', ',')}</span>
-                <span style="font-size: 12px; color: #666; margin-top: 6px; display: block;">
-                    Tamanho: ${tamanhoFixo}
-                </span>
-                <button class="produto-btn-comprar" onclick="addToCart(${product.id}, '${tamanhoFixo}')">
-                    Comprar
-                </button>
-            </div>
-        </div>
-    `;
-        }
-
-        function toggleFavorite(productId) {
-            const index = favorites.indexOf(productId);
-            if (index > -1) {
-                favorites.splice(index, 1);
-                showNotification('Produto removido dos favoritos');
-            } else {
-                favorites.push(productId);
-                showNotification('Produto adicionado aos favoritos');
-            }
-            localStorage.setItem('favorites', JSON.stringify(favorites));
-            loadFavorites();
-        }
-
-        function updateFavoritesCount() {
-            const count = document.getElementById('favoritosCount');
-            if (favorites.length > 0) {
-                count.textContent = favorites.length;
-                count.style.display = 'inline';
-            } else {
-                count.style.display = 'none';
-            }
-        }
-
-        function addToCart(productId, size) {
-            const product = allProducts.find(p => p.id === productId);
-            if (!product) return;
-
-            const existingItem = cart.find(item => item.id === productId && item.size === size);
-            if (existingItem) {
-                existingItem.quantity++;
-            } else {
-                cart.push({
-                    id: productId,
-                    name: product.name,
-                    price: product.price,
-                    size: size,
-                    quantity: 1,
-                    image: product.image1
-                });
-            }
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartCount();
-            showNotification('Produto adicionado à sacola!');
-        }
 
         function updateCartCount() {
             const count = document.getElementById('sacolaCount');
@@ -373,31 +265,9 @@
             }
         }
 
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 80px;
-                right: 20px;
-                background: #370400;
-                color: white;
-                padding: 15px 25px;
-                border-radius: 4px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                z-index: 10000;
-                animation: slideIn 0.3s ease-out;
-            `;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease-out';
-                setTimeout(() => notification.remove(), 300);
-            }, 2000);
-        }
-
+        // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
-            loadFavorites();
+            updateCartCount();
         });
     </script>
 </body>

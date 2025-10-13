@@ -1,175 +1,106 @@
-// Variável de controle de login
-let isUserLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-
-// DADOS DOS PRODUTOS
-const allProducts = [
-    {
-        id: 1,
-        name: "Vestido Midi Floral",
-        price: 899.90,
-        installments: 7,
-        image1: "design/ex-roupa1.png",
-        image2: "design/ex-roupa1b.png",
-        sizes: ["PP", "P", "M", "G", "GG"],
-        category: "vestidos"
-    },
-    {
-        id: 2,
-        name: "Blusa Cropped Básica",
-        price: 449.90,
-        installments: 4,
-        image1: "design/ex-roupa2.png",
-        image2: "design/ex-roupa2b.png",
-        sizes: ["PP", "P", "M", "G", "GG"],
-        category: "blusas"
-    },
-    {
-        id: 3,
-        name: "Calça Wide Leg Alfaiataria",
-        price: 679.90,
-        installments: 5,
-        image1: "design/ex-roupa3.png",
-        image2: "design/ex-roupa3b.png",
-        sizes: ["PP", "P", "M", "G", "GG"],
-        category: "calcas"
-    },
-    {
-        id: 4,
-        name: "Saia Midi Plissada",
-        price: 559.90,
-        installments: 5,
-        image1: "design/ex-roupa4.png",
-        image2: "design/ex-roupa4b.png",
-        sizes: ["PP", "P", "M", "G", "GG"],
-        category: "saias"
-    },
-    {
-        id: 5,
-        name: "Shorts Cintura Alta",
-        price: 399.90,
-        installments: 4,
-        image1: "design/ex-roupa5.png",
-        image2: "design/ex-roupa5b.png",
-        sizes: ["PP", "P", "M", "G", "GG"],
-        category: "shorts"
-    },
-    {
-        id: 6,
-        name: "Jaqueta Jeans Oversized",
-        price: 799.90,
-        installments: 6,
-        image1: "design/ex-roupa6.png",
-        image2: "design/ex-roupa6b.png",
-        sizes: ["PP", "P", "M", "G", "GG"],
-        category: "jaquetas"
-    },
-    {
-        id: 7,
-        name: "Macacão Longo Elegante",
-        price: 989.90,
-        installments: 8,
-        image1: "design/ex-roupa7.png",
-        image2: "design/ex-roupa7b.png",
-        sizes: ["PP", "P", "M", "G", "GG"],
-        category: "macacoes"
-    },
-    {
-        id: 8,
-        name: "Blazer Alfaiataria Premium",
-        price: 849.90,
-        installments: 7,
-        image1: "design/ex-roupa8.png",
-        image2: "design/ex-roupa8b.png",
-        sizes: ["PP", "P", "M", "G", "GG"],
-        category: "blazers"
-    },
-    {
-        id: 9,
-        name: "Body Canelado Básico",
-        price: 329.90,
-        installments: 3,
-        image1: "design/ex-roupa9.png",
-        image2: "design/ex-roupa9b.png",
-        sizes: ["PP", "P", "M", "G", "GG"],
-        category: "body"
-    },
-    {
-        id: 10,
-        name: "Regata Ribana Alongada",
-        price: 279.90,
-        installments: 3,
-        image1: "design/ex-roupa10.png",
-        image2: "design/ex-roupa10b.png",
-        sizes: ["PP", "P", "M", "G", "GG"],
-        category: "regatas"
-    },
-    {
-        id: 11,
-        name: "Vestido Longo Festa",
-        price: 1199.90,
-        installments: 10,
-        image1: "design/ex-roupa11.png",
-        image2: "design/ex-roupa11b.png",
-        sizes: ["PP", "P", "M", "G", "GG"],
-        category: "vestidos"
-    },
-    {
-        id: 12,
-        name: "Calça Cargo Moderna",
-        price: 629.90,
-        installments: 5,
-        image1: "design/ex-roupa12.png",
-        image2: "design/ex-roupa12b.png",
-        sizes: ["PP", "P", "M", "G", "GG"],
-        category: "calcas"
-    }
-];
-
-let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+// Variáveis globais
+let allProducts = [];
+let favoritosIDs = [];
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 let selectedSizes = {};
-let filteredProducts = [...allProducts];
+let filteredProducts = [];
 
-// FUNÇÕES DE FAVORITOS
-function toggleFavorite(productId) {
-    if (!isUserLoggedIn) {
-        showFavoriteLoginModal();
-        return;
-    }
+// Carregar produtos da API
+function carregarProdutosDaAPI() {
+    $.ajax({
+        url: "/api/produtos",
+        method: "GET",
+        success: function(produtos) {
+            // Converter produtos da API para formato compatível
+            allProducts = produtos.map(p => ({
+                id: p.id,
+                name: p.nome,
+                price: parseFloat(p.preco),
+                installments: Math.floor(parseFloat(p.preco) / 100) || 1,
+                image1: `http://localhost:5000${p.foto_url}`,
+                image2: `http://localhost:5000${p.foto_url}`, // Usar mesma imagem por enquanto
+                sizes: [p.tamanho], // Tamanho único por produto
+                category: p.categoria || 'geral'
+            }));
+            
+            filteredProducts = [...allProducts];
+            renderProducts();
+            
+            // Carregar favoritos após carregar produtos
+            carregarFavoritosIDs();
+        },
+        error: function(xhr) {
+            console.error("Erro ao buscar produtos:", xhr);
+            // Fallback para produtos fictícios se API falhar
+            usarProdutosFallback();
+        }
+    });
+}
 
-    const index = favorites.indexOf(productId);
-    if (index > -1) {
-        favorites.splice(index, 1);
-        showNotification('Produto removido dos favoritos');
-    } else {
-        favorites.push(productId);
-        showNotification('Produto adicionado aos favoritos');
-    }
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-    updateFavoritesCount();
+// Carregar IDs dos favoritos
+function carregarFavoritosIDs() {
+    buscarIDsFavoritos(function(ids) {
+        favoritosIDs = ids;
+        renderProducts(); // Re-renderizar com status de favoritos
+    });
+}
+
+// Usar produtos de fallback se API falhar
+function usarProdutosFallback() {
+    allProducts = [
+        {
+            id: 1,
+            name: "Vestido Midi Floral",
+            price: 899.90,
+            installments: 7,
+            image1: "design/ex-roupa1.png",
+            image2: "design/ex-roupa1b.png",
+            sizes: ["PP", "P", "M", "G", "GG"],
+            category: "vestidos"
+        },
+        {
+            id: 2,
+            name: "Blusa Cropped Básica",
+            price: 449.90,
+            installments: 4,
+            image1: "design/ex-roupa2.png",
+            image2: "design/ex-roupa2b.png",
+            sizes: ["PP", "P", "M", "G", "GG"],
+            category: "blusas"
+        },
+        {
+            id: 3,
+            name: "Calça Wide Leg Alfaiataria",
+            price: 679.90,
+            installments: 5,
+            image1: "design/ex-roupa3.png",
+            image2: "design/ex-roupa3b.png",
+            sizes: ["PP", "P", "M", "G", "GG"],
+            category: "calcas"
+        },
+    ];
+    filteredProducts = [...allProducts];
     renderProducts();
 }
 
-function showFavoriteLoginModal() {
-    const modal = document.getElementById('favoriteLoginModal');
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+// FUNÇÕES DE FAVORITOS (integradas com API)
+function toggleFavorite(productId) {
+    // Usar função do favoritos.js
+    toggleFavoritoAPI(productId, function(isFavorito) {
+        // Atualizar lista local
+        if (isFavorito) {
+            if (!favoritosIDs.includes(productId)) {
+                favoritosIDs.push(productId);
+            }
+        } else {
+            favoritosIDs = favoritosIDs.filter(id => id !== productId);
+        }
+        renderProducts();
+    });
 }
 
 function closeFavoriteModal() {
-    const modal = document.getElementById('favoriteLoginModal');
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
-}
-
-function updateFavoritesCount() {
-    const count = document.getElementById('favoritosCount');
-    if (favorites.length > 0) {
-        count.textContent = favorites.length;
-        count.style.display = 'inline';
-    } else {
-        count.style.display = 'none';
-    }
+    fecharModalLoginFavoritos();
 }
 
 // FUNÇÕES DE SACOLA
@@ -208,7 +139,7 @@ function updateCartCount() {
 
 // FUNÇÕES DE PRODUTOS
 function createProductCard(product) {
-    const isFavorite = favorites.includes(product.id);
+    const isFavorite = favoritosIDs.includes(product.id);
     const installmentValue = (product.price / product.installments).toFixed(2);
 
     return `
@@ -220,8 +151,8 @@ function createProductCard(product) {
                 </svg>
             </button>
             <div class="produto-img-container">
-                <img src="${product.image1}" alt="${product.name}" class="produto-img img-primaria">
-                <img src="${product.image2}" alt="${product.name} - Verso" class="produto-img img-secundaria">
+                <img src="${product.image1}" alt="${product.name}" class="produto-img img-primaria" onerror="this.src='design/cabide.png'">
+                <img src="${product.image2}" alt="${product.name} - Verso" class="produto-img img-secundaria" onerror="this.src='design/cabide.png'">
                 <div class="produto-tamanhos">
                     ${product.sizes.map(size => `<span class="size-option" data-size="${size}" onclick="selectSize(${product.id}, '${size}')">${size}</span>`).join('')}
                     <button class="produto-sacola" title="Adicionar à sacola" onclick="addSelectedToCart(${product.id})">
@@ -446,8 +377,7 @@ document.addEventListener('keydown', (e) => {
 
 // INICIALIZAÇÃO
 document.addEventListener('DOMContentLoaded', () => {
-    renderProducts();
-    updateFavoritesCount();
+    carregarProdutosDaAPI();
     updateCartCount();
     
     // Event listeners dos filtros

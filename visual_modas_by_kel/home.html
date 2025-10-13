@@ -28,7 +28,7 @@
                     <img src="design/icone_usuario.png" alt="Minha Conta">
                     <span>Minha conta<br><b>Meus pedidos</b></span>
                 </a>
-                <a href="favoritos.html" title="Favoritos" id="abrir_favoritos">
+                <a href="/favoritos" title="Favoritos" id="abrir_favoritos">
                     <img src="design/icone_favoritos.png" alt="Favoritos">
                     <span id="favoritosCount" style="display:none;">0</span>
                 </a>
@@ -337,7 +337,7 @@
         let productsDestaques = [];
         let allProducts = [];
 
-        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        let favoritosIDs = []; // Agora usa IDs da API em vez de localStorage
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let selectedSizes = {};
 
@@ -354,6 +354,9 @@
                 productsDestaques = data.destaques || [];
                 allProducts = [...productsNovidades, ...productsDestaques];
                 
+                // Carregar favoritos da API
+                carregarFavoritosIDs();
+                
                 // Atualizar a interface
                 renderProducts();
             } catch (error) {
@@ -366,28 +369,27 @@
             }
         }
 
-        function toggleFavorite(productId) {
-            const index = favorites.indexOf(productId);
-            if (index > -1) {
-                favorites.splice(index, 1);
-                showNotification('Produto removido dos favoritos');
-            } else {
-                favorites.push(productId);
-                showNotification('Produto adicionado aos favoritos');
-            }
-            localStorage.setItem('favorites', JSON.stringify(favorites));
-            updateFavoritesCount();
-            renderProducts();
+        // Carregar IDs dos favoritos da API
+        function carregarFavoritosIDs() {
+            buscarIDsFavoritos(function(ids) {
+                favoritosIDs = ids;
+                renderProducts(); // Re-renderizar com favoritos atualizados
+            });
         }
 
-        function updateFavoritesCount() {
-            const count = document.getElementById('favoritosCount');
-            if (favorites.length > 0) {
-                count.textContent = favorites.length;
-                count.style.display = 'inline';
-            } else {
-                count.style.display = 'none';
-            }
+        // Usar API em vez de localStorage
+        function toggleFavorite(productId) {
+            toggleFavoritoAPI(productId, function(isFavorito) {
+                // Atualizar lista local
+                if (isFavorito) {
+                    if (!favoritosIDs.includes(productId)) {
+                        favoritosIDs.push(productId);
+                    }
+                } else {
+                    favoritosIDs = favoritosIDs.filter(id => id !== productId);
+                }
+                renderProducts();
+            });
         }
 
         function addToCart(productId, size) {
@@ -431,7 +433,7 @@
         }
 
         function createProductCard(product) {
-            const isFavorite = favorites.includes(product.id);
+            const isFavorite = favoritosIDs.includes(product.id);
             
             // Calcular parcelas (assumindo até 10x sem juros)
             const maxInstallments = Math.min(10, Math.floor(product.preco / 50));
@@ -851,7 +853,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Carregar produtos do banco de dados
             carregarProdutosHome();
-            updateFavoritesCount();
             updateCartCount();
             showSlides(slideIndex);
             startSlideTimer();
@@ -864,6 +865,8 @@
         });
     </script>
 
+    <script src="js/jquery.min.js"></script>
+    <script src="js/favoritos.js"></script>
 </body>
 
 </html>

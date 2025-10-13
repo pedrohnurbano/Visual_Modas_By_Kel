@@ -22,9 +22,11 @@ func Configurar(router *mux.Router) *mux.Router {
 	rotas := rotasLogin
 	rotas = append(rotas, rotasUsuarios...)
 	rotas = append(rotas, rotaPaginaPrincipal)
+	rotas = append(rotas, rotaPaginaFavoritos)
 	rotas = append(rotas, rotasAdmin...)
 	rotas = append(rotas, rotaLogout)
-	rotas = append(rotas, rotasProdutos...) // ADICIONAR ESTA LINHA
+	rotas = append(rotas, rotasProdutos...)
+	rotas = append(rotas, rotasFavoritos...)
 
 	for _, rota := range rotas {
 		if rota.RequerAdmin {
