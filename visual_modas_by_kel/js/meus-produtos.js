@@ -46,20 +46,39 @@ function exibirMeusProdutos(produtos) {
 }
 
 function deletarProduto(produtoId) {
-    if (!confirm("Tem certeza que deseja deletar este produto?")) {
-        return;
-    }
-
-    $.ajax({
-        url: `/api/produtos/${produtoId}`,
-        method: "DELETE",
-        success: function() {
-            alert("Produto deletado com sucesso!");
-            buscarMeusProdutos();
-        },
-        error: function(xhr) {
-            console.error("Erro ao deletar:", xhr);
-            alert("Erro ao deletar produto.");
+    Swal.fire({
+        title: 'Tem certeza?',
+        text: "Deseja deletar este produto? Esta ação não pode ser desfeita!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#370400',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sim, deletar!',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: `/api/produtos/${produtoId}`,
+                method: "DELETE",
+                success: function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deletado!',
+                        text: 'Produto deletado com sucesso!',
+                        confirmButtonColor: '#370400'
+                    });
+                    buscarMeusProdutos();
+                },
+                error: function(xhr) {
+                    console.error("Erro ao deletar:", xhr);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro',
+                        text: 'Erro ao deletar produto.',
+                        confirmButtonColor: '#370400'
+                    });
+                }
+            });
         }
     });
 }

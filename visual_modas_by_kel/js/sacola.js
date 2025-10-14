@@ -199,14 +199,24 @@ class SacolaManager {
 
         const codigoUpper = codigo.toUpperCase().trim();
         
-        if (cupons[codigoUpper]) {
+            if (cupons[codigoUpper]) {
             this.cupomAplicado = codigoUpper;
             this.descontoPercentual = cupons[codigoUpper];
             this.atualizarResumo();
-            alert(`Cupom "${codigoUpper}" aplicado com sucesso! Desconto de ${this.descontoPercentual}%`);
+            Swal.fire({
+                icon: 'success',
+                title: 'Cupom aplicado!',
+                text: `Cupom "${codigoUpper}" aplicado com sucesso! Desconto de ${this.descontoPercentual}%`,
+                confirmButtonColor: '#370400'
+            });
             return true;
         } else {
-            alert('Cupom inválido ou expirado.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Cupom inválido',
+                text: 'Cupom inválido ou expirado.',
+                confirmButtonColor: '#370400'
+            });
             return false;
         }
     }
@@ -226,11 +236,23 @@ function aplicarCupom() {
 
 function finalizarCompra() {
     if (sacolaManager.sacola.length === 0) {
-        alert('Adicione produtos à sacola antes de finalizar a compra!');
+        Swal.fire({
+            icon: 'warning',
+            title: 'Sacola vazia',
+            text: 'Adicione produtos à sacola antes de finalizar a compra!',
+            confirmButtonColor: '#370400'
+        });
         return;
     }
     
-    alert('Redirecionando para o checkout...');
+    Swal.fire({
+        icon: 'info',
+        title: 'Redirecionando',
+        text: 'Redirecionando para o checkout...',
+        confirmButtonColor: '#370400',
+        timer: 1500,
+        showConfirmButton: false
+    });
     // Aqui você implementaria a navegação para página de checkout
     // window.location.href = 'checkout.html';
 }

@@ -126,7 +126,12 @@ async function buscarCep() {
     const cep = document.getElementById('cep').value.replace(/\D/g, '');
     
     if (cep.length !== 8) {
-        alert('CEP inválido');
+        Swal.fire({
+            icon: 'warning',
+            title: 'CEP inválido',
+            text: 'Por favor, informe um CEP válido com 8 dígitos.',
+            confirmButtonColor: '#370400'
+        });
         return;
     }
 
@@ -135,7 +140,12 @@ async function buscarCep() {
         const data = await response.json();
 
         if (data.erro) {
-            alert('CEP não encontrado');
+            Swal.fire({
+                icon: 'error',
+                title: 'CEP não encontrado',
+                text: 'Não foi possível encontrar o CEP informado. Verifique e tente novamente.',
+                confirmButtonColor: '#370400'
+            });
             return;
         }
 
@@ -146,7 +156,12 @@ async function buscarCep() {
         document.getElementById('numero').focus();
 
     } catch (error) {
-        alert('Erro ao buscar CEP');
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: 'Erro ao buscar CEP. Verifique sua conexão e tente novamente.',
+            confirmButtonColor: '#370400'
+        });
     }
 }
 
@@ -244,7 +259,12 @@ function inicializarMercadoPago() {
 // FINALIZAR PAGAMENTO
 async function finalizarPagamento() {
     if (!checkoutData.pagamento.tipo) {
-        alert('Selecione uma forma de pagamento');
+        Swal.fire({
+            icon: 'warning',
+            title: 'Forma de pagamento',
+            text: 'Por favor, selecione uma forma de pagamento.',
+            confirmButtonColor: '#370400'
+        });
         return;
     }
 
@@ -260,7 +280,12 @@ async function finalizarPagamento() {
         }
     } catch (error) {
         console.error('Erro ao processar pagamento:', error);
-        alert('Erro ao processar pagamento. Tente novamente.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro no pagamento',
+            text: 'Erro ao processar pagamento. Por favor, tente novamente.',
+            confirmButtonColor: '#370400'
+        });
         btnFinalizar.disabled = false;
         btnFinalizar.textContent = 'Finalizar Compra';
     }

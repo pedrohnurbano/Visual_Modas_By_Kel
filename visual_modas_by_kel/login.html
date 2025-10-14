@@ -11,6 +11,7 @@
         rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="estilos.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 
 <body>
@@ -110,6 +111,7 @@
     </main>
 
     <script src="js/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/login.js"></script>
 
     <script>
@@ -127,32 +129,15 @@
         }
 
         function showForgotPassword() {
-            alert('Funcionalidade de recuperação de senha será implementada!');
+            Swal.fire({
+                icon: 'info',
+                title: 'Em breve',
+                text: 'Funcionalidade de recuperação de senha será implementada!',
+                confirmButtonColor: '#370400'
+            });
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            const forms = document.querySelectorAll('form');
-
-            forms.forEach(form => {
-                form.addEventListener('submit', function (e) {
-                    e.preventDefault();
-
-                    const submitBtn = this.querySelector('.submit-button');
-                    const originalText = submitBtn.textContent;
-
-                    submitBtn.textContent = 'Processando...';
-                    submitBtn.disabled = true;
-                    submitBtn.classList.add('loading');
-
-                    setTimeout(() => {
-                        alert('Formulário enviado com sucesso!');
-                        submitBtn.textContent = originalText;
-                        submitBtn.disabled = false;
-                        submitBtn.classList.remove('loading');
-                    }, 2000);
-                });
-            });
-
             const confirmPassword = document.getElementById('confirmPassword');
             const registerPassword = document.getElementById('registerPassword');
 

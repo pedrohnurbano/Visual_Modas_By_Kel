@@ -10,9 +10,10 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="estilos.css">
-    <!-- jQuery necessário para o cadastro-produto.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -563,9 +564,20 @@
 
         // Função logout
         function logout() {
-            if (confirm('Tem certeza que deseja sair do painel administrativo?')) {
-                window.location.href = 'login.html';
-            }
+            Swal.fire({
+                title: 'Sair do painel?',
+                text: 'Tem certeza que deseja sair do painel administrativo?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#370400',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sim, sair',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'login.html';
+                }
+            });
         }
 
         // Busca nas tabelas
@@ -587,7 +599,12 @@
         document.getElementById('estoque-form').addEventListener('submit', function (e) {
             e.preventDefault();
             setTimeout(() => {
-                alert('Estoque atualizado com sucesso!');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sucesso!',
+                    text: 'Estoque atualizado com sucesso!',
+                    confirmButtonColor: '#370400'
+                });
                 closeModal('estoque-modal');
                 this.reset();
             }, 1000);
@@ -698,7 +715,12 @@
             form.addEventListener('submit', function (e) {
                 if (!validateForm(this)) {
                     e.preventDefault();
-                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Campos obrigatórios',
+                        text: 'Por favor, preencha todos os campos obrigatórios.',
+                        confirmButtonColor: '#370400'
+                    });
                 }
             });
         });

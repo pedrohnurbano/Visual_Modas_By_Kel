@@ -4,7 +4,12 @@ function criarUsuario(evento) {
     evento.preventDefault();
 
     if ($("#senha").val() != $("#confirmar-senha").val()) {
-        alert("As senhas não coincidem!");
+        Swal.fire({
+            icon: 'error',
+            title: 'Senhas não coincidem',
+            text: 'As senhas informadas não são iguais. Por favor, verifique.',
+            confirmButtonColor: '#370400'
+        });
         return;
     }
 
@@ -22,12 +27,22 @@ function criarUsuario(evento) {
     const telefoneLimpo = limparTelefone($("#telefone").val());
 
     if (cpfLimpo.length !== 11) {
-        alert("CPF deve ter 11 dígitos!");
+        Swal.fire({
+            icon: 'warning',
+            title: 'CPF inválido',
+            text: 'CPF deve ter 11 dígitos!',
+            confirmButtonColor: '#370400'
+        });
         return;
     }
 
     if (telefoneLimpo.length < 10 || telefoneLimpo.length > 11) {
-        alert("Telefone deve ter 10 ou 11 dígitos!");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Telefone inválido',
+            text: 'Telefone deve ter 10 ou 11 dígitos!',
+            confirmButtonColor: '#370400'
+        });
         return;
     }
 
@@ -48,8 +63,16 @@ function criarUsuario(evento) {
             cpf: cpfLimpo,
         },
         success: function(response) {
-            alert("Usuário criado com sucesso!");
-            window.location.href = "/login";
+            Swal.fire({
+                icon: 'success',
+                title: 'Cadastro realizado!',
+                text: 'Usuário criado com sucesso!',
+                confirmButtonColor: '#370400',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href = "/login";
+            });
         },
         error: function(xhr, status, error) {
             console.error("Erro ao criar usuário:", error);
@@ -64,7 +87,12 @@ function criarUsuario(evento) {
                     // Se não conseguir fazer parse do JSON, usa mensagem padrão
                 }
             }
-            alert(mensagem);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro ao cadastrar',
+                text: mensagem,
+                confirmButtonColor: '#370400'
+            });
         },
         complete: function() {
             submitBtn.text(originalText).prop("disabled", false);

@@ -369,12 +369,23 @@ function editarEndereco(id) {
 }
 
 function excluirEndereco(id) {
-    if (confirm('Deseja realmente excluir este endereço?')) {
-        enderecos = enderecos.filter(e => e.id !== id);
-        localStorage.setItem('enderecos', JSON.stringify(enderecos));
-        carregarEnderecos();
-        showNotification('Endereço excluído!');
-    }
+    Swal.fire({
+        title: 'Excluir endereço?',
+        text: 'Deseja realmente excluir este endereço?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#370400',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sim, excluir!',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            enderecos = enderecos.filter(e => e.id !== id);
+            localStorage.setItem('enderecos', JSON.stringify(enderecos));
+            carregarEnderecos();
+            showNotification('Endereço excluído!');
+        }
+    });
 }
 
 // Pedidos
@@ -605,26 +616,59 @@ function excluirConta() {
 
     // Aqui você validaria a senha com o backend
     // Simulação:
-    if (confirm('Tem certeza absoluta? Esta ação é IRREVERSÍVEL!')) {
-        // Limpar todos os dados
-        localStorage.clear();
-        showNotification('Conta excluída com sucesso. Até breve!');
-
-        setTimeout(() => {
-            window.location.href = 'home.html';
-        }, 2000);
-    }
+    Swal.fire({
+        title: 'ATENÇÃO!',
+        text: 'Tem certeza absoluta? Esta ação é IRREVERSÍVEL!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sim, excluir minha conta!',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Limpar todos os dados
+            localStorage.clear();
+            Swal.fire({
+                icon: 'success',
+                title: 'Conta excluída',
+                text: 'Conta excluída com sucesso. Até breve!',
+                confirmButtonColor: '#370400',
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href = 'home.html';
+            });
+        }
+    });
 }
 
 // Logout
 function logout() {
-    if (confirm('Deseja realmente sair da sua conta?')) {
-        localStorage.setItem('userLoggedIn', 'false');
-        showNotification('Saindo...');
-        setTimeout(() => {
-            window.location.href = 'login.html';
-        }, 1000);
-    }
+    Swal.fire({
+        title: 'Sair da conta?',
+        text: 'Deseja realmente sair da sua conta?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#370400',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sim, sair',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            localStorage.setItem('userLoggedIn', 'false');
+            Swal.fire({
+                icon: 'success',
+                title: 'Até logo!',
+                text: 'Saindo...',
+                confirmButtonColor: '#370400',
+                timer: 1000,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href = 'login.html';
+            });
+        }
+    });
 }
 
 // Funções auxiliares

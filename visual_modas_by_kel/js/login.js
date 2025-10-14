@@ -23,16 +23,40 @@ function fazerLogin(evento) {
                 
                 // Redirecionar baseado na role
                 if (response.role === "admin") {
-                    alert("Login de administrador efetuado com sucesso!");
-                    window.location.href = "/painel-admin";
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Bem-vindo!',
+                        text: 'Login de administrador efetuado com sucesso!',
+                        confirmButtonColor: '#370400',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = "/painel-admin";
+                    });
                 } else {
-                    alert("Login efetuado com sucesso!");
-                    window.location.href = "/home";
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Bem-vindo!',
+                        text: 'Login efetuado com sucesso!',
+                        confirmButtonColor: '#370400',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = "/home";
+                    });
                 }
             } else {
                 // Se não retornar role, assume user comum
-                alert("Login efetuado com sucesso!");
-                window.location.href = "/home";
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Bem-vindo!',
+                    text: 'Login efetuado com sucesso!',
+                    confirmButtonColor: '#370400',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = "/home";
+                });
             }
         },
         error: function(xhr, status, error) {
@@ -48,7 +72,12 @@ function fazerLogin(evento) {
                     // Se não conseguir fazer parse do JSON, usa mensagem padrão
                 }
             }
-            alert(mensagem);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro no login',
+                text: mensagem,
+                confirmButtonColor: '#370400'
+            });
         },
         complete: function() {
             submitBtn.text(originalText).prop("disabled", false);

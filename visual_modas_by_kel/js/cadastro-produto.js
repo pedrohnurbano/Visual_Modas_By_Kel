@@ -16,7 +16,12 @@ $(document).ready(function () {
         // Validar tipo de arquivo
         const tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
         if (!tiposPermitidos.includes(arquivo.type)) {
-            alert("Por favor, selecione apenas arquivos JPG, PNG ou WEBP!");
+            Swal.fire({
+                icon: 'error',
+                title: 'Formato inválido',
+                text: 'Por favor, selecione apenas arquivos JPG, PNG ou WEBP!',
+                confirmButtonColor: '#370400'
+            });
             $(this).val('');
             imagemBase64 = "";
             $("#preview-imagem").html("");
@@ -26,7 +31,12 @@ $(document).ready(function () {
         // Validar tamanho (máximo 5MB)
         const tamanhoMaximo = 5 * 1024 * 1024; // 5MB
         if (arquivo.size > tamanhoMaximo) {
-            alert("A imagem deve ter no máximo 5MB!");
+            Swal.fire({
+                icon: 'error',
+                title: 'Arquivo muito grande',
+                text: 'A imagem deve ter no máximo 5MB!',
+                confirmButtonColor: '#370400'
+            });
             $(this).val('');
             imagemBase64 = "";
             $("#preview-imagem").html("");
@@ -47,7 +57,12 @@ $(document).ready(function () {
         };
 
         reader.onerror = function () {
-            alert("Erro ao carregar a imagem. Tente novamente.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: 'Erro ao carregar a imagem. Tente novamente.',
+                confirmButtonColor: '#370400'
+            });
             $("#foto-produto").val('');
             imagemBase64 = "";
             $("#preview-imagem").html("");
@@ -73,38 +88,73 @@ function criarProduto() {
     const secao = $("#secao-produto").val();
 
     if (!nome) {
-        alert("O nome do produto é obrigatório!");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Campo obrigatório',
+            text: 'O nome do produto é obrigatório!',
+            confirmButtonColor: '#370400'
+        });
         return;
     }
 
     if (!descricao) {
-        alert("A descrição do produto é obrigatória!");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Campo obrigatório',
+            text: 'A descrição do produto é obrigatória!',
+            confirmButtonColor: '#370400'
+        });
         return;
     }
 
     const preco = parseFloat(precoString);
     if (!preco || preco <= 0 || isNaN(preco)) {
-        alert("Por favor, informe um preço válido!");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Preço inválido',
+            text: 'Por favor, informe um preço válido!',
+            confirmButtonColor: '#370400'
+        });
         return;
     }
 
     if (!tamanho) {
-        alert("Por favor, selecione um tamanho!");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Campo obrigatório',
+            text: 'Por favor, selecione um tamanho!',
+            confirmButtonColor: '#370400'
+        });
         return;
     }
 
     if (!categoria) {
-        alert("Por favor, selecione uma categoria!");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Campo obrigatório',
+            text: 'Por favor, selecione uma categoria!',
+            confirmButtonColor: '#370400'
+        });
         return;
     }
 
     if (!imagemBase64) {
-        alert("Por favor, selecione uma foto do produto!");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Campo obrigatório',
+            text: 'Por favor, selecione uma foto do produto!',
+            confirmButtonColor: '#370400'
+        });
         return;
     }
 
     if (!secao) {
-        alert("Por favor, selecione uma seção!");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Campo obrigatório',
+            text: 'Por favor, selecione uma seção!',
+            confirmButtonColor: '#370400'
+        });
         return;
     }
 
@@ -132,7 +182,12 @@ function criarProduto() {
         contentType: "application/json",
         data: JSON.stringify(dadosProduto),
         success: function (response) {
-            alert("Produto cadastrado com sucesso!");
+            Swal.fire({
+                icon: 'success',
+                title: 'Sucesso!',
+                text: 'Produto cadastrado com sucesso!',
+                confirmButtonColor: '#370400'
+            });
 
             // Limpar formulário
             $("#produto-form")[0].reset();
@@ -160,7 +215,12 @@ function criarProduto() {
                     mensagem = xhr.responseText || mensagem;
                 }
             }
-            alert(mensagem);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro ao cadastrar',
+                text: mensagem,
+                confirmButtonColor: '#370400'
+            });
         },
         complete: function () {
             submitBtn.text(originalText).prop("disabled", false);
@@ -178,7 +238,12 @@ function buscarProdutos(filtro = "") {
         },
         error: function (xhr, status, error) {
             console.error("Erro ao buscar produtos:", error);
-            alert("Erro ao carregar produtos.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: 'Erro ao carregar produtos.',
+                confirmButtonColor: '#370400'
+            });
         }
     });
 }
@@ -193,34 +258,58 @@ function buscarMeusProdutos() {
         },
         error: function (xhr, status, error) {
             console.error("Erro ao buscar produtos:", error);
-            alert("Erro ao carregar seus produtos.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: 'Erro ao carregar seus produtos.',
+                confirmButtonColor: '#370400'
+            });
         }
     });
 }
 
 // Função para deletar produto
 function deletarProduto(produtoId) {
-    if (!confirm("Tem certeza que deseja deletar este produto?")) {
-        return;
-    }
-
-    $.ajax({
-        url: `/api/produtos/${produtoId}`,
-        method: "DELETE",
-        success: function () {
-            alert("Produto deletado com sucesso!");
-            buscarMeusProdutos(); // Recarregar lista
-        },
-        error: function (xhr, status, error) {
-            console.error("Erro ao deletar produto:", error);
-            let mensagem = "Erro ao deletar produto.";
-            if (xhr.responseText) {
-                try {
-                    const resposta = JSON.parse(xhr.responseText);
-                    mensagem = resposta.erro || mensagem;
-                } catch (e) { }
-            }
-            alert(mensagem);
+    Swal.fire({
+        title: 'Tem certeza?',
+        text: "Deseja deletar este produto? Esta ação não pode ser desfeita!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#370400',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sim, deletar!',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: `/api/produtos/${produtoId}`,
+                method: "DELETE",
+                success: function () {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deletado!',
+                        text: 'Produto deletado com sucesso!',
+                        confirmButtonColor: '#370400'
+                    });
+                    buscarMeusProdutos(); // Recarregar lista
+                },
+                error: function (xhr, status, error) {
+                    console.error("Erro ao deletar produto:", error);
+                    let mensagem = "Erro ao deletar produto.";
+                    if (xhr.responseText) {
+                        try {
+                            const resposta = JSON.parse(xhr.responseText);
+                            mensagem = resposta.erro || mensagem;
+                        } catch (e) { }
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro',
+                        text: mensagem,
+                        confirmButtonColor: '#370400'
+                    });
+                }
+            });
         }
     });
 }
@@ -268,7 +357,12 @@ function exibirMeusProdutos(produtos) {
 
 // Função para editar produto (placeholder)
 function editarProduto(produtoId) {
-    alert('Funcionalidade de edição em desenvolvimento. ID: ' + produtoId);
+    Swal.fire({
+        icon: 'info',
+        title: 'Em desenvolvimento',
+        text: 'Funcionalidade de edição em desenvolvimento. ID: ' + produtoId,
+        confirmButtonColor: '#370400'
+    });
 }
 
 // Carregar produtos ao entrar na seção de produtos
