@@ -86,6 +86,7 @@ function criarProduto() {
     const tamanho = $("#tamanho-produto").val();
     const categoria = $("#categoria-produto").val();
     const secao = $("#secao-produto").val();
+    const genero = $("#genero-produto").val();
 
     if (!nome) {
         Swal.fire({
@@ -158,6 +159,16 @@ function criarProduto() {
         return;
     }
 
+    if (!genero) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Campo obrigatório',
+            text: 'Por favor, selecione um gênero!',
+            confirmButtonColor: '#370400'
+        });
+        return;
+    }
+
     // Adicionar loading state
     const submitBtn = $('.painel-btn-primary[form="produto-form"]');
     const originalText = submitBtn.text();
@@ -167,10 +178,11 @@ function criarProduto() {
     const dadosProduto = {
         nome: nome,
         descricao: descricao,
-        preco: preco, // Agora é número
+        preco: preco,
         tamanho: tamanho,
         categoria: categoria,
-        secao: secao,  // NOVO CAMPO
+        secao: secao,
+        genero: genero,
         foto_url: imagemBase64
     };
 
@@ -322,7 +334,7 @@ function exibirProdutos(produtos) {
     tbody.innerHTML = '';
 
     if (!produtos || produtos.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="11" style="text-align: center;">Nenhum produto encontrado</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">Nenhum produto encontrado</td></tr>';
         return;
     }
 
@@ -334,9 +346,8 @@ function exibirProdutos(produtos) {
             <td>${produto.nome || ''}</td>
             <td>R$ ${(produto.preco || 0).toFixed(2)}</td>
             <td>${produto.tamanho || ''}</td>
-            <td>-</td>
+            <td>${produto.genero || '-'}</td>
             <td>${produto.categoria || ''}</td>
-            <td>-</td>
             <td>${produto.descricao ? produto.descricao.substring(0, 50) + '...' : ''}</td>
             <td>${produto.foto_url ? '<img src="' + (produto.foto_url.startsWith('http') ? produto.foto_url : (produto.foto_url.startsWith('/') ? 'http://localhost:5000' + produto.foto_url : 'http://localhost:5000/' + produto.foto_url)) + '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">' : '-'}</td>
             <td>

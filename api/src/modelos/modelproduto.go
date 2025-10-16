@@ -15,6 +15,7 @@ type Produto struct {
 	Tamanho      string    `json:"tamanho,omitempty"`
 	Categoria    string    `json:"categoria,omitempty"`
 	Secao        string    `json:"secao,omitempty"`
+	Genero       string    `json:"genero,omitempty"`
 	FotoURL      string    `json:"foto_url,omitempty"`
 	UsuarioID    uint64    `json:"usuario_id,omitempty"`
 	Ativo        bool      `json:"ativo"`
@@ -44,6 +45,13 @@ var SecoesValidas = []string{
 	"Geral",
 	"Novidades",
 	"Destaques",
+}
+
+// GenerosValidos lista todos os gêneros permitidos
+var GenerosValidos = []string{
+	"Unissex",
+	"Masculino",
+	"Feminino",
 }
 
 // Preparar valida e formata o produto
@@ -121,6 +129,22 @@ func (produto *Produto) validar(etapa string) error {
 		return errors.New("seção inválida. Use: Geral, Novidades ou Destaques")
 	}
 
+	if produto.Genero == "" {
+		return errors.New("o gênero é obrigatório")
+	}
+
+	// Validar gênero
+	generoValido := false
+	for _, g := range GenerosValidos {
+		if produto.Genero == g {
+			generoValido = true
+			break
+		}
+	}
+	if !generoValido {
+		return errors.New("gênero inválido. Use: Unissex, Masculino ou Feminino")
+	}
+
 	if etapa == "cadastro" && produto.UsuarioID == 0 {
 		return errors.New("o ID do usuário é obrigatório")
 	}
@@ -134,5 +158,6 @@ func (produto *Produto) formatar() {
 	produto.Tamanho = strings.TrimSpace(produto.Tamanho)
 	produto.Categoria = strings.TrimSpace(produto.Categoria)
 	produto.Secao = strings.TrimSpace(produto.Secao)
+	produto.Genero = strings.TrimSpace(produto.Genero)
 	produto.FotoURL = strings.TrimSpace(produto.FotoURL)
 }

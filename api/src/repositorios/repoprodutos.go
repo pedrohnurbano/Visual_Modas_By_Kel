@@ -19,7 +19,7 @@ func NovoRepositorioDeProdutos(db *sql.DB) *Produtos {
 // Criar insere um produto no banco de dados
 func (repositorio Produtos) Criar(produto modelos.Produto) (uint64, error) {
 	statement, erro := repositorio.db.Prepare(
-		"INSERT INTO produtos (nome, descricao, preco, tamanho, categoria, secao, foto_url, usuario_id, ativo) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)",
+		"INSERT INTO produtos (nome, descricao, preco, tamanho, categoria, secao, genero, foto_url, usuario_id, ativo) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 	)
 	if erro != nil {
 		return 0, erro
@@ -33,6 +33,7 @@ func (repositorio Produtos) Criar(produto modelos.Produto) (uint64, error) {
 		produto.Tamanho,
 		produto.Categoria,
 		produto.Secao,
+		produto.Genero,
 		produto.FotoURL,
 		produto.UsuarioID,
 		true, // ativo por padrão
@@ -52,13 +53,13 @@ func (repositorio Produtos) Criar(produto modelos.Produto) (uint64, error) {
 // Buscar retorna todos os produtos que atendem um filtro
 func (repositorio Produtos) Buscar(filtro string) ([]modelos.Produto, error) {
 	filtro = fmt.Sprintf("%%%s%%", filtro)
-	
+
 	linhas, erro := repositorio.db.Query(
-		`SELECT id, nome, descricao, preco, tamanho, categoria, secao, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
+		`SELECT id, nome, descricao, preco, tamanho, categoria, secao, genero, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
 		FROM produtos 
-		WHERE ativo = true AND (nome LIKE ? OR descricao LIKE ? OR categoria LIKE ? OR secao LIKE ?)
+		WHERE ativo = true AND (nome LIKE ? OR descricao LIKE ? OR categoria LIKE ? OR secao LIKE ? OR genero LIKE ?)
 		ORDER BY criadoEm DESC`,
-		filtro, filtro, filtro, filtro,
+		filtro, filtro, filtro, filtro, filtro,
 	)
 	if erro != nil {
 		return nil, erro
@@ -77,6 +78,7 @@ func (repositorio Produtos) Buscar(filtro string) ([]modelos.Produto, error) {
 			&produto.Tamanho,
 			&produto.Categoria,
 			&produto.Secao,
+			&produto.Genero,
 			&produto.FotoURL,
 			&produto.UsuarioID,
 			&produto.Ativo,
@@ -95,7 +97,7 @@ func (repositorio Produtos) Buscar(filtro string) ([]modelos.Produto, error) {
 // BuscarPorID retorna um produto específico
 func (repositorio Produtos) BuscarPorID(ID uint64) (modelos.Produto, error) {
 	linha := repositorio.db.QueryRow(
-		`SELECT id, nome, descricao, preco, tamanho, categoria, secao, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
+		`SELECT id, nome, descricao, preco, tamanho, categoria, secao, genero, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
 		FROM produtos WHERE id = ?`,
 		ID,
 	)
@@ -109,6 +111,7 @@ func (repositorio Produtos) BuscarPorID(ID uint64) (modelos.Produto, error) {
 		&produto.Tamanho,
 		&produto.Categoria,
 		&produto.Secao,
+		&produto.Genero,
 		&produto.FotoURL,
 		&produto.UsuarioID,
 		&produto.Ativo,
@@ -122,7 +125,7 @@ func (repositorio Produtos) BuscarPorID(ID uint64) (modelos.Produto, error) {
 // BuscarPorCategoria retorna produtos de uma categoria específica
 func (repositorio Produtos) BuscarPorCategoria(categoria string) ([]modelos.Produto, error) {
 	linhas, erro := repositorio.db.Query(
-		`SELECT id, nome, descricao, preco, tamanho, categoria, secao, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
+		`SELECT id, nome, descricao, preco, tamanho, categoria, secao, genero, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
 		FROM produtos 
 		WHERE ativo = true AND categoria = ?
 		ORDER BY criadoEm DESC`,
@@ -145,6 +148,7 @@ func (repositorio Produtos) BuscarPorCategoria(categoria string) ([]modelos.Prod
 			&produto.Tamanho,
 			&produto.Categoria,
 			&produto.Secao,
+			&produto.Genero,
 			&produto.FotoURL,
 			&produto.UsuarioID,
 			&produto.Ativo,
@@ -163,7 +167,7 @@ func (repositorio Produtos) BuscarPorCategoria(categoria string) ([]modelos.Prod
 // BuscarPorSecao retorna produtos de uma seção específica
 func (repositorio Produtos) BuscarPorSecao(secao string) ([]modelos.Produto, error) {
 	linhas, erro := repositorio.db.Query(
-		`SELECT id, nome, descricao, preco, tamanho, categoria, secao, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
+		`SELECT id, nome, descricao, preco, tamanho, categoria, secao, genero, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
 		FROM produtos 
 		WHERE ativo = true AND secao = ?
 		ORDER BY criadoEm DESC`,
@@ -186,6 +190,7 @@ func (repositorio Produtos) BuscarPorSecao(secao string) ([]modelos.Produto, err
 			&produto.Tamanho,
 			&produto.Categoria,
 			&produto.Secao,
+			&produto.Genero,
 			&produto.FotoURL,
 			&produto.UsuarioID,
 			&produto.Ativo,
@@ -204,7 +209,7 @@ func (repositorio Produtos) BuscarPorSecao(secao string) ([]modelos.Produto, err
 // BuscarPorUsuario retorna todos os produtos de um usuário
 func (repositorio Produtos) BuscarPorUsuario(usuarioID uint64) ([]modelos.Produto, error) {
 	linhas, erro := repositorio.db.Query(
-		`SELECT id, nome, descricao, preco, tamanho, categoria, secao, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
+		`SELECT id, nome, descricao, preco, tamanho, categoria, secao, genero, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
 		FROM produtos 
 		WHERE usuario_id = ?
 		ORDER BY criadoEm DESC`,
@@ -227,6 +232,7 @@ func (repositorio Produtos) BuscarPorUsuario(usuarioID uint64) ([]modelos.Produt
 			&produto.Tamanho,
 			&produto.Categoria,
 			&produto.Secao,
+			&produto.Genero,
 			&produto.FotoURL,
 			&produto.UsuarioID,
 			&produto.Ativo,
@@ -246,7 +252,7 @@ func (repositorio Produtos) BuscarPorUsuario(usuarioID uint64) ([]modelos.Produt
 func (repositorio Produtos) Atualizar(ID uint64, produto modelos.Produto) error {
 	statement, erro := repositorio.db.Prepare(
 		`UPDATE produtos 
-		SET nome = ?, descricao = ?, preco = ?, tamanho = ?, categoria = ?, secao = ?, foto_url = ? 
+		SET nome = ?, descricao = ?, preco = ?, tamanho = ?, categoria = ?, secao = ?, genero = ?, foto_url = ? 
 		WHERE id = ?`,
 	)
 	if erro != nil {
@@ -261,6 +267,7 @@ func (repositorio Produtos) Atualizar(ID uint64, produto modelos.Produto) error 
 		produto.Tamanho,
 		produto.Categoria,
 		produto.Secao,
+		produto.Genero,
 		produto.FotoURL,
 		ID,
 	); erro != nil {

@@ -75,7 +75,8 @@ func CriarProduto(w http.ResponseWriter, r *http.Request) {
 		"tamanho":   dadosRecebidos["tamanho"],
 		"categoria": dadosRecebidos["categoria"],
 		"secao":     dadosRecebidos["secao"],
-		"foto_url":  dadosRecebidos["foto_url"], // Já vem em base64 do frontend
+		"genero":    dadosRecebidos["genero"],
+		"foto_url":  dadosRecebidos["foto_url"],
 	}
 
 	produtoJSON, erro := json.Marshal(produto)
@@ -310,6 +311,7 @@ func AtualizarProduto(w http.ResponseWriter, r *http.Request) {
 		"tamanho":   dadosRecebidos["tamanho"],
 		"categoria": dadosRecebidos["categoria"],
 		"secao":     dadosRecebidos["secao"],
+		"genero":    dadosRecebidos["genero"],
 		"foto_url":  dadosRecebidos["foto_url"],
 	}
 

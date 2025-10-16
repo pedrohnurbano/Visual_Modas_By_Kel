@@ -28,6 +28,7 @@ CREATE TABLE produtos (
     tamanho VARCHAR(10) NOT NULL,
     categoria VARCHAR(50) NOT NULL,
     secao VARCHAR(50) NOT NULL DEFAULT 'Geral',
+    genero VARCHAR(20) NOT NULL DEFAULT 'Unissex',
     foto_url LONGTEXT,
     usuario_id INT NOT NULL,
     ativo BOOLEAN DEFAULT TRUE,
@@ -36,6 +37,7 @@ CREATE TABLE produtos (
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
     INDEX idx_categoria (categoria),
     INDEX idx_secao (secao),
+    INDEX idx_genero (genero),
     INDEX idx_ativo (ativo),
     INDEX idx_usuario (usuario_id),
     INDEX idx_tamanho (tamanho)

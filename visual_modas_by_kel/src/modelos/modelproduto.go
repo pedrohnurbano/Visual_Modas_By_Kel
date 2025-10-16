@@ -11,6 +11,7 @@ type Produto struct {
 	Tamanho      string    `json:"tamanho,omitempty"`
 	Categoria    string    `json:"categoria,omitempty"`
 	Secao        string    `json:"secao,omitempty"`
+	Genero       string    `json:"genero,omitempty"`
 	FotoURL      string    `json:"foto_url,omitempty"`
 	UsuarioID    uint64    `json:"usuario_id,omitempty"`
 	Ativo        bool      `json:"ativo"`
