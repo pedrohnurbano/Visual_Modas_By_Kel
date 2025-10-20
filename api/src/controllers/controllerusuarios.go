@@ -10,10 +10,10 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
-	"log"
 
 	"github.com/gorilla/mux"
 )
@@ -22,7 +22,7 @@ import (
 func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 	// Log para debug
 	log.Println("Iniciando criação de usuário")
-	
+
 	corpoRequest, erro := io.ReadAll(r.Body)
 	if erro != nil {
 		log.Printf("Erro ao ler corpo da requisição: %v", erro)
@@ -39,7 +39,7 @@ func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 		respostas.Erro(w, http.StatusBadRequest, erro)
 		return
 	}
-	
+
 	// Força a role como "user" para novos cadastros (segurança)
 	usuario.Role = "user"
 
@@ -152,6 +152,33 @@ func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
 
 	repositorio := repositorios.NovoRepositorioDeUsuarios(db)
 	usuario, erro := repositorio.BuscarPorID(usuarioID)
+	if erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	// Limpar senha da resposta por segurança
+	usuario.Senha = ""
+	respostas.JSON(w, http.StatusOK, usuario)
+}
+
+// BuscarDadosUsuarioAutenticado retorna os dados do usuário autenticado
+func BuscarDadosUsuarioAutenticado(w http.ResponseWriter, r *http.Request) {
+	usuarioIDNoToken, erro := autenticacao.ExtrairUsuarioID(r)
+	if erro != nil {
+		respostas.Erro(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	db, erro := banco.Conectar()
+	if erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repositorios.NovoRepositorioDeUsuarios(db)
+	usuario, erro := repositorio.BuscarPorID(usuarioIDNoToken)
 	if erro != nil {
 		respostas.Erro(w, http.StatusInternalServerError, erro)
 		return

@@ -1,97 +1,48 @@
-// Dados do usuário (simulação - em produção viriam do backend)
-let userData = {
-    nome: 'Maria',
-    sobrenome: 'Silva',
-    cpf: '123.456.789-00',
-    telefone: '(48) 99999-9999',
-    email: 'maria.silva@email.com',
-    dataNasc: '1990-05-15',
-    genero: 'feminino'
-};
-
-let enderecos = [
-    {
-        id: 1,
-        cep: '88000-000',
-        rua: 'Rua das Flores',
-        numero: '123',
-        complemento: 'Apto 501',
-        bairro: 'Centro',
-        cidade: 'Criciúma',
-        estado: 'SC',
-        principal: true
-    }
-];
-
-let pedidos = [
-    {
-        id: '2025001',
-        data: '15/01/2025',
-        status: 'entregue',
-        items: [
-            {
-                nome: 'Vestido Midi Floral',
-                tamanho: 'M',
-                quantidade: 1,
-                preco: 899.90,
-                imagem: 'design/ex-roupa1.png'
-            }
-        ],
-        total: 899.90
-    },
-    {
-        id: '2025002',
-        data: '20/01/2025',
-        status: 'enviado',
-        items: [
-            {
-                nome: 'Blusa Cropped Básica',
-                tamanho: 'P',
-                quantidade: 2,
-                preco: 449.90,
-                imagem: 'design/ex-roupa2.png'
-            }
-        ],
-        total: 899.80
-    }
-];
+// Dados do usuário (serão carregados da API)
+let userData = {};
+let enderecos = [];
+let pedidos = [];
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', function () {
-    verificarLogin();
     carregarDadosUsuario();
     configurarMenu();
     configurarFormularios();
-    carregarEnderecos();
-    carregarPedidos();
-    carregarFavoritos();
 });
 
-// Verificar se usuário está logado
-function verificarLogin() {
-    const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-    if (!isLoggedIn) {
-        window.location.href = 'login.html';
+// Carregar dados do usuário da API
+async function carregarDadosUsuario() {
+    try {
+        const response = await fetch('/api/usuarios/dados');
+        
+        if (!response.ok) {
+            throw new Error('Erro ao carregar dados do usuário');
+        }
+        
+        const data = await response.json();
+        userData = data;
+
+        // Atualizar cabeçalho
+        document.getElementById('userName').textContent = userData.nome || 'Usuário';
+
+        // Atualizar visualização dos dados
+        document.getElementById('viewNome').textContent = userData.nome && userData.sobrenome 
+            ? `${userData.nome} ${userData.sobrenome}` 
+            : userData.nome || '-';
+        document.getElementById('viewCpf').textContent = userData.cpf || '-';
+        document.getElementById('viewEmail').textContent = userData.email || '-';
+        document.getElementById('viewTelefone').textContent = userData.telefone || '-';
+        document.getElementById('viewDataNasc').textContent = userData.dataNasc ? formatarData(userData.dataNasc) : '-';
+        document.getElementById('viewGenero').textContent = formatarGenero(userData.genero);
+        
+        // Carregar dados relacionados
+        carregarEnderecos();
+        carregarPedidos();
+        carregarFavoritos();
+    } catch (error) {
+        console.error('Erro ao carregar dados do usuário:', error);
+        showNotification('Erro ao carregar seus dados. Tente novamente.');
     }
-}
-
-// Carregar dados do usuário
-function carregarDadosUsuario() {
-    const savedData = localStorage.getItem('userData');
-    if (savedData) {
-        userData = JSON.parse(savedData);
-    }
-
-    // Atualizar cabeçalho
-    document.getElementById('userName').textContent = userData.nome;
-
-    // Atualizar visualização dos dados
-    document.getElementById('viewNome').textContent = `${userData.nome} ${userData.sobrenome}`;
-    document.getElementById('viewCpf').textContent = userData.cpf;
-    document.getElementById('viewEmail').textContent = userData.email;
-    document.getElementById('viewTelefone').textContent = userData.telefone;
-    document.getElementById('viewDataNasc').textContent = userData.dataNasc ? formatarData(userData.dataNasc) : '-';
-    document.getElementById('viewGenero').textContent = formatarGenero(userData.genero);
 }
 
 // Configurar navegação do menu
@@ -206,8 +157,8 @@ function maskPhone(value) {
 }
 
 // Salvar dados pessoais
-function salvarDadosPessoais() {
-    userData = {
+async function salvarDadosPessoais() {
+    const dadosAtualizados = {
         nome: document.getElementById('editNome').value,
         sobrenome: document.getElementById('editSobrenome').value,
         cpf: document.getElementById('editCpf').value,
@@ -217,13 +168,42 @@ function salvarDadosPessoais() {
         genero: document.getElementById('editGenero').value
     };
 
-    localStorage.setItem('userData', JSON.stringify(userData));
-    carregarDadosUsuario();
-
-    document.getElementById('dadosEdit').classList.add('hidden');
-    document.getElementById('dadosView').classList.remove('hidden');
-
-    showNotification('Dados atualizados com sucesso!');
+    try {
+        // TODO: Implementar atualização na API
+        // const response = await fetch('/api/usuarios/dados', {
+        //     method: 'PUT',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(dadosAtualizados)
+        // });
+        // if (response.ok) {
+        //     await carregarDadosUsuario();
+        //     document.getElementById('dadosEdit').classList.add('hidden');
+        //     document.getElementById('dadosView').classList.remove('hidden');
+        //     showNotification('Dados atualizados com sucesso!');
+        // }
+        
+        // Temporariamente atualizando localmente
+        userData = dadosAtualizados;
+        
+        // Atualizar visualização dos dados
+        document.getElementById('userName').textContent = userData.nome || 'Usuário';
+        document.getElementById('viewNome').textContent = userData.nome && userData.sobrenome 
+            ? `${userData.nome} ${userData.sobrenome}` 
+            : userData.nome || '-';
+        document.getElementById('viewCpf').textContent = userData.cpf || '-';
+        document.getElementById('viewEmail').textContent = userData.email || '-';
+        document.getElementById('viewTelefone').textContent = userData.telefone || '-';
+        document.getElementById('viewDataNasc').textContent = userData.dataNasc ? formatarData(userData.dataNasc) : '-';
+        document.getElementById('viewGenero').textContent = formatarGenero(userData.genero);
+        
+        document.getElementById('dadosEdit').classList.add('hidden');
+        document.getElementById('dadosView').classList.remove('hidden');
+        
+        showNotification('Dados atualizados com sucesso!');
+    } catch (error) {
+        console.error('Erro ao salvar dados:', error);
+        showNotification('Erro ao salvar dados. Tente novamente.');
+    }
 }
 
 function cancelarEdicaoDados() {
@@ -232,44 +212,49 @@ function cancelarEdicaoDados() {
 }
 
 // Endereços
-function carregarEnderecos() {
-    const savedEnderecos = localStorage.getItem('enderecos');
-    if (savedEnderecos) {
-        enderecos = JSON.parse(savedEnderecos);
-    }
+async function carregarEnderecos() {
+    try {
+        // TODO: Implementar endpoint da API para buscar endereços do usuário
+        // const response = await fetch('/api/usuarios/enderecos');
+        // if (response.ok) {
+        //     enderecos = await response.json();
+        // }
+        
+        const grid = document.getElementById('enderecosGrid');
+        const empty = document.getElementById('enderecosEmpty');
 
-    const grid = document.getElementById('enderecosGrid');
-    const empty = document.getElementById('enderecosEmpty');
+        if (enderecos.length === 0) {
+            grid.style.display = 'none';
+            empty.style.display = 'block';
+            return;
+        }
 
-    if (enderecos.length === 0) {
-        grid.style.display = 'none';
-        empty.style.display = 'block';
-        return;
-    }
+        grid.style.display = 'grid';
+        empty.style.display = 'none';
 
-    grid.style.display = 'grid';
-    empty.style.display = 'none';
-
-    grid.innerHTML = enderecos.map(end => `
-        <div class="endereco-card ${end.principal ? 'principal' : ''}">
-            ${end.principal ? '<span class="endereco-badge">Principal</span>' : ''}
-            <div class="endereco-info">
-                <strong>Endereço</strong>
-                <p>${end.rua}, ${end.numero}</p>
-                ${end.complemento ? `<p>${end.complemento}</p>` : ''}
-                <p>${end.bairro} - ${end.cidade}/${end.estado}</p>
-                <p>CEP: ${end.cep}</p>
+        grid.innerHTML = enderecos.map(end => `
+            <div class="endereco-card ${end.principal ? 'principal' : ''}">
+                ${end.principal ? '<span class="endereco-badge">Principal</span>' : ''}
+                <div class="endereco-info">
+                    <strong>Endereço</strong>
+                    <p>${end.rua}, ${end.numero}</p>
+                    ${end.complemento ? `<p>${end.complemento}</p>` : ''}
+                    <p>${end.bairro} - ${end.cidade}/${end.estado}</p>
+                    <p>CEP: ${end.cep}</p>
+                </div>
+                <div class="endereco-actions">
+                    <button class="btn-icon" onclick="editarEndereco(${end.id})">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button class="btn-icon delete" onclick="excluirEndereco(${end.id})">
+                        <i class="fas fa-trash"></i> Excluir
+                    </button>
+                </div>
             </div>
-            <div class="endereco-actions">
-                <button class="btn-icon" onclick="editarEndereco(${end.id})">
-                    <i class="fas fa-edit"></i> Editar
-                </button>
-                <button class="btn-icon delete" onclick="excluirEndereco(${end.id})">
-                    <i class="fas fa-trash"></i> Excluir
-                </button>
-            </div>
-        </div>
-    `).join('');
+        `).join('');
+    } catch (error) {
+        console.error('Erro ao carregar endereços:', error);
+    }
 }
 
 function abrirModalEndereco(id = null) {
@@ -333,10 +318,9 @@ function buscarCep() {
         });
 }
 
-function salvarEndereco() {
+async function salvarEndereco() {
     const id = document.getElementById('enderecoId').value;
     const endereco = {
-        id: id ? parseInt(id) : Date.now(),
         cep: document.getElementById('enderecoCep').value,
         rua: document.getElementById('enderecoRua').value,
         numero: document.getElementById('enderecoNumero').value,
@@ -347,28 +331,47 @@ function salvarEndereco() {
         principal: document.getElementById('enderecoPrincipal').checked
     };
 
-    if (endereco.principal) {
-        enderecos.forEach(e => e.principal = false);
+    try {
+        // TODO: Implementar salvamento na API
+        // const url = id ? `/api/usuarios/enderecos/${id}` : '/api/usuarios/enderecos';
+        // const method = id ? 'PUT' : 'POST';
+        // const response = await fetch(url, {
+        //     method: method,
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(endereco)
+        // });
+        // if (response.ok) {
+        //     await carregarEnderecos();
+        //     fecharModalEndereco();
+        //     showNotification('Endereço salvo com sucesso!');
+        // }
+        
+        // Temporariamente salvando localmente até implementar na API
+        if (endereco.principal) {
+            enderecos.forEach(e => e.principal = false);
+        }
+        
+        if (id) {
+            const index = enderecos.findIndex(e => e.id === parseInt(id));
+            enderecos[index] = { ...endereco, id: parseInt(id) };
+        } else {
+            enderecos.push({ ...endereco, id: Date.now() });
+        }
+        
+        carregarEnderecos();
+        fecharModalEndereco();
+        showNotification('Endereço salvo com sucesso!');
+    } catch (error) {
+        console.error('Erro ao salvar endereço:', error);
+        showNotification('Erro ao salvar endereço. Tente novamente.');
     }
-
-    if (id) {
-        const index = enderecos.findIndex(e => e.id === parseInt(id));
-        enderecos[index] = endereco;
-    } else {
-        enderecos.push(endereco);
-    }
-
-    localStorage.setItem('enderecos', JSON.stringify(enderecos));
-    carregarEnderecos();
-    fecharModalEndereco();
-    showNotification('Endereço salvo com sucesso!');
 }
 
 function editarEndereco(id) {
     abrirModalEndereco(id);
 }
 
-function excluirEndereco(id) {
+async function excluirEndereco(id) {
     Swal.fire({
         title: 'Excluir endereço?',
         text: 'Deseja realmente excluir este endereço?',
@@ -378,36 +381,52 @@ function excluirEndereco(id) {
         cancelButtonColor: '#6c757d',
         confirmButtonText: 'Sim, excluir!',
         cancelButtonText: 'Cancelar'
-    }).then((result) => {
+    }).then(async (result) => {
         if (result.isConfirmed) {
-            enderecos = enderecos.filter(e => e.id !== id);
-            localStorage.setItem('enderecos', JSON.stringify(enderecos));
-            carregarEnderecos();
-            showNotification('Endereço excluído!');
+            try {
+                // TODO: Implementar exclusão na API
+                // const response = await fetch(`/api/usuarios/enderecos/${id}`, {
+                //     method: 'DELETE'
+                // });
+                // if (response.ok) {
+                //     await carregarEnderecos();
+                //     showNotification('Endereço excluído!');
+                // }
+                
+                // Temporariamente removendo localmente
+                enderecos = enderecos.filter(e => e.id !== id);
+                carregarEnderecos();
+                showNotification('Endereço excluído!');
+            } catch (error) {
+                console.error('Erro ao excluir endereço:', error);
+                showNotification('Erro ao excluir endereço. Tente novamente.');
+            }
         }
     });
 }
 
 // Pedidos
-function carregarPedidos() {
-    const savedPedidos = localStorage.getItem('pedidos');
-    if (savedPedidos) {
-        pedidos = JSON.parse(savedPedidos);
-    }
+async function carregarPedidos() {
+    try {
+        // TODO: Implementar endpoint da API para buscar pedidos do usuário
+        // const response = await fetch('/api/usuarios/pedidos');
+        // if (response.ok) {
+        //     pedidos = await response.json();
+        // }
+        
+        const lista = document.getElementById('pedidosLista');
+        const empty = document.getElementById('pedidosEmpty');
 
-    const lista = document.getElementById('pedidosLista');
-    const empty = document.getElementById('pedidosEmpty');
+        if (pedidos.length === 0) {
+            lista.style.display = 'none';
+            empty.style.display = 'block';
+            return;
+        }
 
-    if (pedidos.length === 0) {
-        lista.style.display = 'none';
-        empty.style.display = 'block';
-        return;
-    }
+        lista.style.display = 'flex';
+        empty.style.display = 'none';
 
-    lista.style.display = 'flex';
-    empty.style.display = 'none';
-
-    lista.innerHTML = pedidos.map(pedido => `
+        lista.innerHTML = pedidos.map(pedido => `
         <div class="pedido-card">
             <div class="pedido-header">
                 <div>
@@ -446,10 +465,16 @@ function carregarPedidos() {
         </div>
     `).join('');
 
-    // Filtro de pedidos
-    document.getElementById('filterPedidos').addEventListener('change', function () {
-        filtrarPedidos(this.value);
-    });
+        // Filtro de pedidos
+        const filterPedidos = document.getElementById('filterPedidos');
+        if (filterPedidos) {
+            filterPedidos.addEventListener('change', function () {
+                filtrarPedidos(this.value);
+            });
+        }
+    } catch (error) {
+        console.error('Erro ao carregar pedidos:', error);
+    }
 }
 
 function getStatusText(status) {
@@ -485,47 +510,76 @@ function rastrearPedido(id) {
 }
 
 // Favoritos
-function carregarFavoritos() {
-    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-    const grid = document.getElementById('favoritosGrid');
-    const empty = document.getElementById('favoritosEmpty');
+async function carregarFavoritos() {
+    try {
+        const grid = document.getElementById('favoritosGrid');
+        const empty = document.getElementById('favoritosEmpty');
+        
+        // Buscar favoritos da API
+        const response = await fetch('/api/favoritos');
+        if (!response.ok) {
+            throw new Error('Erro ao carregar favoritos');
+        }
+        
+        const favoritos = await response.json();
 
-    if (favorites.length === 0) {
+        if (!favoritos || favoritos.length === 0) {
+            grid.style.display = 'none';
+            empty.style.display = 'block';
+            return;
+        }
+
+        grid.style.display = 'grid';
+        empty.style.display = 'none';
+
+        grid.innerHTML = favoritos.map(produto => {
+            const fotoUrl = produto.foto_url && !produto.foto_url.startsWith('http') 
+                ? `http://localhost:5000${produto.foto_url.startsWith('/') ? '' : '/'}${produto.foto_url}`
+                : produto.foto_url || 'design/ex-roupa1.png';
+                
+            return `
+                <div class="produto-card">
+                    <button class="produto-favorito favorito-active" onclick="removerFavorito(${produto.id})">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                                stroke="#370400" stroke-width="1.5" fill="#370400"/>
+                        </svg>
+                    </button>
+                    <div class="produto-img-container">
+                        <img src="${fotoUrl}" alt="${produto.nome}" class="produto-img">
+                    </div>
+                    <div class="produto-info">
+                        <span class="produto-nome">${produto.nome}</span>
+                        <span class="produto-preco">R$ ${produto.preco.toFixed(2).replace('.', ',')}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } catch (error) {
+        console.error('Erro ao carregar favoritos:', error);
+        const grid = document.getElementById('favoritosGrid');
+        const empty = document.getElementById('favoritosEmpty');
         grid.style.display = 'none';
         empty.style.display = 'block';
-        return;
     }
-
-    grid.style.display = 'grid';
-    empty.style.display = 'none';
-
-    // Aqui você buscaria os produtos favoritos
-    // Por enquanto vou usar dados mockados
-    grid.innerHTML = favorites.map(id => `
-        <div class="produto-card">
-            <button class="produto-favorito favorito-active" onclick="removerFavorito(${id})">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                        stroke="#370400" stroke-width="1.5" fill="#370400"/>
-                </svg>
-            </button>
-            <div class="produto-img-container">
-                <img src="design/ex-roupa${id}.png" alt="Produto" class="produto-img">
-            </div>
-            <div class="produto-info">
-                <span class="produto-nome">Produto ${id}</span>
-                <span class="produto-preco">R$ 899,90</span>
-            </div>
-        </div>
-    `).join('');
 }
 
-function removerFavorito(id) {
-    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-    favorites = favorites.filter(fav => fav !== id);
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-    carregarFavoritos();
-    showNotification('Produto removido dos favoritos');
+async function removerFavorito(produtoId) {
+    try {
+        const response = await fetch(`/api/favoritos/${produtoId}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            await carregarFavoritos();
+            showNotification('Produto removido dos favoritos');
+        } else {
+            throw new Error('Erro ao remover favorito');
+        }
+    } catch (error) {
+        console.error('Erro ao remover favorito:', error);
+        showNotification('Erro ao remover favorito. Tente novamente.');
+    }
 }
 
 // Segurança
@@ -654,19 +708,26 @@ function logout() {
         cancelButtonColor: '#6c757d',
         confirmButtonText: 'Sim, sair',
         cancelButtonText: 'Cancelar'
-    }).then((result) => {
+    }).then(async (result) => {
         if (result.isConfirmed) {
-            localStorage.setItem('userLoggedIn', 'false');
-            Swal.fire({
-                icon: 'success',
-                title: 'Até logo!',
-                text: 'Saindo...',
-                confirmButtonColor: '#370400',
-                timer: 1000,
-                showConfirmButton: false
-            }).then(() => {
-                window.location.href = 'login.html';
-            });
+            try {
+                const response = await fetch('/logout', { method: 'POST' });
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Até logo!',
+                    text: 'Saindo...',
+                    confirmButtonColor: '#370400',
+                    timer: 1000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = '/login';
+                });
+            } catch (error) {
+                console.error('Erro ao fazer logout:', error);
+                // Mesmo com erro, redirecionar para o login
+                window.location.href = '/login';
+            }
         }
     });
 }
