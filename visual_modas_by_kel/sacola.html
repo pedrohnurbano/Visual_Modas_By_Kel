@@ -309,12 +309,17 @@
             const emptyState = document.getElementById('sacolaEmpty');
             const resumo = document.getElementById('sacolaResumo');
             const totalElement = document.getElementById('sacolaTotal');
+            const sacolaContent = document.querySelector('.sacola-content');
 
             if (cart.length === 0) {
                 emptyState.style.display = 'flex';
                 itemsWrapper.style.display = 'none';
                 resumo.style.display = 'none';
                 totalElement.textContent = '0 itens';
+                // Adiciona classe para centralizar (fallback para navegadores sem :has())
+                if (sacolaContent) {
+                    sacolaContent.classList.add('sacola-vazia');
+                }
             } else {
                 emptyState.style.display = 'none';
                 itemsWrapper.style.display = 'block';
@@ -325,6 +330,11 @@
 
                 itemsWrapper.innerHTML = cart.map(item => createCartItem(item)).join('');
                 updateResumo();
+                
+                // Remove classe quando há itens
+                if (sacolaContent) {
+                    sacolaContent.classList.remove('sacola-vazia');
+                }
             }
 
             updateFavoritesCount();

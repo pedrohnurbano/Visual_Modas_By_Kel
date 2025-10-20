@@ -15,46 +15,42 @@
 <body>
     <header class="header">
         <div class="header-content">
-            <a href="home.html" style="text-decoration:none;">
-                <span class="logo" style="position:static;transform:none;left:auto;z-index:auto;flex:0 0 auto;">
-                    VISUAL MODAS BY KEL
-                </span>
+            <a href="home.html" class="logo" aria-label="Visual Modas By Kel">VISUAL MODAS BY KEL</a>
+            <a href="home.html#secaoNovidades" class="header-nav-link" aria-label="Ir para Novidades">NOVIDADES</a>
+            <a href="home.html" aria-label="Logo Visual Modas By Kel" class="logo-img">
+                <img src="design/logo_visualmodasbykel.png" alt="Logo Visual Modas By Kel" />
             </a>
-
-            <a href="home.html">
-                <img src="design/logo_visualmodasbykel.png" alt="Logo Decorativa" style="height:38px;">
-            </a>
-
-            <div class="header-icons" style="gap: 24px;">
-                <form style="display:inline; margin:0 16px 0 0; border-bottom: 1px solid #000;">
-                    <input type="text" placeholder="O que você procura?">
+            <a href="home.html#secaoDestaques" class="header-nav-link" aria-label="Ir para Destaques">DESTAQUES</a>
+            <div class="header-icons">
+                <a href="/roupas" title="Ver Todas as Peças" class="cabide-link">
+                    <img src="design/cabide.png" alt="Todas as Peças">
+                </a>
+                <form role="search" aria-label="Busca de produtos" onsubmit="return false;" class="search-form">
+                    <input type="text" placeholder="O que você procura?" aria-label="Buscar produto" id="searchInput">
+                    <button type="submit" class="search-submit-btn" aria-label="Buscar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
                 </form>
-
-                <a href="/usuario" style="font-size:12px;display:flex;align-items:center;gap:4px;">
+                <a href="/usuario" title="Minha Conta">
                     <img src="design/icone_usuario.png" alt="Minha Conta">
-                    <span>Minha conta e<br><b style="color:#fff;">Meus pedidos</b></span>
+                    <span>Minha conta<br><b>Meus pedidos</b></span>
                 </a>
                 <a href="/favoritos" title="Favoritos" id="abrir_favoritos">
                     <img src="design/icone_favoritos.png" alt="Favoritos">
+                    <span id="favoritosCount" style="display:none;">0</span>
                 </a>
                 <a href="sacola.html" title="Sacola" id="abrir_sacola">
                     <img src="design/icone_sacola.png" alt="Sacola">
+                    <span id="sacolaCount" style="display:none;">0</span>
                 </a>
+                <button class="menu-toggle" id="menuToggle" aria-label="Abrir/fechar menu" type="button">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
         </div>
-        <nav class="header-filters" id="headerFilters">
-            <ul>
-                <li><a href="home.html">CATEGORIAS</a></li>
-                <li><a href="#">NOVIDADES</a></li>
-                <li><a href="#">COLEÇÃO</a></li>
-                <li><a href="#">TENDÊNCIAS</a></li>
-                <li><a href="#">LOOKBOOK</a></li>
-                <li><a href="#">PROMOÇÕES</a></li>
-                <li><a href="#">INSPIRAÇÃO</a></li>
-                <li><a href="#">OUTLET</a></li>
-                <li><a href="#">EXCLUSIVOS</a></li>
-            </ul>
-        </nav>
     </header>
 
     <main class="usuario-page">

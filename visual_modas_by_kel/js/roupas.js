@@ -263,19 +263,13 @@ function showNotification(message) {
     }, 2000);
 }
 
+// Funções removidas - header-filters não existe mais
 function toggleFilters() {
-    document.getElementById('headerFilters').classList.toggle('hide');
+    // Função desabilitada
 }
 
 function handleMenuToggleDisplay() {
-    const btn = document.getElementById('menuToggle');
-    const filters = document.getElementById('headerFilters');
-    if (window.innerWidth <= 900) {
-        btn.style.display = 'inline-flex';
-    } else {
-        btn.style.display = 'none';
-        filters.classList.remove('hide');
-    }
+    // Função desabilitada
 }
 
 function initScrollBehavior() {
@@ -309,15 +303,7 @@ function initScrollBehavior() {
     });
 }
 
-function initFilterLinks() {
-    document.querySelectorAll('.header-filters a').forEach(link => {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelectorAll('.header-filters a').forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
-}
+// Função removida - header-filters não existe mais
 
 function initCategoriesModal() {
     const trigger = document.getElementById('categoriesMenuTrigger');
@@ -392,6 +378,5 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Outros
     initScrollBehavior();
-    initFilterLinks();
     initCategoriesModal();
 });
