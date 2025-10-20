@@ -56,6 +56,11 @@ func Configurar(router *mux.Router) *mux.Router {
 			http.NotFound(w, r)
 			return
 		}
+		// Não servir arquivos .html diretamente - devem usar as rotas definidas
+		if strings.HasSuffix(r.URL.Path, ".html") {
+			http.NotFound(w, r)
+			return
+		}
 		// Para outras rotas, servir arquivo estático
 		fileServer.ServeHTTP(w, r)
 	}))
