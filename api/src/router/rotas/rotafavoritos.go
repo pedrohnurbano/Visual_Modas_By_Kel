@@ -41,4 +41,11 @@ var rotasFavoritos = []Rota{
 		Funcao:             controllers.VerificarFavorito,
 		RequerAutenticacao: true,
 	},
+	// Toggle favorito (adicionar ou remover)
+	{
+		URI:                "/favoritos/toggle/{produtoId}",
+		Metodo:             http.MethodPost,
+		Funcao:             controllers.ToggleFavorito,
+		RequerAutenticacao: true,
+	},
 }

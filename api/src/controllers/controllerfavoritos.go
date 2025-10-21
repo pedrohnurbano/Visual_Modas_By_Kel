@@ -194,3 +194,69 @@ func VerificarFavorito(w http.ResponseWriter, r *http.Request) {
 
 	respostas.JSON(w, http.StatusOK, map[string]bool{"isFavorito": isFavorito})
 }
+
+// ToggleFavorito adiciona ou remove um produto dos favoritos (toggle)
+func ToggleFavorito(w http.ResponseWriter, r *http.Request) {
+	// Extrair ID do usuário do token
+	usuarioID, erro := autenticacao.ExtrairUsuarioID(r)
+	if erro != nil {
+		respostas.Erro(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	// Extrair ID do produto dos parâmetros da URL
+	parametros := mux.Vars(r)
+	produtoID, erro := strconv.ParseUint(parametros["produtoId"], 10, 64)
+	if erro != nil {
+		respostas.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	// Conectar ao banco
+	db, erro := banco.Conectar()
+	if erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	// Verificar se o produto existe
+	repositorioProdutos := repositorios.NovoRepositorioDeProdutos(db)
+	_, erro = repositorioProdutos.BuscarPorID(produtoID)
+	if erro != nil {
+		respostas.Erro(w, http.StatusNotFound, erro)
+		return
+	}
+
+	// Verificar se já está nos favoritos
+	repositorio := repositorios.NovoRepositorioDeFavoritos(db)
+	isFavorito, erro := repositorio.VerificarFavorito(usuarioID, produtoID)
+	if erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	var mensagem string
+	if isFavorito {
+		// Remover dos favoritos
+		if erro = repositorio.Remover(usuarioID, produtoID); erro != nil {
+			respostas.Erro(w, http.StatusInternalServerError, erro)
+			return
+		}
+		mensagem = "Produto removido dos favoritos"
+		isFavorito = false
+	} else {
+		// Adicionar aos favoritos
+		if erro = repositorio.Adicionar(usuarioID, produtoID); erro != nil {
+			respostas.Erro(w, http.StatusInternalServerError, erro)
+			return
+		}
+		mensagem = "Produto adicionado aos favoritos"
+		isFavorito = true
+	}
+
+	respostas.JSON(w, http.StatusOK, map[string]interface{}{
+		"mensagem":   mensagem,
+		"isFavorito": isFavorito,
+	})
+}

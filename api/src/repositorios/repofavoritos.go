@@ -48,7 +48,7 @@ func (repositorio Favoritos) BuscarPorUsuario(usuarioID uint64) ([]modelos.Favor
 	linhas, erro := repositorio.db.Query(`
 		SELECT 
 			f.id, f.usuario_id, f.produto_id, f.criadoEm,
-			p.id, p.nome, p.descricao, p.preco, p.tamanho, p.categoria, p.secao, 
+			p.id, p.nome, p.descricao, p.preco, p.tamanho, p.categoria, p.secao, p.genero,
 			p.foto_url, p.usuario_id, p.ativo, p.criadoEm, p.atualizadoEm
 		FROM favoritos f
 		INNER JOIN produtos p ON f.produto_id = p.id
@@ -78,6 +78,7 @@ func (repositorio Favoritos) BuscarPorUsuario(usuarioID uint64) ([]modelos.Favor
 			&favorito.Produto.Tamanho,
 			&favorito.Produto.Categoria,
 			&favorito.Produto.Secao,
+			&favorito.Produto.Genero,
 			&favorito.Produto.FotoURL,
 			&favorito.Produto.UsuarioID,
 			&favorito.Produto.Ativo,

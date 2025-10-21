@@ -20,7 +20,8 @@ function carregarProdutosDaAPI() {
                 image1: `http://localhost:5000${p.foto_url}`,
                 image2: `http://localhost:5000${p.foto_url}`, // Usar mesma imagem por enquanto
                 sizes: [p.tamanho], // Tamanho único por produto
-                category: p.categoria || 'geral'
+                category: p.categoria || 'geral',
+                genero: p.genero || 'Unissex' // Adicionar campo gênero
             }));
             
             filteredProducts = [...allProducts];
@@ -45,42 +46,11 @@ function carregarFavoritosIDs() {
     });
 }
 
-// Usar produtos de fallback se API falhar
+// Usar produtos de fallback se API falhar - sem produtos fictícios
 function usarProdutosFallback() {
-    allProducts = [
-        {
-            id: 1,
-            name: "Vestido Midi Floral",
-            price: 899.90,
-            installments: 7,
-            image1: "design/ex-roupa1.png",
-            image2: "design/ex-roupa1b.png",
-            sizes: ["PP", "P", "M", "G", "GG"],
-            category: "vestidos"
-        },
-        {
-            id: 2,
-            name: "Blusa Cropped Básica",
-            price: 449.90,
-            installments: 4,
-            image1: "design/ex-roupa2.png",
-            image2: "design/ex-roupa2b.png",
-            sizes: ["PP", "P", "M", "G", "GG"],
-            category: "blusas"
-        },
-        {
-            id: 3,
-            name: "Calça Wide Leg Alfaiataria",
-            price: 679.90,
-            installments: 5,
-            image1: "design/ex-roupa3.png",
-            image2: "design/ex-roupa3b.png",
-            sizes: ["PP", "P", "M", "G", "GG"],
-            category: "calcas"
-        },
-    ];
-    filteredProducts = [...allProducts];
-    renderProducts();
+    allProducts = [];
+    filteredProducts = [];
+    renderProducts(); // Mostrará mensagem de "nenhum produto encontrado"
 }
 
 // FUNÇÕES DE FAVORITOS (integradas com API)
@@ -199,15 +169,17 @@ function addSelectedToCart(productId) {
 function applyFilters() {
     const category = document.getElementById('categoryFilter').value;
     const size = document.getElementById('sizeFilter').value;
+    const genero = document.getElementById('generoFilter').value;
     const searchTerm = document.getElementById('searchProducts').value.toLowerCase().trim();
 
     // Filtrar produtos
     filteredProducts = allProducts.filter(product => {
         const matchesCategory = category === 'all' || product.category === category;
         const matchesSize = size === 'all' || product.sizes.includes(size);
+        const matchesGenero = genero === 'all' || product.genero === genero;
         const matchesSearch = searchTerm === '' || product.name.toLowerCase().includes(searchTerm);
         
-        return matchesCategory && matchesSize && matchesSearch;
+        return matchesCategory && matchesSize && matchesGenero && matchesSearch;
     });
     
     renderProducts();
@@ -369,6 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listeners dos filtros
     document.getElementById('categoryFilter').addEventListener('change', applyFilters);
     document.getElementById('sizeFilter').addEventListener('change', applyFilters);
+    document.getElementById('generoFilter').addEventListener('change', applyFilters);
     document.getElementById('searchProducts').addEventListener('input', applyFilters);
     
     // Menu toggle
