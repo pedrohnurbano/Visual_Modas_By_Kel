@@ -36,4 +36,22 @@ var rotasUsuarios = []Rota{
 		Funcao:             controllers.BuscarDadosUsuario,
 		RequerAutenticacao: true,
 	},
+	{
+		URI:                "/api/usuarios/{usuarioId}",
+		Metodo:             http.MethodPut,
+		Funcao:             controllers.AtualizarDadosUsuario,
+		RequerAutenticacao: true,
+	},
+	{
+		URI:                "/api/usuarios/{usuarioId}/atualizar-senha",
+		Metodo:             http.MethodPost,
+		Funcao:             controllers.AtualizarSenhaUsuario,
+		RequerAutenticacao: true,
+	},
+	{
+		URI:                "/api/usuarios/{usuarioId}",
+		Metodo:             http.MethodDelete,
+		Funcao:             controllers.DeletarUsuario,
+		RequerAutenticacao: true,
+	},
 }

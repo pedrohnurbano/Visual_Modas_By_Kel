@@ -1,6 +1,5 @@
 // Dados do usuário (serão carregados da API)
 let userData = {};
-let enderecos = [];
 let pedidos = [];
 
 // Inicialização
@@ -29,14 +28,11 @@ async function carregarDadosUsuario() {
         document.getElementById('viewNome').textContent = userData.nome && userData.sobrenome 
             ? `${userData.nome} ${userData.sobrenome}` 
             : userData.nome || '-';
-        document.getElementById('viewCpf').textContent = userData.cpf || '-';
+        document.getElementById('viewCpf').textContent = formatarCPF(userData.cpf) || '-';
         document.getElementById('viewEmail').textContent = userData.email || '-';
-        document.getElementById('viewTelefone').textContent = userData.telefone || '-';
-        document.getElementById('viewDataNasc').textContent = userData.dataNasc ? formatarData(userData.dataNasc) : '-';
-        document.getElementById('viewGenero').textContent = formatarGenero(userData.genero);
+        document.getElementById('viewTelefone').textContent = formatarTelefone(userData.telefone) || '-';
         
         // Carregar dados relacionados
-        carregarEnderecos();
         carregarPedidos();
         carregarFavoritos();
     } catch (error) {
@@ -78,25 +74,16 @@ function configurarFormularios() {
         document.getElementById('dadosEdit').classList.remove('hidden');
 
         // Preencher formulário
-        document.getElementById('editNome').value = userData.nome;
-        document.getElementById('editSobrenome').value = userData.sobrenome;
-        document.getElementById('editCpf').value = userData.cpf;
-        document.getElementById('editTelefone').value = userData.telefone;
-        document.getElementById('editEmail').value = userData.email;
-        document.getElementById('editDataNasc').value = userData.dataNasc || '';
-        document.getElementById('editGenero').value = userData.genero || '';
+        document.getElementById('editNome').value = userData.nome || '';
+        document.getElementById('editSobrenome').value = userData.sobrenome || '';
+        document.getElementById('editCpf').value = formatarCPF(userData.cpf) || '';
+        document.getElementById('editTelefone').value = formatarTelefone(userData.telefone) || '';
     });
 
     // Form de edição de dados
     document.getElementById('dadosEdit').addEventListener('submit', function (e) {
         e.preventDefault();
         salvarDadosPessoais();
-    });
-
-    // Form de endereço
-    document.getElementById('formEndereco').addEventListener('submit', function (e) {
-        e.preventDefault();
-        salvarEndereco();
     });
 
     // Form de alteração de senha
@@ -111,18 +98,12 @@ function configurarFormularios() {
 
 // Aplicar máscaras nos inputs
 function aplicarMascaras() {
-    const cpfInputs = document.querySelectorAll('#editCpf, #enderecoCep');
-    cpfInputs.forEach(input => {
-        if (input.id.includes('Cpf')) {
-            input.addEventListener('input', function () {
-                this.value = maskCPF(this.value);
-            });
-        } else if (input.id.includes('Cep')) {
-            input.addEventListener('input', function () {
-                this.value = maskCEP(this.value);
-            });
-        }
-    });
+    const cpfInput = document.getElementById('editCpf');
+    if (cpfInput) {
+        cpfInput.addEventListener('input', function () {
+            this.value = maskCPF(this.value);
+        });
+    }
 
     const telefoneInput = document.getElementById('editTelefone');
     if (telefoneInput) {
@@ -141,13 +122,6 @@ function maskCPF(value) {
         .slice(0, 14);
 }
 
-function maskCEP(value) {
-    return value
-        .replace(/\D/g, '')
-        .replace(/(\d{5})(\d)/, '$1-$2')
-        .slice(0, 9);
-}
-
 function maskPhone(value) {
     return value
         .replace(/\D/g, '')
@@ -159,250 +133,38 @@ function maskPhone(value) {
 // Salvar dados pessoais
 async function salvarDadosPessoais() {
     const dadosAtualizados = {
-        nome: document.getElementById('editNome').value,
-        sobrenome: document.getElementById('editSobrenome').value,
-        cpf: document.getElementById('editCpf').value,
-        telefone: document.getElementById('editTelefone').value,
-        email: document.getElementById('editEmail').value,
-        dataNasc: document.getElementById('editDataNasc').value,
-        genero: document.getElementById('editGenero').value
+        nome: document.getElementById('editNome').value.trim(),
+        sobrenome: document.getElementById('editSobrenome').value.trim(),
+        cpf: document.getElementById('editCpf').value.trim(),
+        telefone: document.getElementById('editTelefone').value.trim(),
+        email: userData.email // Mantém o email original (não editável)
     };
 
     try {
-        // TODO: Implementar atualização na API
-        // const response = await fetch('/api/usuarios/dados', {
-        //     method: 'PUT',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(dadosAtualizados)
-        // });
-        // if (response.ok) {
-        //     await carregarDadosUsuario();
-        //     document.getElementById('dadosEdit').classList.add('hidden');
-        //     document.getElementById('dadosView').classList.remove('hidden');
-        //     showNotification('Dados atualizados com sucesso!');
-        // }
-        
-        // Temporariamente atualizando localmente
-        userData = dadosAtualizados;
-        
-        // Atualizar visualização dos dados
-        document.getElementById('userName').textContent = userData.nome || 'Usuário';
-        document.getElementById('viewNome').textContent = userData.nome && userData.sobrenome 
-            ? `${userData.nome} ${userData.sobrenome}` 
-            : userData.nome || '-';
-        document.getElementById('viewCpf').textContent = userData.cpf || '-';
-        document.getElementById('viewEmail').textContent = userData.email || '-';
-        document.getElementById('viewTelefone').textContent = userData.telefone || '-';
-        document.getElementById('viewDataNasc').textContent = userData.dataNasc ? formatarData(userData.dataNasc) : '-';
-        document.getElementById('viewGenero').textContent = formatarGenero(userData.genero);
-        
-        document.getElementById('dadosEdit').classList.add('hidden');
-        document.getElementById('dadosView').classList.remove('hidden');
-        
-        showNotification('Dados atualizados com sucesso!');
+        const response = await fetch(`/api/usuarios/${userData.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dadosAtualizados)
+        });
+
+        if (response.ok || response.status === 204) {
+            await carregarDadosUsuario();
+            document.getElementById('dadosEdit').classList.add('hidden');
+            document.getElementById('dadosView').classList.remove('hidden');
+            showNotification('Dados atualizados com sucesso!');
+        } else {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.erro || 'Erro ao atualizar dados');
+        }
     } catch (error) {
         console.error('Erro ao salvar dados:', error);
-        showNotification('Erro ao salvar dados. Tente novamente.');
+        showNotification(error.message || 'Erro ao salvar dados. Tente novamente.');
     }
 }
 
 function cancelarEdicaoDados() {
     document.getElementById('dadosEdit').classList.add('hidden');
     document.getElementById('dadosView').classList.remove('hidden');
-}
-
-// Endereços
-async function carregarEnderecos() {
-    try {
-        // TODO: Implementar endpoint da API para buscar endereços do usuário
-        // const response = await fetch('/api/usuarios/enderecos');
-        // if (response.ok) {
-        //     enderecos = await response.json();
-        // }
-        
-        const grid = document.getElementById('enderecosGrid');
-        const empty = document.getElementById('enderecosEmpty');
-
-        if (enderecos.length === 0) {
-            grid.style.display = 'none';
-            empty.style.display = 'block';
-            return;
-        }
-
-        grid.style.display = 'grid';
-        empty.style.display = 'none';
-
-        grid.innerHTML = enderecos.map(end => `
-            <div class="endereco-card ${end.principal ? 'principal' : ''}">
-                ${end.principal ? '<span class="endereco-badge">Principal</span>' : ''}
-                <div class="endereco-info">
-                    <strong>Endereço</strong>
-                    <p>${end.rua}, ${end.numero}</p>
-                    ${end.complemento ? `<p>${end.complemento}</p>` : ''}
-                    <p>${end.bairro} - ${end.cidade}/${end.estado}</p>
-                    <p>CEP: ${end.cep}</p>
-                </div>
-                <div class="endereco-actions">
-                    <button class="btn-icon" onclick="editarEndereco(${end.id})">
-                        <i class="fas fa-edit"></i> Editar
-                    </button>
-                    <button class="btn-icon delete" onclick="excluirEndereco(${end.id})">
-                        <i class="fas fa-trash"></i> Excluir
-                    </button>
-                </div>
-            </div>
-        `).join('');
-    } catch (error) {
-        console.error('Erro ao carregar endereços:', error);
-    }
-}
-
-function abrirModalEndereco(id = null) {
-    const modal = document.getElementById('modalEndereco');
-    const titulo = document.getElementById('modalEnderecoTitulo');
-
-    if (id) {
-        const endereco = enderecos.find(e => e.id === id);
-        titulo.textContent = 'Editar Endereço';
-        preencherFormEndereco(endereco);
-    } else {
-        titulo.textContent = 'Adicionar Endereço';
-        document.getElementById('formEndereco').reset();
-    }
-
-    modal.classList.add('active');
-}
-
-function fecharModalEndereco() {
-    document.getElementById('modalEndereco').classList.remove('active');
-    document.getElementById('formEndereco').reset();
-}
-
-function preencherFormEndereco(endereco) {
-    document.getElementById('enderecoId').value = endereco.id;
-    document.getElementById('enderecoCep').value = endereco.cep;
-    document.getElementById('enderecoRua').value = endereco.rua;
-    document.getElementById('enderecoNumero').value = endereco.numero;
-    document.getElementById('enderecoComplemento').value = endereco.complemento || '';
-    document.getElementById('enderecoBairro').value = endereco.bairro;
-    document.getElementById('enderecoCidade').value = endereco.cidade;
-    document.getElementById('enderecoEstado').value = endereco.estado;
-    document.getElementById('enderecoPrincipal').checked = endereco.principal;
-}
-
-function buscarCep() {
-    const cep = document.getElementById('enderecoCep').value.replace(/\D/g, '');
-
-    if (cep.length !== 8) {
-        showNotification('CEP inválido!');
-        return;
-    }
-
-    // Aqui você faria uma chamada para API de CEP (ViaCEP, por exemplo)
-    // Simulação:
-    fetch(`https://viacep.com.br/ws/${cep}/json/`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.erro) {
-                showNotification('CEP não encontrado!');
-                return;
-            }
-
-            document.getElementById('enderecoRua').value = data.logradouro;
-            document.getElementById('enderecoBairro').value = data.bairro;
-            document.getElementById('enderecoCidade').value = data.localidade;
-            document.getElementById('enderecoEstado').value = data.uf;
-        })
-        .catch(() => {
-            showNotification('Erro ao buscar CEP!');
-        });
-}
-
-async function salvarEndereco() {
-    const id = document.getElementById('enderecoId').value;
-    const endereco = {
-        cep: document.getElementById('enderecoCep').value,
-        rua: document.getElementById('enderecoRua').value,
-        numero: document.getElementById('enderecoNumero').value,
-        complemento: document.getElementById('enderecoComplemento').value,
-        bairro: document.getElementById('enderecoBairro').value,
-        cidade: document.getElementById('enderecoCidade').value,
-        estado: document.getElementById('enderecoEstado').value,
-        principal: document.getElementById('enderecoPrincipal').checked
-    };
-
-    try {
-        // TODO: Implementar salvamento na API
-        // const url = id ? `/api/usuarios/enderecos/${id}` : '/api/usuarios/enderecos';
-        // const method = id ? 'PUT' : 'POST';
-        // const response = await fetch(url, {
-        //     method: method,
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(endereco)
-        // });
-        // if (response.ok) {
-        //     await carregarEnderecos();
-        //     fecharModalEndereco();
-        //     showNotification('Endereço salvo com sucesso!');
-        // }
-        
-        // Temporariamente salvando localmente até implementar na API
-        if (endereco.principal) {
-            enderecos.forEach(e => e.principal = false);
-        }
-        
-        if (id) {
-            const index = enderecos.findIndex(e => e.id === parseInt(id));
-            enderecos[index] = { ...endereco, id: parseInt(id) };
-        } else {
-            enderecos.push({ ...endereco, id: Date.now() });
-        }
-        
-        carregarEnderecos();
-        fecharModalEndereco();
-        showNotification('Endereço salvo com sucesso!');
-    } catch (error) {
-        console.error('Erro ao salvar endereço:', error);
-        showNotification('Erro ao salvar endereço. Tente novamente.');
-    }
-}
-
-function editarEndereco(id) {
-    abrirModalEndereco(id);
-}
-
-async function excluirEndereco(id) {
-    Swal.fire({
-        title: 'Excluir endereço?',
-        text: 'Deseja realmente excluir este endereço?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#370400',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Sim, excluir!',
-        cancelButtonText: 'Cancelar'
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            try {
-                // TODO: Implementar exclusão na API
-                // const response = await fetch(`/api/usuarios/enderecos/${id}`, {
-                //     method: 'DELETE'
-                // });
-                // if (response.ok) {
-                //     await carregarEnderecos();
-                //     showNotification('Endereço excluído!');
-                // }
-                
-                // Temporariamente removendo localmente
-                enderecos = enderecos.filter(e => e.id !== id);
-                carregarEnderecos();
-                showNotification('Endereço excluído!');
-            } catch (error) {
-                console.error('Erro ao excluir endereço:', error);
-                showNotification('Erro ao excluir endereço. Tente novamente.');
-            }
-        }
-    });
 }
 
 // Pedidos
@@ -583,13 +345,13 @@ async function removerFavorito(produtoId) {
 }
 
 // Segurança
-function alterarSenha() {
+async function alterarSenha() {
     const senhaAtual = document.getElementById('senhaAtual').value;
     const novaSenha = document.getElementById('novaSenha').value;
     const confirmarSenha = document.getElementById('confirmarNovaSenha').value;
 
-    if (novaSenha.length < 8) {
-        showNotification('A senha deve ter no mínimo 8 caracteres!');
+    if (!senhaAtual || !novaSenha || !confirmarSenha) {
+        showNotification('Preencha todos os campos!');
         return;
     }
 
@@ -598,10 +360,27 @@ function alterarSenha() {
         return;
     }
 
-    // Aqui você validaria a senha atual com o backend
-    // Simulação:
-    showNotification('Senha alterada com sucesso!');
-    document.getElementById('formAlterarSenha').reset();
+    try {
+        const response = await fetch(`/api/usuarios/${userData.id}/atualizar-senha`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                atual: senhaAtual,
+                nova: novaSenha
+            })
+        });
+
+        if (response.ok || response.status === 204) {
+            showNotification('Senha alterada com sucesso!');
+            document.getElementById('formAlterarSenha').reset();
+        } else {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.erro || 'Erro ao alterar senha');
+        }
+    } catch (error) {
+        console.error('Erro ao alterar senha:', error);
+        showNotification(error.message || 'Erro ao alterar senha. Verifique a senha atual e tente novamente.');
+    }
 }
 
 function togglePasswordField(fieldId, element) {
@@ -619,82 +398,100 @@ function togglePasswordField(fieldId, element) {
     }
 }
 
-// Configurações
-document.addEventListener('DOMContentLoaded', function () {
-    const emailPromocional = document.getElementById('emailPromocional');
-    const emailPedidos = document.getElementById('emailPedidos');
-
-    if (emailPromocional) {
-        emailPromocional.addEventListener('change', function () {
-            localStorage.setItem('emailPromocional', this.checked);
-            showNotification('Preferência salva!');
-        });
-    }
-
-    if (emailPedidos) {
-        emailPedidos.addEventListener('change', function () {
-            localStorage.setItem('emailPedidos', this.checked);
-            showNotification('Preferência salva!');
-        });
-    }
-
-    // Carregar preferências salvas
-    const savedEmailProm = localStorage.getItem('emailPromocional');
-    const savedEmailPed = localStorage.getItem('emailPedidos');
-
-    if (savedEmailProm !== null) {
-        emailPromocional.checked = savedEmailProm === 'true';
-    }
-    if (savedEmailPed !== null) {
-        emailPedidos.checked = savedEmailPed === 'true';
-    }
-});
-
 // Exclusão de conta
-function confirmarExclusaoConta() {
-    document.getElementById('modalExcluirConta').classList.add('active');
-}
-
-function fecharModalExcluirConta() {
-    document.getElementById('modalExcluirConta').classList.remove('active');
-    document.getElementById('senhaExclusao').value = '';
-}
-
-function excluirConta() {
-    const senha = document.getElementById('senhaExclusao').value;
-
-    if (!senha) {
-        showNotification('Digite sua senha para confirmar!');
-        return;
-    }
-
-    // Aqui você validaria a senha com o backend
-    // Simulação:
-    Swal.fire({
-        title: 'ATENÇÃO!',
-        text: 'Tem certeza absoluta? Esta ação é IRREVERSÍVEL!',
-        icon: 'warning',
+async function confirmarExclusaoConta() {
+    const { value: senha } = await Swal.fire({
+        title: 'Excluir Conta',
+        html: `
+            <div style="text-align: left; margin: 20px 0;">
+                <div style="background: #fff3cd; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #ffc107;">
+                    <strong>⚠️ Atenção!</strong> Esta ação não pode ser desfeita.
+                </div>
+                <p style="margin-bottom: 15px;">Ao excluir sua conta, você perderá:</p>
+                <ul style="margin-left: 20px; margin-bottom: 20px;">
+                    <li>Histórico de pedidos</li>
+                    <li>Lista de favoritos</li>
+                    <li>Todos os seus dados pessoais</li>
+                </ul>
+                <p style="margin-bottom: 10px;"><strong>Digite sua senha para confirmar:</strong></p>
+            </div>
+        `,
+        input: 'password',
+        inputPlaceholder: 'Digite sua senha',
+        inputAttributes: {
+            autocapitalize: 'off',
+            autocorrect: 'off'
+        },
         showCancelButton: true,
+        confirmButtonText: 'Excluir Conta',
+        cancelButtonText: 'Cancelar',
         confirmButtonColor: '#dc3545',
         cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Sim, excluir minha conta!',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Limpar todos os dados
-            localStorage.clear();
-            Swal.fire({
-                icon: 'success',
-                title: 'Conta excluída',
-                text: 'Conta excluída com sucesso. Até breve!',
-                confirmButtonColor: '#370400',
-                timer: 2000,
-                showConfirmButton: false
-            }).then(() => {
-                window.location.href = 'home.html';
-            });
+        inputValidator: (value) => {
+            if (!value) {
+                return 'Você precisa digitar sua senha!'
+            }
         }
     });
+
+    if (senha) {
+        // Confirmação final
+        const confirmacao = await Swal.fire({
+            title: 'Tem certeza absoluta?',
+            text: 'Esta ação é IRREVERSÍVEL!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sim, excluir permanentemente!',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if (confirmacao.isConfirmed) {
+            try {
+                const response = await fetch(`/api/usuarios/${userData.id}`, {
+                    method: 'DELETE',
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ senha: senha })
+                });
+
+                if (response.ok || response.status === 204) {
+                    // Limpar dados locais e cookies
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    
+                    // Limpar todos os cookies
+                    document.cookie.split(";").forEach(function(c) { 
+                        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+                    });
+                    
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Conta excluída',
+                        text: 'Sua conta foi excluída com sucesso. Até breve!',
+                        confirmButtonColor: '#370400',
+                        timer: 2500,
+                        showConfirmButton: false
+                    });
+                    
+                    window.location.href = '/login';
+                } else {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.erro || 'Senha incorreta ou erro ao excluir conta');
+                }
+            } catch (error) {
+                console.error('Erro ao excluir conta:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro!',
+                    text: error.message || 'Não foi possível excluir a conta. Verifique sua senha e tente novamente.',
+                    confirmButtonColor: '#370400'
+                });
+            }
+        }
+    }
 }
 
 // Logout
@@ -733,20 +530,24 @@ function logout() {
 }
 
 // Funções auxiliares
-function formatarData(data) {
-    if (!data) return '-';
-    const [ano, mes, dia] = data.split('-');
-    return `${dia}/${mes}/${ano}`;
+function formatarCPF(cpf) {
+    if (!cpf) return '';
+    const apenasNumeros = cpf.replace(/\D/g, '');
+    if (apenasNumeros.length === 11) {
+        return apenasNumeros.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    }
+    return cpf;
 }
 
-function formatarGenero(genero) {
-    const generos = {
-        'feminino': 'Feminino',
-        'masculino': 'Masculino',
-        'outro': 'Outro',
-        'prefiro-nao-informar': 'Prefiro não informar'
-    };
-    return generos[genero] || '-';
+function formatarTelefone(telefone) {
+    if (!telefone) return '';
+    const apenasNumeros = telefone.replace(/\D/g, '');
+    if (apenasNumeros.length === 11) {
+        return apenasNumeros.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    } else if (apenasNumeros.length === 10) {
+        return apenasNumeros.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+    }
+    return telefone;
 }
 
 function showNotification(message) {

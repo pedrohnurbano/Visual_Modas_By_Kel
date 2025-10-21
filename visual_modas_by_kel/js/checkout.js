@@ -28,7 +28,7 @@ const allProducts = [
 // INICIALIZAÇÃO
 document.addEventListener('DOMContentLoaded', () => {
     if (cart.length === 0) {
-        window.location.href = 'sacola.html';
+        window.location.href = '/sacola';
         return;
     }
 

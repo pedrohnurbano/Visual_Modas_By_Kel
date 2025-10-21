@@ -236,19 +236,28 @@ func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 
 	repositorio := repositorios.NovoRepositorioDeUsuarios(db)
 
+	// Log para debug
+	log.Printf("Atualizando usuário ID: %d", usuarioID)
+	log.Printf("CPF recebido: %s", usuario.CPF)
+	log.Printf("Email recebido: %s", usuario.Email)
+
 	// Verificar se o email já existe para outro usuário
 	usuarioComEmail, erro := repositorio.BuscarPorEmail(usuario.Email)
-	if erro == nil && usuarioComEmail.ID != usuarioID {
+	if erro == nil && usuarioComEmail.ID != 0 && usuarioComEmail.ID != usuarioID {
+		log.Printf("Email já existe para usuário ID: %d", usuarioComEmail.ID)
 		respostas.Erro(w, http.StatusConflict, errors.New("este e-mail já está sendo usado por outro usuário"))
 		return
 	}
 
 	// Verificar se o CPF já existe para outro usuário
 	usuarioComCPF, erro := repositorio.BuscarPorCPF(usuario.CPF)
-	if erro == nil && usuarioComCPF.ID != usuarioID {
+	if erro == nil && usuarioComCPF.ID != 0 && usuarioComCPF.ID != usuarioID {
+		log.Printf("CPF já existe para usuário ID: %d (tentando atualizar ID: %d)", usuarioComCPF.ID, usuarioID)
 		respostas.Erro(w, http.StatusConflict, errors.New("este CPF já está sendo usado por outro usuário"))
 		return
 	}
+
+	log.Printf("Validações passaram, atualizando usuário")
 
 	if erro = repositorio.Atualizar(usuarioID, usuario); erro != nil {
 		respostas.Erro(w, http.StatusInternalServerError, erro)
@@ -278,6 +287,25 @@ func DeletarUsuario(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Ler senha do corpo da requisição para validação
+	corpoRequisicao, erro := io.ReadAll(r.Body)
+	if erro != nil {
+		respostas.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	var dados map[string]string
+	if erro = json.Unmarshal(corpoRequisicao, &dados); erro != nil {
+		respostas.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	senha := dados["senha"]
+	if senha == "" {
+		respostas.Erro(w, http.StatusBadRequest, errors.New("a senha é obrigatória para excluir a conta"))
+		return
+	}
+
 	db, erro := banco.Conectar()
 	if erro != nil {
 		respostas.Erro(w, http.StatusInternalServerError, erro)
@@ -286,11 +314,26 @@ func DeletarUsuario(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repositorio := repositorios.NovoRepositorioDeUsuarios(db)
+
+	// Validar senha antes de excluir
+	senhaSalvaNoBanco, erro := repositorio.BuscarSenha(usuarioID)
+	if erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	if erro = seguranca.VerificarSenha(senhaSalvaNoBanco, senha); erro != nil {
+		respostas.Erro(w, http.StatusUnauthorized, errors.New("senha incorreta"))
+		return
+	}
+
+	// Excluir a conta
 	if erro = repositorio.Deletar(usuarioID); erro != nil {
 		respostas.Erro(w, http.StatusInternalServerError, erro)
 		return
 	}
 
+	log.Printf("Conta do usuário ID %d excluída com sucesso", usuarioID)
 	respostas.JSON(w, http.StatusNoContent, nil)
 }
 

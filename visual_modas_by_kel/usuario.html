@@ -15,12 +15,12 @@
 <body>
     <header class="header">
         <div class="header-content">
-            <a href="home.html" class="logo" aria-label="Visual Modas By Kel">VISUAL MODAS BY KEL</a>
-            <a href="home.html#secaoNovidades" class="header-nav-link" aria-label="Ir para Novidades">NOVIDADES</a>
-            <a href="home.html" aria-label="Logo Visual Modas By Kel" class="logo-img">
+            <a href="/home" class="logo" aria-label="Visual Modas By Kel">VISUAL MODAS BY KEL</a>
+            <a href="/home#secaoNovidades" class="header-nav-link" aria-label="Ir para Novidades">NOVIDADES</a>
+            <a href="/home" aria-label="Logo Visual Modas By Kel" class="logo-img">
                 <img src="design/logo_visualmodasbykel.png" alt="Logo Visual Modas By Kel" />
             </a>
-            <a href="home.html#secaoDestaques" class="header-nav-link" aria-label="Ir para Destaques">DESTAQUES</a>
+            <a href="/home#secaoDestaques" class="header-nav-link" aria-label="Ir para Destaques">DESTAQUES</a>
             <div class="header-icons">
                 <a href="/roupas" title="Ver Todas as Peças" class="cabide-link">
                     <img src="design/cabide.png" alt="Todas as Peças">
@@ -42,7 +42,7 @@
                     <img src="design/icone_favoritos.png" alt="Favoritos">
                     <span id="favoritosCount" style="display:none;">0</span>
                 </a>
-                <a href="sacola.html" title="Sacola" id="abrir_sacola">
+                <a href="/sacola" title="Sacola" id="abrir_sacola">
                     <img src="design/icone_sacola.png" alt="Sacola">
                     <span id="sacolaCount" style="display:none;">0</span>
                 </a>
@@ -73,10 +73,6 @@
                         <button class="menu-item active" data-section="dados-pessoais">
                             <i class="fas fa-user"></i>
                             <span>Dados Pessoais</span>
-                        </button>
-                        <button class="menu-item" data-section="enderecos">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Endereços</span>
                         </button>
                         <button class="menu-item" data-section="pedidos">
                             <i class="fas fa-shopping-bag"></i>
@@ -126,14 +122,6 @@
                                     <label>Telefone</label>
                                     <p id="viewTelefone">-</p>
                                 </div>
-                                <div class="info-item">
-                                    <label>Data de Nascimento</label>
-                                    <p id="viewDataNasc">-</p>
-                                </div>
-                                <div class="info-item">
-                                    <label>Gênero</label>
-                                    <p id="viewGenero">-</p>
-                                </div>
                             </div>
                         </div>
 
@@ -158,53 +146,11 @@
                                     <input type="text" id="editTelefone" class="form-input" maxlength="15" required>
                                 </div>
                             </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="form-label">Data de Nascimento</label>
-                                    <input type="date" id="editDataNasc" class="form-input">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Gênero</label>
-                                    <select id="editGenero" class="form-input">
-                                        <option value="">Selecione</option>
-                                        <option value="feminino">Feminino</option>
-                                        <option value="masculino">Masculino</option>
-                                        <option value="outro">Outro</option>
-                                        <option value="prefiro-nao-informar">Prefiro não informar</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group full-width">
-                                    <label class="form-label">E-mail</label>
-                                    <input type="email" id="editEmail" class="form-input" required>
-                                </div>
-                            </div>
                             <div class="form-actions">
                                 <button type="button" class="btn-secondary" onclick="cancelarEdicaoDados()">Cancelar</button>
                                 <button type="submit" class="btn-primary">Salvar Alterações</button>
                             </div>
                         </form>
-                    </section>
-
-                    <!-- Seção: Endereços -->
-                    <section class="usuario-section" id="enderecos">
-                        <div class="section-header">
-                            <h2 class="section-title">Meus Endereços</h2>
-                            <button class="btn-add" onclick="abrirModalEndereco()">
-                                <i class="fas fa-plus"></i> Adicionar Endereço
-                            </button>
-                        </div>
-
-                        <div class="enderecos-grid" id="enderecosGrid">
-                            <!-- Endereços serão carregados aqui -->
-                        </div>
-
-                        <div class="empty-state" id="enderecosEmpty" style="display:none;">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <p>Você ainda não cadastrou nenhum endereço</p>
-                            <button class="btn-primary" onclick="abrirModalEndereco()">Adicionar Primeiro Endereço</button>
-                        </div>
                     </section>
 
                     <!-- Seção: Pedidos -->
@@ -229,7 +175,7 @@
                         <div class="empty-state" id="pedidosEmpty" style="display:none;">
                             <i class="fas fa-shopping-bag"></i>
                             <p>Você ainda não realizou nenhum pedido</p>
-                            <a href="home.html" class="btn-primary">Começar a Comprar</a>
+                            <a href="/home" class="btn-primary">Começar a Comprar</a>
                         </div>
                     </section>
 
@@ -246,7 +192,7 @@
                         <div class="empty-state" id="favoritosEmpty" style="display:none;">
                             <i class="fas fa-heart"></i>
                             <p>Você ainda não tem produtos favoritos</p>
-                            <a href="home.html" class="btn-primary">Explorar Produtos</a>
+                            <a href="/home" class="btn-primary">Explorar Produtos</a>
                         </div>
                     </section>
 
@@ -275,7 +221,6 @@
                                         <i class="fas fa-eye"></i>
                                     </span>
                                 </div>
-                                <small class="form-hint">Mínimo de 8 caracteres</small>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Confirmar Nova Senha</label>
@@ -296,30 +241,6 @@
                             <h2 class="section-title">Configurações da Conta</h2>
                         </div>
 
-                        <div class="config-section">
-                            <h3>Notificações</h3>
-                            <div class="config-item">
-                                <div class="config-info">
-                                    <strong>E-mails promocionais</strong>
-                                    <p>Receba ofertas exclusivas e novidades</p>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox" id="emailPromocional" checked>
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                            <div class="config-item">
-                                <div class="config-info">
-                                    <strong>Atualizações de pedidos</strong>
-                                    <p>Receba notificações sobre seus pedidos</p>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox" id="emailPedidos" checked>
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
                         <div class="config-section danger-zone">
                             <h3>Zona de Perigo</h3>
                             <div class="config-item">
@@ -338,130 +259,6 @@
         </div>
     </main>
 
-    <!-- Modal: Adicionar/Editar Endereço -->
-    <div class="modal" id="modalEndereco">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalEnderecoTitulo">Adicionar Endereço</h3>
-                <button class="modal-close" onclick="fecharModalEndereco()">&times;</button>
-            </div>
-            <form id="formEndereco">
-                <input type="hidden" id="enderecoId">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">CEP</label>
-                        <input type="text" id="enderecoCep" class="form-input" maxlength="9" required>
-                    </div>
-                    <div class="form-group">
-                        <button type="button" class="btn-buscar-cep" onclick="buscarCep()">
-                            <i class="fas fa-search"></i> Buscar
-                        </button>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group" style="flex: 2;">
-                        <label class="form-label">Rua</label>
-                        <input type="text" id="enderecoRua" class="form-input" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Número</label>
-                        <input type="text" id="enderecoNumero" class="form-input" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Complemento</label>
-                    <input type="text" id="enderecoComplemento" class="form-input">
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Bairro</label>
-                        <input type="text" id="enderecoBairro" class="form-input" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Cidade</label>
-                        <input type="text" id="enderecoCidade" class="form-input" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Estado</label>
-                        <select id="enderecoEstado" class="form-input" required>
-                            <option value="">UF</option>
-                            <option value="AC">AC</option>
-                            <option value="AL">AL</option>
-                            <option value="AP">AP</option>
-                            <option value="AM">AM</option>
-                            <option value="BA">BA</option>
-                            <option value="CE">CE</option>
-                            <option value="DF">DF</option>
-                            <option value="ES">ES</option>
-                            <option value="GO">GO</option>
-                            <option value="MA">MA</option>
-                            <option value="MT">MT</option>
-                            <option value="MS">MS</option>
-                            <option value="MG">MG</option>
-                            <option value="PA">PA</option>
-                            <option value="PB">PB</option>
-                            <option value="PR">PR</option>
-                            <option value="PE">PE</option>
-                            <option value="PI">PI</option>
-                            <option value="RJ">RJ</option>
-                            <option value="RN">RN</option>
-                            <option value="RS">RS</option>
-                            <option value="RO">RO</option>
-                            <option value="RR">RR</option>
-                            <option value="SC">SC</option>
-                            <option value="SP">SP</option>
-                            <option value="SE">SE</option>
-                            <option value="TO">TO</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="checkbox-container">
-                    <div class="custom-checkbox">
-                        <input type="checkbox" id="enderecoPrincipal">
-                        <div class="checkbox-mark"></div>
-                    </div>
-                    <label class="checkbox-label" for="enderecoPrincipal">
-                        Definir como endereço principal
-                    </label>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-secondary" onclick="fecharModalEndereco()">Cancelar</button>
-                    <button type="submit" class="btn-primary">Salvar Endereço</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal: Confirmar Exclusão de Conta -->
-    <div class="modal" id="modalExcluirConta">
-        <div class="modal-content modal-danger">
-            <div class="modal-header">
-                <h3>Excluir Conta</h3>
-                <button class="modal-close" onclick="fecharModalExcluirConta()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="warning-icon">
-                    <i class="fas fa-exclamation-triangle"></i>
-                </div>
-                <p><strong>Atenção!</strong> Esta ação não pode ser desfeita.</p>
-                <p>Ao excluir sua conta, você perderá:</p>
-                <ul>
-                    <li>Histórico de pedidos</li>
-                    <li>Endereços salvos</li>
-                    <li>Lista de favoritos</li>
-                    <li>Cupons e descontos</li>
-                </ul>
-                <div class="form-group">
-                    <label class="form-label">Digite sua senha para confirmar:</label>
-                    <input type="password" id="senhaExclusao" class="form-input" required>
-                </div>
-            </div>
-            <div class="modal-actions">
-                <button type="button" class="btn-secondary" onclick="fecharModalExcluirConta()">Cancelar</button>
-                <button type="button" class="btn-danger" onclick="excluirConta()">Sim, Excluir Minha Conta</button>
-            </div>
-        </div>
-    </div>
 
     <footer class="footer">
         <div class="footer-container">

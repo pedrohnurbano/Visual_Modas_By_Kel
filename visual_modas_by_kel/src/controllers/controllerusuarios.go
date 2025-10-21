@@ -9,6 +9,8 @@ import (
 	"visual_modas_by_kel/visual_modas_by_kel/src/requisicoes"
 	"visual_modas_by_kel/visual_modas_by_kel/src/respostas"
 	"visual_modas_by_kel/visual_modas_by_kel/src/utils"
+
+	"github.com/gorilla/mux"
 )
 
 // CriarUsuario chama a API para cadastrar um usuário no banco de dados
@@ -73,4 +75,106 @@ func BuscarDadosUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respostas.JSON(w, http.StatusOK, usuario)
+}
+
+// AtualizarDadosUsuario chama a API para atualizar os dados do usuário
+func AtualizarDadosUsuario(w http.ResponseWriter, r *http.Request) {
+	parametros := mux.Vars(r)
+	usuarioID := parametros["usuarioId"]
+
+	var dadosUsuario map[string]interface{}
+	if erro := json.NewDecoder(r.Body).Decode(&dadosUsuario); erro != nil {
+		respostas.JSON(w, http.StatusBadRequest, respostas.ErroAPI{Erro: erro.Error()})
+		return
+	}
+
+	dadosJSON, erro := json.Marshal(dadosUsuario)
+	if erro != nil {
+		respostas.JSON(w, http.StatusInternalServerError, respostas.ErroAPI{Erro: erro.Error()})
+		return
+	}
+
+	url := fmt.Sprintf("%s/usuarios/%s", config.APIURL, usuarioID)
+	response, erro := requisicoes.FazerRequisicaoComAutenticacao(r, http.MethodPut, url, dadosJSON)
+	if erro != nil {
+		respostas.JSON(w, http.StatusInternalServerError, respostas.ErroAPI{Erro: erro.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		respostas.TratarStatusCodeDeErro(w, response)
+		return
+	}
+
+	// Não tenta ler o body se for 204 No Content
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// AtualizarSenhaUsuario chama a API para atualizar a senha do usuário
+func AtualizarSenhaUsuario(w http.ResponseWriter, r *http.Request) {
+	parametros := mux.Vars(r)
+	usuarioID := parametros["usuarioId"]
+
+	var senhaData map[string]interface{}
+	if erro := json.NewDecoder(r.Body).Decode(&senhaData); erro != nil {
+		respostas.JSON(w, http.StatusBadRequest, respostas.ErroAPI{Erro: erro.Error()})
+		return
+	}
+
+	senhaJSON, erro := json.Marshal(senhaData)
+	if erro != nil {
+		respostas.JSON(w, http.StatusInternalServerError, respostas.ErroAPI{Erro: erro.Error()})
+		return
+	}
+
+	url := fmt.Sprintf("%s/usuarios/%s/atualizar-senha", config.APIURL, usuarioID)
+	response, erro := requisicoes.FazerRequisicaoComAutenticacao(r, http.MethodPost, url, senhaJSON)
+	if erro != nil {
+		respostas.JSON(w, http.StatusInternalServerError, respostas.ErroAPI{Erro: erro.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		respostas.TratarStatusCodeDeErro(w, response)
+		return
+	}
+
+	// Não tenta ler o body se for 204 No Content
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// DeletarUsuario chama a API para excluir a conta do usuário
+func DeletarUsuario(w http.ResponseWriter, r *http.Request) {
+	parametros := mux.Vars(r)
+	usuarioID := parametros["usuarioId"]
+
+	var dados map[string]interface{}
+	if erro := json.NewDecoder(r.Body).Decode(&dados); erro != nil {
+		respostas.JSON(w, http.StatusBadRequest, respostas.ErroAPI{Erro: erro.Error()})
+		return
+	}
+
+	dadosJSON, erro := json.Marshal(dados)
+	if erro != nil {
+		respostas.JSON(w, http.StatusInternalServerError, respostas.ErroAPI{Erro: erro.Error()})
+		return
+	}
+
+	url := fmt.Sprintf("%s/usuarios/%s", config.APIURL, usuarioID)
+	response, erro := requisicoes.FazerRequisicaoComAutenticacao(r, http.MethodDelete, url, dadosJSON)
+	if erro != nil {
+		respostas.JSON(w, http.StatusInternalServerError, respostas.ErroAPI{Erro: erro.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		respostas.TratarStatusCodeDeErro(w, response)
+		return
+	}
+
+	// Não tenta ler o body se for 204 No Content
+	w.WriteHeader(http.StatusNoContent)
 }

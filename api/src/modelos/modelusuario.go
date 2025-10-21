@@ -76,8 +76,10 @@ func (usuario *Usuario) formatar(etapa string) error {
 	usuario.Nome = strings.TrimSpace(usuario.Nome) //Remove espaços em branco no início e no final
 	usuario.Sobrenome = strings.TrimSpace(usuario.Sobrenome)
 	usuario.Email = strings.TrimSpace(usuario.Email)
-	usuario.Telefone = strings.TrimSpace(usuario.Telefone)
-	usuario.CPF = strings.TrimSpace(usuario.CPF)
+
+	// Remove caracteres não numéricos do telefone e CPF
+	usuario.Telefone = removerNaoNumericos(usuario.Telefone)
+	usuario.CPF = removerNaoNumericos(usuario.CPF)
 
 	// Se a role não for especificada ou for vazia, define como "user" por padrão
 	if usuario.Role == "" {
@@ -94,4 +96,15 @@ func (usuario *Usuario) formatar(etapa string) error {
 	}
 
 	return nil
+}
+
+// removerNaoNumericos remove todos os caracteres não numéricos de uma string
+func removerNaoNumericos(texto string) string {
+	var resultado strings.Builder
+	for _, char := range texto {
+		if char >= '0' && char <= '9' {
+			resultado.WriteRune(char)
+		}
+	}
+	return resultado.String()
 }
