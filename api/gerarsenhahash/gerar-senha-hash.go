@@ -6,11 +6,11 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Este é um script auxiliar para gerar o hash de uma senha
-// Use-o para criar a senha do administrador inicial no banco de dados
+// Script auxiliar para gerar o hash de uma senha
+
 func main() {
-	// MUDE ESTA SENHA PARA A SENHA DESEJADA DO ADMIN
-	senhaAdmin := "123456" // <-- ALTERE AQUI
+	
+	senhaAdmin := "123456" // Senha que vai ser hasheada
 	
 	senhaComHash, erro := bcrypt.GenerateFromPassword([]byte(senhaAdmin), bcrypt.DefaultCost)
 	if erro != nil {
