@@ -578,9 +578,39 @@
                 cancelButtonColor: '#6c757d',
                 confirmButtonText: 'Sim, sair',
                 cancelButtonText: 'Cancelar'
-            }).then((result) => {
+            }).then(async (result) => {
                 if (result.isConfirmed) {
-                    window.location.href = 'login.html';
+                    try {
+                        const response = await fetch('/logout', { 
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        
+                        if (response.ok) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Até logo!',
+                                text: 'Logout realizado com sucesso',
+                                confirmButtonColor: '#370400',
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = '/login';
+                            });
+                        } else {
+                            throw new Error('Erro ao fazer logout');
+                        }
+                    } catch (error) {
+                        console.error('Erro ao fazer logout:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erro',
+                            text: 'Não foi possível fazer logout. Tente novamente.',
+                            confirmButtonColor: '#370400'
+                        });
+                    }
                 }
             });
         }

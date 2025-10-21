@@ -9,6 +9,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <title>Visual Modas By Kel - Moda Feminina</title>
 </head>
 
@@ -776,8 +777,58 @@
         });
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/jquery.min.js"></script>
     <script src="js/favoritos.js"></script>
+    <script>
+        // Função de logout
+        function logout() {
+            Swal.fire({
+                title: 'Sair da conta?',
+                text: 'Deseja realmente fazer logout?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#370400',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sim, sair',
+                cancelButtonText: 'Cancelar'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const response = await fetch('/logout', { 
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        
+                        if (response.ok) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Até logo!',
+                                text: 'Logout realizado com sucesso',
+                                confirmButtonColor: '#370400',
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = '/login';
+                            });
+                        } else {
+                            throw new Error('Erro ao fazer logout');
+                        }
+                    } catch (error) {
+                        console.error('Erro ao fazer logout:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erro',
+                            text: 'Não foi possível fazer logout. Tente novamente.',
+                            confirmButtonColor: '#370400'
+                        });
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>
