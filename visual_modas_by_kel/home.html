@@ -503,7 +503,7 @@
             if (!product) return;
 
             // Tamanhos padrão para seleção
-            const tamanhosDisponiveis = ['PP', 'P', 'M', 'G', 'GG'];
+            const tamanhosDisponiveis = ['PP', 'P', 'M', 'G', 'GG', 'XG', 'XGG'];
 
             const modal = document.createElement('div');
             modal.style.cssText = `
@@ -527,7 +527,7 @@
             <p style="font-size: 14px; color: #666; margin-bottom: 25px;">
                 ${product.nome}
             </p>
-            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 30px;">
+            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 30px;">
                 ${tamanhosDisponiveis.map(size => `
                     <button class="size-modal-btn" data-size="${size}" 
                             style="padding: 12px; background: #fff; border: 1.5px solid #e0e0e0; 

@@ -20,7 +20,7 @@ const allProducts = [
         price: 899.90,
         installments: 7,
         image1: "design/ex-roupa1.png",
-        sizes: ["PP", "P", "M", "G", "GG"]
+        sizes: ["PP", "P", "M", "G", "GG", "XG", "XGG"]
     },
     // ... resto dos produtos
 ];
