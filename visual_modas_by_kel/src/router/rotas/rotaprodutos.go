@@ -6,92 +6,81 @@ import (
 )
 
 var rotasProdutos = []Rota{
-	// Página de cadastro de produto
 	{
 		URI:                "/cadastro-produto",
 		Metodo:             http.MethodGet,
 		Funcao:             controllers.CarregarPaginaCadastroProduto,
 		RequerAutenticacao: true,
-		RequerAdmin:        false,
+		RequerAdmin:        true,
 	},
-	// Página de listagem de produtos
 	{
 		URI:                "/produtos",
 		Metodo:             http.MethodGet,
 		Funcao:             controllers.CarregarPaginaProdutos,
-		RequerAutenticacao: false,
+		RequerAutenticacao: true,
 		RequerAdmin:        false,
 	},
-	// Página meus produtos
 	{
 		URI:                "/meus-produtos",
 		Metodo:             http.MethodGet,
 		Funcao:             controllers.CarregarPaginaMeusProdutos,
 		RequerAutenticacao: true,
-		RequerAdmin:        false,
+		RequerAdmin:        true,
 	},
-	// API: Criar produto
 	{
 		URI:                "/api/produtos",
 		Metodo:             http.MethodPost,
 		Funcao:             controllers.CriarProduto,
 		RequerAutenticacao: true,
-		RequerAdmin:        false,
+		RequerAdmin:        true,
 	},
-	// API: Buscar todos produtos
 	{
 		URI:                "/api/produtos",
 		Metodo:             http.MethodGet,
 		Funcao:             controllers.BuscarProdutos,
-		RequerAutenticacao: false,
+		RequerAutenticacao: true,
 		RequerAdmin:        false,
 	},
-	// API: Buscar produtos para home (Destaques e Novidades) - DEVE VIR ANTES das rotas com parâmetros
 	{
 		URI:                "/api/produtos/home",
 		Metodo:             http.MethodGet,
 		Funcao:             controllers.BuscarProdutosHome,
-		RequerAutenticacao: false,
+		RequerAutenticacao: true,
 		RequerAdmin:        false,
 	},
-	// API: Buscar produtos por seção
 	{
 		URI:                "/api/produtos/secao/{secao}",
 		Metodo:             http.MethodGet,
 		Funcao:             controllers.BuscarProdutosPorSecao,
-		RequerAutenticacao: false,
+		RequerAutenticacao: true,
 		RequerAdmin:        false,
 	},
-	// API: Buscar produto específico - DEVE VIR POR ÚLTIMO das rotas /api/produtos/*
 	{
 		URI:                "/api/produtos/{produtoId}",
 		Metodo:             http.MethodGet,
 		Funcao:             controllers.BuscarProduto,
-		RequerAutenticacao: false,
+		RequerAutenticacao: true,
 		RequerAdmin:        false,
 	},
-	// API: Buscar meus produtos
 	{
 		URI:                "/api/meus-produtos",
 		Metodo:             http.MethodGet,
 		Funcao:             controllers.BuscarMeusProdutos,
 		RequerAutenticacao: true,
-		RequerAdmin:        false,
+		RequerAdmin:        true,
 	},
-	// API: Atualizar produto
 	{
 		URI:                "/api/produtos/{produtoId}",
 		Metodo:             http.MethodPut,
 		Funcao:             controllers.AtualizarProduto,
 		RequerAutenticacao: true,
-		RequerAdmin:        false,
+		RequerAdmin:        true,
 	},
-	// API: Deletar produto
 	{
 		URI:                "/api/produtos/{produtoId}",
 		Metodo:             http.MethodDelete,
 		Funcao:             controllers.DeletarProduto,
 		RequerAutenticacao: true,
-		RequerAdmin:        false,
+		RequerAdmin:        true,
 	},
 }

@@ -10,4 +10,5 @@ var rotaPaginaPrincipal = Rota{
 	Metodo:             http.MethodGet,
 	Funcao:             controllers.CarregarPaginaPrincipal,
 	RequerAutenticacao: true,
+	RequerAdmin:        false,
 }

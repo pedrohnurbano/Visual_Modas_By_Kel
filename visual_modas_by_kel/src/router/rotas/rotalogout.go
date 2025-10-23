@@ -10,4 +10,5 @@ var rotaLogout = Rota{
 	Metodo:             http.MethodPost,
 	Funcao:             controllers.FazerLogout,
 	RequerAutenticacao: false,
+	RequerAdmin:        false,
 }

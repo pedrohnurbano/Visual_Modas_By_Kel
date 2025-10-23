@@ -30,13 +30,16 @@ func AutenticarAdmin(proximaFuncao http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cookie, erro := cookies.Ler(r)
 		if erro != nil {
+			log.Printf("Tentativa de acesso sem autenticação: %s %s", r.Method, r.RequestURI)
 			http.Redirect(w, r, "/login", http.StatusFound)
 			return
 		}
 
 		// Verificar se o usuário tem role de admin
 		if cookie["role"] != "admin" {
-			http.Redirect(w, r, "/home", http.StatusForbidden)
+			log.Printf("Acesso negado - Usuário sem privilégios de admin tentou acessar: %s (Role: %s, ID: %s)",
+				r.RequestURI, cookie["role"], cookie["id"])
+			http.Redirect(w, r, "/home", http.StatusFound)
 			return
 		}
 

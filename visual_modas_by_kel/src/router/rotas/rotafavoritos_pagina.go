@@ -9,5 +9,6 @@ var rotaPaginaFavoritos = Rota{
 	URI:                "/favoritos",
 	Metodo:             http.MethodGet,
 	Funcao:             controllers.CarregarPaginaFavoritos,
-	RequerAutenticacao: false, // Pode acessar sem login, mas não verá favoritos
+	RequerAutenticacao: true,
+	RequerAdmin:        false,
 }

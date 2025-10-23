@@ -6,7 +6,6 @@ import (
 )
 
 var rotasFavoritos = []Rota{
-	// API: Adicionar produto aos favoritos
 	{
 		URI:                "/api/favoritos",
 		Metodo:             http.MethodPost,
@@ -14,7 +13,6 @@ var rotasFavoritos = []Rota{
 		RequerAutenticacao: true,
 		RequerAdmin:        false,
 	},
-	// API: Remover produto dos favoritos
 	{
 		URI:                "/api/favoritos/{produtoId}",
 		Metodo:             http.MethodDelete,
@@ -22,7 +20,6 @@ var rotasFavoritos = []Rota{
 		RequerAutenticacao: true,
 		RequerAdmin:        false,
 	},
-	// API: Buscar todos os favoritos do usuário (com dados completos)
 	{
 		URI:                "/api/favoritos",
 		Metodo:             http.MethodGet,
@@ -30,7 +27,6 @@ var rotasFavoritos = []Rota{
 		RequerAutenticacao: true,
 		RequerAdmin:        false,
 	},
-	// API: Buscar apenas IDs dos favoritos
 	{
 		URI:                "/api/favoritos/ids",
 		Metodo:             http.MethodGet,
@@ -38,7 +34,6 @@ var rotasFavoritos = []Rota{
 		RequerAutenticacao: true,
 		RequerAdmin:        false,
 	},
-	// API: Toggle favorito (adiciona ou remove)
 	{
 		URI:                "/api/favoritos/toggle/{produtoId}",
 		Metodo:             http.MethodPost,
