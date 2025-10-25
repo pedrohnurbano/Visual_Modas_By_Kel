@@ -129,8 +129,11 @@ func converterParaFloat64(valor interface{}) (float64, error) {
 
 // BuscarProdutos busca todos os produtos
 func BuscarProdutos(w http.ResponseWriter, r *http.Request) {
-	filtro := r.URL.Query().Get("filtro")
-	url := fmt.Sprintf("%s/produtos?filtro=%s", config.APIURL, filtro)
+	// Pegar TODOS os parâmetros de query
+	queryParams := r.URL.Query()
+
+	// Construir URL com todos os parâmetros
+	url := fmt.Sprintf("%s/produtos?%s", config.APIURL, queryParams.Encode())
 
 	response, erro := http.Get(url)
 	if erro != nil {

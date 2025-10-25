@@ -306,3 +306,72 @@ func (repositorio Produtos) DeletarPermanente(ID uint64) error {
 
 	return nil
 }
+
+// BuscarComFiltros retorna produtos filtrados por categoria, tamanho, gênero e termo de busca
+func (repositorio Produtos) BuscarComFiltros(categoria, tamanho, genero, termoBusca string) ([]modelos.Produto, error) {
+	query := `SELECT id, nome, descricao, preco, tamanho, categoria, secao, genero, foto_url, usuario_id, ativo, criadoEm, atualizadoEm 
+		FROM produtos 
+		WHERE ativo = true`
+
+	var args []interface{}
+
+	// Adicionar filtro de categoria
+	if categoria != "" && categoria != "all" {
+		query += " AND categoria = ?"
+		args = append(args, categoria)
+	}
+
+	// Adicionar filtro de tamanho
+	if tamanho != "" && tamanho != "all" {
+		query += " AND tamanho = ?"
+		args = append(args, tamanho)
+	}
+
+	// Adicionar filtro de gênero
+	if genero != "" && genero != "all" {
+		query += " AND genero = ?"
+		args = append(args, genero)
+	}
+
+	// Adicionar termo de busca
+	if termoBusca != "" {
+		termoBusca = fmt.Sprintf("%%%s%%", termoBusca)
+		query += " AND (nome LIKE ? OR descricao LIKE ?)"
+		args = append(args, termoBusca, termoBusca)
+	}
+
+	query += " ORDER BY criadoEm DESC"
+
+	linhas, erro := repositorio.db.Query(query, args...)
+	if erro != nil {
+		return nil, erro
+	}
+	defer linhas.Close()
+
+	var produtos []modelos.Produto
+
+	for linhas.Next() {
+		var produto modelos.Produto
+		if erro = linhas.Scan(
+			&produto.ID,
+			&produto.Nome,
+			&produto.Descricao,
+			&produto.Preco,
+			&produto.Tamanho,
+			&produto.Categoria,
+			&produto.Secao,
+			&produto.Genero,
+			&produto.FotoURL,
+			&produto.UsuarioID,
+			&produto.Ativo,
+			&produto.CriadoEm,
+			&produto.AtualizadoEm,
+		); erro != nil {
+			return nil, erro
+		}
+
+		produtos = append(produtos, produto)
+	}
+
+	return produtos, nil
+}

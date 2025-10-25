@@ -614,16 +614,10 @@ body {
 }
 
 .img-secundaria {
-    opacity: 0;
-    z-index: 2;
+    display: none;
 }
 
 .produto-card:hover .img-primaria {
-    opacity: 0;
-}
-
-.produto-card:hover .img-secundaria {
-    opacity: 1;
     transform: scale(1.02);
 }
 

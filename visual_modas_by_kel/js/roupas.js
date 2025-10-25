@@ -5,34 +5,58 @@ let cart = JSON.parse(localStorage.getItem('cart')) || [];
 let selectedSizes = {};
 let filteredProducts = [];
 
-// Carregar produtos da API
-function carregarProdutosDaAPI() {
+// Carregar produtos da API com filtros
+function carregarProdutosDaAPI(filtros = {}) {
+    // Construir URL com parâmetros de query
+    let url = "/api/produtos?";
+    const params = [];
+    
+    if (filtros.categoria && filtros.categoria !== 'all') {
+        params.push(`categoria=${encodeURIComponent(filtros.categoria)}`);
+    }
+    if (filtros.tamanho && filtros.tamanho !== 'all') {
+        params.push(`tamanho=${encodeURIComponent(filtros.tamanho)}`);
+    }
+    if (filtros.genero && filtros.genero !== 'all') {
+        params.push(`genero=${encodeURIComponent(filtros.genero)}`);
+    }
+    if (filtros.busca) {
+        params.push(`busca=${encodeURIComponent(filtros.busca)}`);
+    }
+    
+    url += params.join('&');
+    
     $.ajax({
-        url: "/api/produtos",
+        url: url,
         method: "GET",
         success: function(produtos) {
+            // Garantir que produtos seja sempre um array
+            if (!produtos || !Array.isArray(produtos)) {
+                produtos = [];
+            }
+            
             // Converter produtos da API para formato compatível
             allProducts = produtos.map(p => ({
                 id: p.id,
                 name: p.nome,
                 price: parseFloat(p.preco),
-                installments: Math.floor(parseFloat(p.preco) / 100) || 1,
+                installments: Math.min(10, Math.floor(parseFloat(p.preco) / 50)) || 1,
                 image1: `http://localhost:5000${p.foto_url}`,
-                image2: `http://localhost:5000${p.foto_url}`, // Usar mesma imagem por enquanto
-                sizes: [p.tamanho], // Tamanho único por produto
+                sizes: [p.tamanho],
                 category: p.categoria || 'geral',
-                genero: p.genero || 'Unissex' // Adicionar campo gênero
+                genero: p.genero || 'Unissex'
             }));
             
             filteredProducts = [...allProducts];
             renderProducts();
             
             // Carregar favoritos após carregar produtos
-            carregarFavoritosIDs();
+            if (!filtros.categoria && !filtros.tamanho && !filtros.genero && !filtros.busca) {
+                carregarFavoritosIDs();
+            }
         },
         error: function(xhr) {
             console.error("Erro ao buscar produtos:", xhr);
-            // Fallback para produtos fictícios se API falhar
             usarProdutosFallback();
         }
     });
@@ -111,32 +135,50 @@ function updateCartCount() {
 function createProductCard(product) {
     const isFavorite = favoritosIDs.includes(product.id);
     const installmentValue = (product.price / product.installments).toFixed(2);
+    const tamanho = product.sizes && product.sizes.length > 0 ? product.sizes[0] : 'M';
 
     return `
         <div class="produto-card" data-product-id="${product.id}">
-            <button class="produto-favorito ${isFavorite ? 'favorito-active' : ''}" title="${isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}" onclick="toggleFavorite(${product.id})">
+            <!-- Botão Favorito -->
+            <button class="produto-favorito ${isFavorite ? 'favorito-active' : ''}" 
+                    title="${isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}" 
+                    onclick="toggleFavorite(${product.id})">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
                         stroke="#370400" stroke-width="1.5" fill="${isFavorite ? '#370400' : 'none'}"/>
                 </svg>
             </button>
+
+            <!-- Botão Sacola (embaixo do coração, visível apenas no hover) -->
+            <button class="produto-sacola-topo" 
+                    title="Adicionar à sacola" 
+                    onclick="adicionarDiretoNaSacola(${product.id}, '${tamanho}')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#370400" stroke-width="1.5">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                </svg>
+            </button>
+
+            <!-- Imagem do Produto -->
             <div class="produto-img-container">
                 <img src="${product.image1}" alt="${product.name}" class="produto-img img-primaria" onerror="this.src='design/cabide.png'">
-                <img src="${product.image2}" alt="${product.name} - Verso" class="produto-img img-secundaria" onerror="this.src='design/cabide.png'">
-                <div class="produto-tamanhos">
-                    ${product.sizes.map(size => `<span class="size-option" data-size="${size}" onclick="selectSize(${product.id}, '${size}')">${size}</span>`).join('')}
-                    <button class="produto-sacola" title="Adicionar à sacola" onclick="addSelectedToCart(${product.id})">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                            <line x1="3" y1="6" x2="21" y2="6"/>
-                        </svg>
-                    </button>
-                </div>
             </div>
+
+            <!-- Informações do Produto -->
             <div class="produto-info">
                 <span class="produto-nome">${product.name}</span>
                 <span class="produto-preco">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
                 <span class="produto-parcela">Até ${product.installments}x de R$ ${installmentValue.replace('.', ',')}</span>
+                
+                <!-- Informação de Tamanho -->
+                <span style="font-size: 12px; color: #666; margin-top: 6px; display: block;">
+                    Tamanho: ${tamanho}
+                </span>
+                
+                <!-- Botão Comprar -->
+                <button class="produto-btn-comprar" onclick="adicionarDiretoNaSacola(${product.id}, '${tamanho}')">
+                    Comprar
+                </button>
             </div>
         </div>
     `;
@@ -148,6 +190,29 @@ function selectSize(productId, size) {
     });
     event.target.classList.add('selected');
     selectedSizes[productId] = size;
+}
+
+function adicionarDiretoNaSacola(productId, size) {
+    const product = allProducts.find(p => p.id === productId);
+    if (!product) return;
+
+    const existingItem = cart.find(item => item.id === productId && item.size === size);
+    if (existingItem) {
+        existingItem.quantity++;
+    } else {
+        cart.push({
+            id: productId,
+            name: product.name,
+            price: product.price,
+            size: size,
+            quantity: 1,
+            image: product.image1
+        });
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+    showNotification('Produto adicionado à sacola!');
 }
 
 function addSelectedToCart(productId) {
@@ -170,19 +235,22 @@ function applyFilters() {
     const category = document.getElementById('categoryFilter').value;
     const size = document.getElementById('sizeFilter').value;
     const genero = document.getElementById('generoFilter').value;
-    const searchTerm = document.getElementById('searchProducts').value.toLowerCase().trim();
+    const searchTerm = document.getElementById('searchProducts').value.trim();
 
-    // Filtrar produtos
-    filteredProducts = allProducts.filter(product => {
-        const matchesCategory = category === 'all' || product.category === category;
-        const matchesSize = size === 'all' || product.sizes.includes(size);
-        const matchesGenero = genero === 'all' || product.genero === genero;
-        const matchesSearch = searchTerm === '' || product.name.toLowerCase().includes(searchTerm);
-        
-        return matchesCategory && matchesSize && matchesGenero && matchesSearch;
-    });
+    // LIMPAR produtos antes de buscar novos
+    allProducts = [];
+    filteredProducts = [];
+    renderProducts(); // Mostra grid vazio
+
+    // Buscar produtos da API com os filtros
+    const filtros = {
+        categoria: category,
+        tamanho: size,
+        genero: genero,
+        busca: searchTerm
+    };
     
-    renderProducts();
+    carregarProdutosDaAPI(filtros);
 }
 
 function searchProducts() {
@@ -338,14 +406,27 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarProdutosDaAPI();
     updateCartCount();
     
-    // Event listeners dos filtros
-    document.getElementById('categoryFilter').addEventListener('change', applyFilters);
-    document.getElementById('sizeFilter').addEventListener('change', applyFilters);
-    document.getElementById('generoFilter').addEventListener('change', applyFilters);
-    document.getElementById('searchProducts').addEventListener('input', applyFilters);
+    // Event listener do botão de busca
+    const btnBuscar = document.querySelector('.btn-search');
+    if (btnBuscar) {
+        btnBuscar.addEventListener('click', searchProducts);
+    }
+    
+    // Permitir buscar ao pressionar Enter no campo de busca
+    const inputBusca = document.getElementById('searchProducts');
+    if (inputBusca) {
+        inputBusca.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchProducts();
+            }
+        });
+    }
     
     // Menu toggle
-    document.getElementById('menuToggle').onclick = toggleFilters;
+    const menuToggle = document.getElementById('menuToggle');
+    if (menuToggle) {
+        menuToggle.onclick = toggleFilters;
+    }
     window.addEventListener('resize', handleMenuToggleDisplay);
     handleMenuToggleDisplay();
     

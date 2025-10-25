@@ -47,8 +47,8 @@ func CriarProduto(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(produto.FotoURL, "data:image") {
 		nomeArquivo, erro := salvarImagemBase64(produto.FotoURL)
 		if erro != nil {
-			respostas.Erro(w, http.StatusInternalServerError, 
-				errors.New("erro ao salvar imagem: " + erro.Error()))
+			respostas.Erro(w, http.StatusInternalServerError,
+				errors.New("erro ao salvar imagem: "+erro.Error()))
 			return
 		}
 		produto.FotoURL = nomeArquivo
@@ -125,8 +125,13 @@ func salvarImagemBase64(dataURL string) (string, error) {
 
 // BuscarProdutos retorna todos os produtos ou filtrados
 func BuscarProdutos(w http.ResponseWriter, r *http.Request) {
+	// Pegar parâmetros de query
+	categoria := r.URL.Query().Get("categoria")
+	tamanho := r.URL.Query().Get("tamanho")
+	genero := r.URL.Query().Get("genero")
+	busca := strings.ToLower(r.URL.Query().Get("busca"))
 	filtro := strings.ToLower(r.URL.Query().Get("filtro"))
-	
+
 	db, erro := banco.Conectar()
 	if erro != nil {
 		respostas.Erro(w, http.StatusInternalServerError, erro)
@@ -135,7 +140,15 @@ func BuscarProdutos(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repositorio := repositorios.NovoRepositorioDeProdutos(db)
-	produtos, erro := repositorio.Buscar(filtro)
+
+	var produtos []modelos.Produto
+
+	if categoria != "" || tamanho != "" || genero != "" || busca != "" {
+		produtos, erro = repositorio.BuscarComFiltros(categoria, tamanho, genero, busca)
+	} else {
+		produtos, erro = repositorio.Buscar(filtro)
+	}
+
 	if erro != nil {
 		respostas.Erro(w, http.StatusInternalServerError, erro)
 		return
@@ -273,11 +286,11 @@ func AtualizarProduto(w http.ResponseWriter, r *http.Request) {
 		if produtoNoBanco.FotoURL != "" && !strings.HasPrefix(produtoNoBanco.FotoURL, "http") {
 			os.Remove("." + produtoNoBanco.FotoURL)
 		}
-		
+
 		nomeArquivo, erro := salvarImagemBase64(produto.FotoURL)
 		if erro != nil {
-			respostas.Erro(w, http.StatusInternalServerError, 
-				errors.New("erro ao salvar imagem: " + erro.Error()))
+			respostas.Erro(w, http.StatusInternalServerError,
+				errors.New("erro ao salvar imagem: "+erro.Error()))
 			return
 		}
 		produto.FotoURL = nomeArquivo
