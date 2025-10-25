@@ -403,7 +403,30 @@ document.addEventListener('keydown', (e) => {
 
 // INICIALIZAÇÃO
 document.addEventListener('DOMContentLoaded', () => {
-    carregarProdutosDaAPI();
+    // Verificar se há parâmetro de busca na URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const buscaURL = urlParams.get('busca');
+    
+    if (buscaURL) {
+        // Preencher o campo de busca com o termo da URL
+        const searchInput = document.getElementById('searchProducts');
+        if (searchInput) {
+            searchInput.value = buscaURL;
+        }
+        
+        // Aplicar a busca automaticamente
+        const filtros = {
+            categoria: 'all',
+            tamanho: 'all',
+            genero: 'all',
+            busca: buscaURL
+        };
+        carregarProdutosDaAPI(filtros);
+    } else {
+        // Carregar todos os produtos normalmente
+        carregarProdutosDaAPI();
+    }
+    
     updateCartCount();
     
     // Event listener do botão de busca
