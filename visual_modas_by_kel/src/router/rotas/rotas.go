@@ -31,6 +31,8 @@ func Configurar(router *mux.Router) *mux.Router {
 	rotas = append(rotas, rotaLogout)
 	rotas = append(rotas, rotasProdutos...)
 	rotas = append(rotas, rotasFavoritos...)
+	rotas = append(rotas, rotasCarrinho...)
+	rotas = append(rotas, rotasPedidos...)
 
 	for _, rota := range rotas {
 		if rota.RequerAdmin {

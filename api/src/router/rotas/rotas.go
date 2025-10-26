@@ -22,6 +22,8 @@ func Configurar(r *mux.Router) *mux.Router {
 	rotas = append(rotas, rotasAdmin...)     //Adiciona as rotas administrativas
 	rotas = append(rotas, rotasProdutos...)  //Adiciona as rotas de produtos
 	rotas = append(rotas, rotasFavoritos...) //Adiciona as rotas de favoritos
+	rotas = append(rotas, rotasCarrinho...)  //Adiciona as rotas de carrinho
+	rotas = append(rotas, rotasPedidos...)   //Adiciona as rotas de pedidos
 
 	for _, rota := range rotas { //Para cada rota...
 

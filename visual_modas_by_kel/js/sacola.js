@@ -1,263 +1,188 @@
-// Sistema de Gerenciamento da Sacola
-class SacolaManager {
-    constructor() {
-        this.sacola = this.carregarSacola();
-        this.cupomAplicado = null;
-        this.descontoPercentual = 0;
-    }
+// Gerenciamento da página da sacola usando API
 
-    // Carregar sacola do armazenamento
-    carregarSacola() {
-        const dados = sessionStorage.getItem('sacola_visual_modas');
-        return dados ? JSON.parse(dados) : [];
-    }
+let cartItems = [];
 
-    // Salvar sacola no armazenamento
-    salvarSacola() {
-        sessionStorage.setItem('sacola_visual_modas', JSON.stringify(this.sacola));
-    }
+// Carregar itens do carrinho da API
+function carregarSacola() {
+    buscarCarrinhoAPI(function(itens) {
+        cartItems = itens || [];
+        renderizarSacola();
+    });
+}
 
-    // Adicionar item à sacola
-    adicionarItem(produto) {
-        const itemExistente = this.sacola.find(
-            item => item.id === produto.id && item.tamanho === produto.tamanho
-        );
+// Renderizar sacola
+function renderizarSacola() {
+    const itemsWrapper = document.getElementById('sacolaItems');
+    const emptyState = document.getElementById('sacolaEmpty');
+    const resumo = document.getElementById('sacolaResumo');
+    const totalElement = document.getElementById('sacolaTotal');
+    const sacolaContent = document.querySelector('.sacola-content');
 
-        if (itemExistente) {
-            itemExistente.quantidade += 1;
-        } else {
-            this.sacola.push({
-                ...produto,
-                quantidade: 1
-            });
+    if (cartItems.length === 0) {
+        emptyState.style.display = 'flex';
+        itemsWrapper.style.display = 'none';
+        resumo.style.display = 'none';
+        totalElement.textContent = '0 itens';
+        if (sacolaContent) {
+            sacolaContent.classList.add('sacola-vazia');
         }
-
-        this.salvarSacola();
-        this.atualizarContador();
-        return true;
-    }
-
-    // Remover item da sacola
-    removerItem(id, tamanho) {
-        this.sacola = this.sacola.filter(
-            item => !(item.id === id && item.tamanho === tamanho)
-        );
-        this.salvarSacola();
-        this.atualizarInterface();
-    }
-
-    // Atualizar quantidade
-    atualizarQuantidade(id, tamanho, novaQuantidade) {
-        const item = this.sacola.find(
-            item => item.id === id && item.tamanho === tamanho
-        );
-
-        if (item && novaQuantidade > 0) {
-            item.quantidade = novaQuantidade;
-            this.salvarSacola();
-            this.atualizarInterface();
-        } else if (novaQuantidade === 0) {
-            this.removerItem(id, tamanho);
-        }
-    }
-
-    // Calcular subtotal
-    calcularSubtotal() {
-        return this.sacola.reduce((total, item) => {
-            return total + (item.preco * item.quantidade);
-        }, 0);
-    }
-
-    // Calcular desconto
-    calcularDesconto(subtotal) {
-        return subtotal * (this.descontoPercentual / 100);
-    }
-
-    // Calcular total
-    calcularTotal() {
-        const subtotal = this.calcularSubtotal();
-        const desconto = this.calcularDesconto(subtotal);
-        return subtotal - desconto;
-    }
-
-    // Formatar moeda
-    formatarMoeda(valor) {
-        return valor.toLocaleString('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-        });
-    }
-
-    // Atualizar contador no header
-    atualizarContador() {
-        const contador = document.getElementById('sacola-contador');
-        const totalItens = this.sacola.reduce((total, item) => total + item.quantidade, 0);
-        
-        if (contador) {
-            if (totalItens > 0) {
-                contador.textContent = totalItens;
-                contador.style.display = 'flex';
-            } else {
-                contador.style.display = 'none';
-            }
-        }
-    }
-
-    // Renderizar interface da sacola
-    renderizarSacola() {
-        const container = document.getElementById('sacola-items');
-        const resumo = document.getElementById('sacola-resumo');
-        const subtitulo = document.getElementById('sacola-subtitulo');
-        const vazia = document.getElementById('sacola-vazia');
-
-        if (this.sacola.length === 0) {
-            vazia.style.display = 'block';
-            resumo.style.display = 'none';
-            subtitulo.textContent = '0 itens';
-            return;
-        }
-
-        vazia.style.display = 'none';
+    } else {
+        emptyState.style.display = 'none';
+        itemsWrapper.style.display = 'block';
         resumo.style.display = 'block';
 
-        const totalItens = this.sacola.reduce((total, item) => total + item.quantidade, 0);
-        subtitulo.textContent = `${totalItens} ${totalItens === 1 ? 'item' : 'itens'}`;
+        const totalItens = cartItems.reduce((sum, item) => sum + item.quantidade, 0);
+        totalElement.textContent = `${totalItens} ${totalItens === 1 ? 'item' : 'itens'}`;
 
-        container.innerHTML = this.sacola.map(item => `
-            <div class="sacola-item" data-id="${item.id}" data-tamanho="${item.tamanho}">
-                <div class="item-imagem">
-                    <img src="${item.imagem}" alt="${item.nome}">
+        itemsWrapper.innerHTML = cartItems.map(item => criarItemSacola(item)).join('');
+        atualizarResumo();
+        
+        if (sacolaContent) {
+            sacolaContent.classList.remove('sacola-vazia');
+        }
+    }
+}
+
+// Criar HTML de um item da sacola
+function criarItemSacola(item) {
+    const produto = item.produto;
+    const preco = parseFloat(produto.preco);
+    const quantidade = item.quantidade;
+    
+    // Construir URL da foto
+    let fotoUrl = produto.foto_url;
+    if (fotoUrl && !fotoUrl.startsWith('http') && !fotoUrl.startsWith('data:')) {
+        fotoUrl = fotoUrl.startsWith('/') ? `http://localhost:5000${fotoUrl}` : `http://localhost:5000/${fotoUrl}`;
+    }
+
+    return `
+        <div class="sacola-item" data-item-id="${produto.id}">
+            <div class="item-image">
+                <img src="${fotoUrl || 'design/cabide.png'}" alt="${produto.nome}" onerror="this.src='design/cabide.png'">
+            </div>
+            <div class="item-details">
+                <h3 class="item-name">${produto.nome}</h3>
+                
+                <!-- Informação de Tamanho -->
+                <div class="item-size-info">
+                    <span>Tamanho: ${produto.tamanho}</span>
                 </div>
-                <div class="item-detalhes">
-                    <h3 class="item-nome">${item.nome}</h3>
-                    <p class="item-info">Tamanho: ${item.tamanho}</p>
-                    <p class="item-info">Cor: ${item.cor || 'Padrão'}</p>
-                    <p class="item-preco">${this.formatarMoeda(item.preco)}</p>
-                    <div class="item-acoes">
-                        <div class="item-quantidade">
-                            <button class="btn-quantidade" onclick="sacolaManager.diminuirQuantidade('${item.id}', '${item.tamanho}')">−</button>
-                            <span class="quantidade-valor">${item.quantidade}</span>
-                            <button class="btn-quantidade" onclick="sacolaManager.aumentarQuantidade('${item.id}', '${item.tamanho}')">+</button>
-                        </div>
-                        <button class="btn-remover" onclick="sacolaManager.removerItem('${item.id}', '${item.tamanho}')">Remover</button>
+                
+                <p class="item-price">R$ ${preco.toFixed(2).replace('.', ',')}</p>
+                
+                <div class="item-actions">
+                    <div class="quantity-control">
+                        <button class="btn-qty" onclick="alterarQuantidade(${produto.id}, ${quantidade}, -1)">−</button>
+                        <span class="qty-value">${quantidade}</span>
+                        <button class="btn-qty" onclick="alterarQuantidade(${produto.id}, ${quantidade}, 1)">+</button>
                     </div>
+                    <button class="btn-remove" onclick="removerItemSacola(${produto.id})">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        Remover
+                    </button>
                 </div>
             </div>
-        `).join('');
-
-        this.atualizarResumo();
-    }
-
-    // Atualizar resumo do pedido
-    atualizarResumo() {
-        const subtotal = this.calcularSubtotal();
-        const desconto = this.calcularDesconto(subtotal);
-        const total = this.calcularTotal();
-
-        document.getElementById('resumo-subtotal').textContent = this.formatarMoeda(subtotal);
-        document.getElementById('resumo-total').textContent = this.formatarMoeda(total);
-
-        const descontoLinha = document.getElementById('desconto-linha');
-        if (desconto > 0) {
-            descontoLinha.style.display = 'flex';
-            document.getElementById('resumo-desconto').textContent = '- ' + this.formatarMoeda(desconto);
-        } else {
-            descontoLinha.style.display = 'none';
-        }
-    }
-
-    // Aumentar quantidade
-    aumentarQuantidade(id, tamanho) {
-        const item = this.sacola.find(item => item.id === id && item.tamanho === tamanho);
-        if (item) {
-            this.atualizarQuantidade(id, tamanho, item.quantidade + 1);
-        }
-    }
-
-    // Diminuir quantidade
-    diminuirQuantidade(id, tamanho) {
-        const item = this.sacola.find(item => item.id === id && item.tamanho === tamanho);
-        if (item) {
-            this.atualizarQuantidade(id, tamanho, item.quantidade - 1);
-        }
-    }
-
-    // Atualizar toda interface
-    atualizarInterface() {
-        this.renderizarSacola();
-        this.atualizarContador();
-    }
-
-    // Aplicar cupom
-    aplicarCupom(codigo) {
-        const cupons = {
-            'BEMVINDOVM': 10,
-            'PRIMEIRACOMPRA': 15,
-            'DESCONTO20': 20,
-            'FRETE5': 5
-        };
-
-        const codigoUpper = codigo.toUpperCase().trim();
-        
-            if (cupons[codigoUpper]) {
-            this.cupomAplicado = codigoUpper;
-            this.descontoPercentual = cupons[codigoUpper];
-            this.atualizarResumo();
-            Swal.fire({
-                icon: 'success',
-                title: 'Cupom aplicado!',
-                text: `Cupom "${codigoUpper}" aplicado com sucesso! Desconto de ${this.descontoPercentual}%`,
-                confirmButtonColor: '#370400'
-            });
-            return true;
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Cupom inválido',
-                text: 'Cupom inválido ou expirado.',
-                confirmButtonColor: '#370400'
-            });
-            return false;
-        }
-    }
+            <div class="item-total">
+                <span class="item-total-label">Total</span>
+                <span class="item-total-value">R$ ${(preco * quantidade).toFixed(2).replace('.', ',')}</span>
+            </div>
+        </div>
+    `;
 }
 
-// Inicializar gerenciador
-const sacolaManager = new SacolaManager();
-
-// Funções globais
-function aplicarCupom() {
-    const input = document.getElementById('cupom-input');
-    if (input.value) {
-        sacolaManager.aplicarCupom(input.value);
-        input.value = '';
-    }
-}
-
-function finalizarCompra() {
-    if (sacolaManager.sacola.length === 0) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Sacola vazia',
-            text: 'Adicione produtos à sacola antes de finalizar a compra!',
-            confirmButtonColor: '#370400'
-        });
+// Alterar quantidade de um item
+function alterarQuantidade(produtoId, quantidadeAtual, mudanca) {
+    const novaQuantidade = quantidadeAtual + mudanca;
+    
+    if (novaQuantidade <= 0) {
+        removerItemSacola(produtoId);
         return;
     }
-    
-    Swal.fire({
-        icon: 'info',
-        title: 'Redirecionando',
-        text: 'Redirecionando para o checkout...',
-        confirmButtonColor: '#370400',
-        timer: 1500,
-        showConfirmButton: false
+
+    atualizarQuantidadeCarrinhoAPI(produtoId, novaQuantidade, function(sucesso) {
+        if (sucesso) {
+            carregarSacola();
+        } else {
+            showNotification('Erro ao atualizar quantidade');
+        }
     });
-    // Aqui você implementaria a navegação para página de checkout
-    // window.location.href = 'checkout.html';
 }
 
-// Inicializar ao carregar página
-document.addEventListener('DOMContentLoaded', function() {
-    sacolaManager.atualizarInterface();
+// Remover item da sacola
+function removerItemSacola(produtoId) {
+    removerDoCarrinhoAPI(produtoId, function(sucesso) {
+        if (sucesso) {
+            showNotification('Produto removido da sacola');
+            carregarSacola();
+        } else {
+            showNotification('Erro ao remover produto');
+        }
+    });
+}
+
+// Atualizar resumo do pedido
+function atualizarResumo() {
+    const subtotal = cartItems.reduce((sum, item) => {
+        return sum + (parseFloat(item.produto.preco) * item.quantidade);
+    }, 0);
+
+    const total = subtotal;
+
+    document.getElementById('resumoSubtotal').textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+    document.getElementById('resumoTotal').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+
+    // Frete grátis acima de R$ 500
+    const freteElement = document.getElementById('resumoFrete');
+    if (subtotal >= 500) {
+        freteElement.textContent = 'GRÁTIS';
+        freteElement.style.color = '#28a745';
+        freteElement.style.fontWeight = '700';
+    } else {
+        freteElement.textContent = 'A calcular';
+        freteElement.style.color = '';
+        freteElement.style.fontWeight = '';
+    }
+}
+
+// Finalizar compra
+function finalizarCompra() {
+    if (cartItems.length === 0) {
+        showNotification('Adicione produtos à sacola primeiro!');
+        return;
+    }
+
+    // Redireciona para o checkout
+    window.location.href = '/checkout';
+}
+
+// Mostrar notificação
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: #370400;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 4px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        animation: slideIn 0.3s ease-out;
+    `;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => notification.remove(), 300);
+    }, 2000);
+}
+
+// Inicialização
+$(document).ready(function() {
+    carregarSacola();
 });

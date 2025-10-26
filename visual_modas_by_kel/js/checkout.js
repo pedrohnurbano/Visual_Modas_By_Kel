@@ -1,8 +1,3 @@
-// CONFIGURAÇÃO DO MERCADO PAGO
-const MP_PUBLIC_KEY = 'TEST-18a74325-f90e-4f35-8056-4af663c6482f'; // Substitua pela sua chave pública
-let mp;
-let cardPaymentBrickController;
-
 // Dados do checkout
 let checkoutData = {
     cliente: {},
@@ -11,65 +6,84 @@ let checkoutData = {
     items: []
 };
 
-let cart = JSON.parse(localStorage.getItem('cart')) || [];
-const allProducts = [
-    // Cole aqui o mesmo array de produtos das outras páginas
-    {
-        id: 1,
-        name: "Vestido Midi Floral",
-        price: 899.90,
-        installments: 7,
-        image1: "design/ex-roupa1.png",
-        sizes: ["PP", "P", "M", "G", "GG", "XG", "XGG"]
-    },
-    // ... resto dos produtos
-];
+let cartItems = [];
 
 // INICIALIZAÇÃO
-document.addEventListener('DOMContentLoaded', () => {
-    if (cart.length === 0) {
-        window.location.href = '/sacola';
-        return;
-    }
+$(document).ready(function() {
+    // Carregar carrinho da API
+    buscarResumoCarrinhoAPI(function(resumo) {
+        if (!resumo || !resumo.itens || resumo.itens.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Sacola vazia',
+                text: 'Adicione produtos à sacola antes de finalizar a compra.',
+                confirmButtonColor: '#370400'
+            }).then(() => {
+                window.location.href = '/sacola';
+            });
+            return;
+        }
 
-    checkoutData.items = cart;
-    carregarResumo();
-    inicializarFormularios();
-    aplicarMascaras();
+        cartItems = resumo.itens;
+        checkoutData.items = cartItems;
+        carregarResumo();
+        inicializarFormularios();
+        aplicarMascaras();
+        preencherDadosUsuario();
+    });
 });
+
+// Preencher dados do usuário logado
+function preencherDadosUsuario() {
+    const usuarioStr = localStorage.getItem('usuario');
+    if (usuarioStr) {
+        try {
+            const usuario = JSON.parse(usuarioStr);
+            document.getElementById('emailCliente').value = usuario.email || '';
+            document.getElementById('nomeCliente').value = `${usuario.nome || ''} ${usuario.sobrenome || ''}`.trim();
+            document.getElementById('telefoneCliente').value = usuario.telefone || '';
+        } catch (e) {
+            console.error('Erro ao parsear dados do usuário:', e);
+        }
+    }
+}
 
 // RESUMO DO PEDIDO
 function carregarResumo() {
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const desconto = subtotal >= 500 ? subtotal * 0.05 : 0;
+    const subtotal = cartItems.reduce((sum, item) => {
+        return sum + (parseFloat(item.produto.preco) * item.quantidade);
+    }, 0);
+    
     const frete = subtotal >= 500 ? 0 : 30;
-    const total = subtotal - desconto + frete;
+    const total = subtotal + frete;
 
     const resumoHTML = `
         <h3 class="summary-title">Resumo do Pedido</h3>
         <div class="summary-items">
-            ${cart.map(item => `
+            ${cartItems.map(item => {
+                const preco = parseFloat(item.produto.preco);
+                let fotoUrl = item.produto.foto_url;
+                if (fotoUrl && !fotoUrl.startsWith('http') && !fotoUrl.startsWith('data:')) {
+                    fotoUrl = fotoUrl.startsWith('/') ? `http://localhost:5000${fotoUrl}` : `http://localhost:5000/${fotoUrl}`;
+                }
+                
+                return `
                 <div class="summary-item">
-                    <img src="${item.image}" alt="${item.name}">
+                    <img src="${fotoUrl || 'design/cabide.png'}" alt="${item.produto.nome}" onerror="this.src='design/cabide.png'">
                     <div class="summary-item-info">
-                        <span class="summary-item-name">${item.name}</span>
-                        <span class="summary-item-details">Tam: ${item.size} | Qtd: ${item.quantity}</span>
+                        <span class="summary-item-name">${item.produto.nome}</span>
+                        <span class="summary-item-details">Tam: ${item.produto.tamanho} | Qtd: ${item.quantidade}</span>
                     </div>
-                    <span class="summary-item-price">R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</span>
+                    <span class="summary-item-price">R$ ${(preco * item.quantidade).toFixed(2).replace('.', ',')}</span>
                 </div>
-            `).join('')}
+                `;
+            }).join('')}
         </div>
         <div class="summary-totals">
             <div class="summary-line">
                 <span>Subtotal</span>
                 <span>R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
             </div>
-            ${desconto > 0 ? `
-            <div class="summary-line discount">
-                <span>Desconto</span>
-                <span>- R$ ${desconto.toFixed(2).replace('.', ',')}</span>
-            </div>
-            ` : ''}
             <div class="summary-line">
                 <span>Frete</span>
                 <span>${frete === 0 ? 'GRÁTIS' : 'R$ ' + frete.toFixed(2).replace('.', ',')}</span>
@@ -216,7 +230,6 @@ function avancarEtapa(etapa) {
         document.getElementById('sectionPagamento').classList.remove('hidden');
         document.getElementById('step4').classList.add('active');
         document.getElementById('step3').classList.add('completed');
-        inicializarMercadoPago();
     } else if (etapa === 5) {
         document.getElementById('sectionConfirmacao').classList.remove('hidden');
         document.getElementById('step5').classList.add('active');
@@ -239,21 +252,6 @@ function selecionarPagamento(tipo) {
     event.currentTarget.classList.add('selected');
     
     checkoutData.pagamento.tipo = tipo;
-
-    if (tipo === 'mercadopago') {
-        document.getElementById('mercadoPagoContainer').classList.remove('hidden');
-    } else {
-        document.getElementById('mercadoPagoContainer').classList.add('hidden');
-    }
-}
-
-// INICIALIZAR MERCADO PAGO
-function inicializarMercadoPago() {
-    if (!mp) {
-        mp = new MercadoPago(MP_PUBLIC_KEY, {
-            locale: 'pt-BR'
-        });
-    }
 }
 
 // FINALIZAR PAGAMENTO
@@ -272,99 +270,49 @@ async function finalizarPagamento() {
     btnFinalizar.disabled = true;
     btnFinalizar.textContent = 'Processando...';
 
-    try {
-        if (checkoutData.pagamento.tipo === 'mercadopago') {
-            await processarPagamentoMercadoPago();
-        } else if (checkoutData.pagamento.tipo === 'pix') {
-            await processarPagamentoPix();
+    // Preparar dados do pedido
+    const dadosPedido = {
+        nomeCompleto: checkoutData.cliente.nome,
+        email: checkoutData.cliente.email,
+        telefone: checkoutData.cliente.telefone,
+        endereco: checkoutData.endereco.endereco,
+        numero: checkoutData.endereco.numero,
+        complemento: checkoutData.endereco.complemento || '',
+        bairro: checkoutData.endereco.bairro,
+        cidade: checkoutData.endereco.cidade,
+        estado: checkoutData.endereco.estado,
+        cep: checkoutData.endereco.cep,
+        formaPagamento: checkoutData.pagamento.tipo
+    };
+
+    // Criar pedido via API
+    criarPedidoAPI(dadosPedido, function(sucesso, response) {
+        if (sucesso) {
+            checkoutData.numeroPedido = response.pedidoId;
+            avancarEtapa(5);
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro ao criar pedido',
+                text: response || 'Não foi possível criar o pedido. Tente novamente.',
+                confirmButtonColor: '#370400'
+            });
+            btnFinalizar.disabled = false;
+            btnFinalizar.textContent = 'Finalizar Compra';
         }
-    } catch (error) {
-        console.error('Erro ao processar pagamento:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Erro no pagamento',
-            text: 'Erro ao processar pagamento. Por favor, tente novamente.',
-            confirmButtonColor: '#370400'
-        });
-        btnFinalizar.disabled = false;
-        btnFinalizar.textContent = 'Finalizar Compra';
-    }
-}
-
-// PROCESSAR PAGAMENTO MERCADO PAGO
-async function processarPagamentoMercadoPago() {
-    // Aqui você fará a chamada para o seu backend
-    const pedido = {
-        cliente: checkoutData.cliente,
-        endereco: checkoutData.endereco,
-        items: checkoutData.items,
-        total: calcularTotal()
-    };
-
-    // Exemplo de chamada ao backend
-    const response = await fetch('/api/criar-pagamento-mp', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(pedido)
     });
-
-    const data = await response.json();
-    
-    if (data.success) {
-        checkoutData.pagamento.transactionId = data.transactionId;
-        limparCarrinho();
-        avancarEtapa(5);
-    } else {
-        throw new Error(data.message);
-    }
 }
 
-// PROCESSAR PAGAMENTO PIX
-async function processarPagamentoPix() {
-    const pedido = {
-        cliente: checkoutData.cliente,
-        endereco: checkoutData.endereco,
-        items: checkoutData.items,
-        total: calcularTotal() * 0.95 // 5% de desconto
-    };
-
-    const response = await fetch('/api/criar-pagamento-pix', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(pedido)
-    });
-
-    const data = await response.json();
-    
-    if (data.success) {
-        checkoutData.pagamento.qrCode = data.qrCode;
-        checkoutData.pagamento.qrCodeBase64 = data.qrCodeBase64;
-        limparCarrinho();
-        avancarEtapa(5);
-    } else {
-        throw new Error(data.message);
-    }
-}
-
-// FUNÇÕES AUXILIARES
-function calcularTotal() {
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const frete = subtotal >= 500 ? 0 : 30;
-    return subtotal + frete;
-}
-
-function limparCarrinho() {
-    localStorage.removeItem('cart');
-    cart = [];
-}
-
+// MOSTRAR CONFIRMAÇÃO
 function mostrarConfirmacao() {
-    const numeroPedido = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+    const numeroPedido = checkoutData.numeroPedido || Math.floor(Math.random() * 1000000);
     document.getElementById('numeroPedido').textContent = `#${numeroPedido}`;
+
+    const subtotal = cartItems.reduce((sum, item) => {
+        return sum + (parseFloat(item.produto.preco) * item.quantidade);
+    }, 0);
+    const frete = subtotal >= 500 ? 0 : 30;
+    const total = subtotal + frete;
 
     const detalhesHTML = `
         <div class="confirmation-section">
@@ -377,34 +325,32 @@ function mostrarConfirmacao() {
         <div class="confirmation-section">
             <h3>Endereço de Entrega</h3>
             <p>${checkoutData.endereco.endereco}, ${checkoutData.endereco.numero}</p>
+            ${checkoutData.endereco.complemento ? `<p>${checkoutData.endereco.complemento}</p>` : ''}
             <p>${checkoutData.endereco.bairro} - ${checkoutData.endereco.cidade}/${checkoutData.endereco.estado}</p>
             <p>CEP: ${formatarCEP(checkoutData.endereco.cep)}</p>
         </div>
 
         <div class="confirmation-section">
             <h3>Itens do Pedido</h3>
-            ${cart.map(item => `
-                <p>${item.name} - Tamanho ${item.size} - Qtd: ${item.quantity} - R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</p>
-            `).join('')}
+            ${cartItems.map(item => {
+                const preco = parseFloat(item.produto.preco);
+                return `<p>${item.produto.nome} - Tamanho ${item.produto.tamanho} - Qtd: ${item.quantidade} - R$ ${(preco * item.quantidade).toFixed(2).replace('.', ',')}</p>`;
+            }).join('')}
         </div>
 
         <div class="confirmation-section">
             <h3>Total do Pedido</h3>
-            <p class="confirmation-total">R$ ${calcularTotal().toFixed(2).replace('.', ',')}</p>
+            <p class="confirmation-total">R$ ${total.toFixed(2).replace('.', ',')}</p>
         </div>
 
-        ${checkoutData.pagamento.tipo === 'pix' && checkoutData.pagamento.qrCodeBase64 ? `
-        <div class="confirmation-section pix-section">
-            <h3>Pagamento via PIX</h3>
-            <img src="${checkoutData.pagamento.qrCodeBase64}" alt="QR Code PIX" style="max-width: 300px; margin: 20px auto; display: block;">
-            <p style="text-align: center; word-break: break-all; padding: 10px; background: #f5f5f5; border-radius: 4px;">
-                ${checkoutData.pagamento.qrCode}
+        <div class="confirmation-section">
+            <p style="text-align: center; color: #666; margin-top: 20px;">
+                ${checkoutData.pagamento.tipo === 'pix' ? 'Aguardando confirmação do pagamento via PIX...' : 'Aguardando confirmação do pagamento...'}
             </p>
-            <p style="text-align: center; color: #666; margin-top: 10px;">
-                Escaneie o QR Code ou copie o código acima para realizar o pagamento
+            <p style="text-align: center; color: #666;">
+                Você receberá um e-mail com os detalhes do seu pedido.
             </p>
         </div>
-        ` : ''}
     `;
 
     document.getElementById('confirmationDetails').innerHTML = detalhesHTML;

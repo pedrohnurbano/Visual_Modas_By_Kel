@@ -1,7 +1,6 @@
 // Variáveis globais
 let allProducts = [];
 let favoritosIDs = [];
-let cart = JSON.parse(localStorage.getItem('cart')) || [];
 let selectedSizes = {};
 let filteredProducts = [];
 
@@ -99,37 +98,15 @@ function closeFavoriteModal() {
 
 // FUNÇÕES DE SACOLA
 function addToCart(productId, size) {
-    const product = allProducts.find(p => p.id === productId);
-    if (!product) return;
 
-    const existingItem = cart.find(item => item.id === productId && item.size === size);
-    if (existingItem) {
-        existingItem.quantity++;
-    } else {
-        cart.push({
-            id: productId,
-            name: product.name,
-            price: product.price,
-            size: size,
-            quantity: 1,
-            image: product.image1
-        });
-    }
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartCount();
-    showNotification('Produto adicionado à sacola!');
+    adicionarAoCarrinhoAPI(productId, 1, function(sucesso) {
+        if (sucesso) {
+            showNotification('Produto adicionado à sacola!');
+        }
+    });
 }
 
-function updateCartCount() {
-    const count = document.getElementById('sacolaCount');
-    const total = cart.reduce((sum, item) => sum + item.quantity, 0);
-    if (total > 0) {
-        count.textContent = total;
-        count.style.display = 'inline';
-    } else {
-        count.style.display = 'none';
-    }
-}
+// Função movida para carrinho.js - usar atualizarContadorCarrinho()
 
 // FUNÇÕES DE PRODUTOS
 function createProductCard(product) {
@@ -193,26 +170,14 @@ function selectSize(productId, size) {
 }
 
 function adicionarDiretoNaSacola(productId, size) {
-    const product = allProducts.find(p => p.id === productId);
-    if (!product) return;
 
-    const existingItem = cart.find(item => item.id === productId && item.size === size);
-    if (existingItem) {
-        existingItem.quantity++;
-    } else {
-        cart.push({
-            id: productId,
-            name: product.name,
-            price: product.price,
-            size: size,
-            quantity: 1,
-            image: product.image1
-        });
-    }
-
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartCount();
-    showNotification('Produto adicionado à sacola!');
+    adicionarAoCarrinhoAPI(productId, 1, function(sucesso) {
+        if (sucesso) {
+            showNotification('Produto adicionado à sacola!');
+        } else {
+            showNotification('Erro ao adicionar produto. Tente novamente.');
+        }
+    });
 }
 
 function addSelectedToCart(productId) {
@@ -303,7 +268,6 @@ function showNotification(message) {
     }, 2000);
 }
 
-// Funções removidas - header-filters não existe mais
 function toggleFilters() {
     // Função desabilitada
 }
@@ -343,7 +307,6 @@ function initScrollBehavior() {
     });
 }
 
-// Função removida - header-filters não existe mais
 
 function initCategoriesModal() {
     const trigger = document.getElementById('categoriesMenuTrigger');
@@ -427,7 +390,10 @@ document.addEventListener('DOMContentLoaded', () => {
         carregarProdutosDaAPI();
     }
     
-    updateCartCount();
+    // Atualizar contador do carrinho
+    if (typeof atualizarContadorCarrinho === 'function') {
+        atualizarContadorCarrinho();
+    }
     
     // Event listener do botão de busca
     const btnBuscar = document.querySelector('.btn-search');

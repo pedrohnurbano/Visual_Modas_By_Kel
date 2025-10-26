@@ -303,13 +303,12 @@
     </footer>
 
     <script>
-        // DADOS DOS PRODUTOS - Agora carregados do banco de dados
+        // DADOS DOS PRODUTOS
         let productsNovidades = [];
         let productsDestaques = [];
         let allProducts = [];
 
         let favoritosIDs = []; // Agora usa IDs da API em vez de localStorage
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let selectedSizes = {};
 
         // Função para carregar produtos do banco de dados
@@ -348,7 +347,6 @@
             });
         }
 
-        // Usar API em vez de localStorage
         function toggleFavorite(productId) {
             toggleFavoritoAPI(productId, function (isFavorito) {
                 // Atualizar lista local
@@ -364,44 +362,15 @@
         }
 
         function addToCart(productId, size) {
-            const product = allProducts.find(p => p.id === productId);
-            if (!product) return;
 
-            const existingItem = cart.find(item => item.id === productId && item.size === size);
-            if (existingItem) {
-                existingItem.quantity++;
-            } else {
-                // Usar a foto do banco de dados - buscar diretamente da API
-                let fotoUrl = product.foto_url;
-                if (fotoUrl && !fotoUrl.startsWith('http') && !fotoUrl.startsWith('data:')) {
-                    // Se for URL relativa, buscar da API (porta 5000)
-                    fotoUrl = fotoUrl.startsWith('/') ? `http://localhost:5000${fotoUrl}` : `http://localhost:5000/${fotoUrl}`;
+            adicionarAoCarrinhoAPI(productId, 1, function(sucesso) {
+                if (sucesso) {
+                    showNotification('Produto adicionado à sacola!');
                 }
-
-                cart.push({
-                    id: productId,
-                    name: product.nome,
-                    price: product.preco,
-                    size: size,
-                    quantity: 1,
-                    image: fotoUrl || 'design/ex-roupa1.png'
-                });
-            }
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartCount();
-            showNotification('Produto adicionado à sacola!');
+            });
         }
 
-        function updateCartCount() {
-            const count = document.getElementById('sacolaCount');
-            const total = cart.reduce((sum, item) => sum + item.quantity, 0);
-            if (total > 0) {
-                count.textContent = total;
-                count.style.display = 'inline';
-            } else {
-                count.style.display = 'none';
-            }
-        }
+        // Função movida para carrinho.js - usar atualizarContadorCarrinho()
 
         function createProductCard(product) {
             const isFavorite = favoritosIDs.includes(product.id);
@@ -468,33 +437,14 @@
         }
 
         function adicionarDiretoNaSacola(productId, size) {
-            const product = allProducts.find(p => p.id === productId);
-            if (!product) return;
 
-            const existingItem = cart.find(item => item.id === productId && item.size === size);
-            if (existingItem) {
-                existingItem.quantity++;
-            } else {
-                // Usar a foto do banco de dados - buscar diretamente da API
-                let fotoUrl = product.foto_url;
-                if (fotoUrl && !fotoUrl.startsWith('http') && !fotoUrl.startsWith('data:')) {
-                    // Se for URL relativa, buscar da API (porta 5000)
-                    fotoUrl = fotoUrl.startsWith('/') ? `http://localhost:5000${fotoUrl}` : `http://localhost:5000/${fotoUrl}`;
+            adicionarAoCarrinhoAPI(productId, 1, function(sucesso) {
+                if (sucesso) {
+                    showNotification('Produto adicionado à sacola!');
+                } else {
+                    showNotification('Erro ao adicionar produto. Tente novamente.');
                 }
-
-                cart.push({
-                    id: productId,
-                    name: product.nome,
-                    price: product.preco,
-                    size: size,
-                    quantity: 1,
-                    image: fotoUrl || 'design/ex-roupa1.png'
-                });
-            }
-
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartCount();
-            showNotification('Produto adicionado à sacola!');
+            });
         }
 
         function abrirModalTamanho(productId) {
@@ -780,6 +730,7 @@
     <script src="js/jquery.min.js"></script>
     <script src="js/header-search.js"></script>
     <script src="js/favoritos.js"></script>
+    <script src="js/carrinho.js"></script>
     <script>
         // Função de logout
         function logout() {
