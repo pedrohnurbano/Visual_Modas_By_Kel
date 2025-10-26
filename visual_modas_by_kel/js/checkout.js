@@ -230,6 +230,8 @@ function avancarEtapa(etapa) {
         document.getElementById('sectionPagamento').classList.remove('hidden');
         document.getElementById('step4').classList.add('active');
         document.getElementById('step3').classList.add('completed');
+        // Selecionar PIX automaticamente
+        checkoutData.pagamento.tipo = 'pix';
     } else if (etapa === 5) {
         document.getElementById('sectionConfirmacao').classList.remove('hidden');
         document.getElementById('step5').classList.add('active');
@@ -344,11 +346,14 @@ function mostrarConfirmacao() {
         </div>
 
         <div class="confirmation-section">
-            <p style="text-align: center; color: #666; margin-top: 20px;">
-                ${checkoutData.pagamento.tipo === 'pix' ? 'Aguardando confirmação do pagamento via PIX...' : 'Aguardando confirmação do pagamento...'}
+            <p style="text-align: center; color: #370400; margin-top: 20px; font-weight: 600;">
+                ⏳ Pedido criado com sucesso!
             </p>
             <p style="text-align: center; color: #666;">
-                Você receberá um e-mail com os detalhes do seu pedido.
+                Em breve você será redirecionado para o gateway de pagamento Abacate Pay para realizar o pagamento via PIX.
+            </p>
+            <p style="text-align: center; color: #666; font-size: 13px; margin-top: 10px;">
+                📧 Você receberá um e-mail com os detalhes do seu pedido.
             </p>
         </div>
     `;

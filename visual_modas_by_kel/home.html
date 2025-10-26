@@ -718,7 +718,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Carregar produtos do banco de dados
             carregarProdutosHome();
-            updateCartCount();
+            // Atualizar contador do carrinho
+            if (typeof atualizarContadorCarrinho === 'function') {
+                atualizarContadorCarrinho();
+            }
             showSlides(slideIndex);
             startSlideTimer();
             initScrollBehavior();

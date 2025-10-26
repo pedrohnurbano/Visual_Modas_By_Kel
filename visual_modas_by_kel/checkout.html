@@ -194,38 +194,25 @@
                     <h2 class="checkout-section-title">Forma de Pagamento</h2>
                     
                     <div class="payment-options">
-                        <div class="payment-option" onclick="selecionarPagamento('mercadopago')">
-                            <input type="radio" name="payment" id="paymentMP" value="mercadopago">
-                            <label for="paymentMP">
-                                <div class="payment-icon">
-                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="#009ee3">
-                                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 9.75c-.232 2.296-2.15 3.857-4.69 3.857-2.54 0-4.305-1.561-4.072-3.857.232-2.296 2.15-3.857 4.69-3.857 2.54 0 4.305 1.561 4.072 3.857z"/>
-                                    </svg>
-                                </div>
-                                <div class="payment-info">
-                                    <strong>Mercado Pago</strong>
-                                    <span>Cartão, Pix, Boleto</span>
-                                </div>
-                            </label>
-                        </div>
-
-                        <div class="payment-option" onclick="selecionarPagamento('pix')">
-                            <input type="radio" name="payment" id="paymentPix" value="pix">
+                        <div class="payment-option selected" onclick="selecionarPagamento('pix')">
+                            <input type="radio" name="payment" id="paymentPix" value="pix" checked>
                             <label for="paymentPix">
                                 <div class="payment-icon">
                                     <img src="design/icone_pix.png" alt="Pix" style="width: 40px;">
                                 </div>
                                 <div class="payment-info">
-                                    <strong>PIX</strong>
-                                    <span>5% de desconto - Aprovação imediata</span>
+                                    <strong>PIX - Abacate Pay</strong>
+                                    <span>Pagamento instantâneo via gateway Abacate Pay</span>
                                 </div>
                             </label>
                         </div>
                     </div>
 
-                    <!-- Container para o Mercado Pago -->
-                    <div id="mercadoPagoContainer" class="hidden" style="margin-top: 30px;">
-                        <div id="form-checkout"></div>
+                    <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #370400;">
+                        <p style="margin: 0; color: #666; font-size: 14px;">
+                            <strong>ℹ️ Como funciona:</strong><br>
+                            Ao finalizar a compra, você será redirecionado para o gateway de pagamento Abacate Pay onde poderá realizar o pagamento via PIX.
+                        </p>
                     </div>
 
                     <div class="form-actions">
@@ -267,8 +254,6 @@
         </div>
     </main>
 
-    <!-- SDK do Mercado Pago -->
-    <script src="https://sdk.mercadopago.com/js/v2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/jquery.min.js"></script>
     <script src="js/carrinho.js"></script>
