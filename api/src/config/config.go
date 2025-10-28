@@ -18,6 +18,12 @@ var (
 
 	//SecretKey é a chave que vai ser usada para assinar o token
 	SecretKey []byte
+
+	//AbacatePayToken é o token de autenticação do AbacatePay
+	AbacatePayToken = ""
+
+	//BaseURL é a URL base da aplicação
+	BaseURL = ""
 )
 
 // Carregar vai inicializar as variáveis de ambiente
@@ -34,10 +40,22 @@ func Carregar() {
 	}
 
 	StringConexaoBanco = fmt.Sprintf("%s:%s@/%s?charset=utf8&parseTime=True&loc=Local",
-        os.Getenv("DB_USUARIO"),
+		os.Getenv("DB_USUARIO"),
 		os.Getenv("DB_SENHA"),
 		os.Getenv("DB_NOME"),
 	)
 
 	SecretKey = []byte(os.Getenv("SECRET_KEY"))
+
+	// Carregar token do AbacatePay
+	AbacatePayToken = os.Getenv("ABACATEPAY_TOKEN")
+	if AbacatePayToken == "" {
+		AbacatePayToken = "abc_dev_CtuuPHQhkhGfA0dCAcdnH24D" // Token padrão de desenvolvimento
+	}
+
+	// Carregar URL base
+	BaseURL = os.Getenv("BASE_URL")
+	if BaseURL == "" {
+		BaseURL = "http://localhost:3000" // URL padrão para desenvolvimento
+	}
 }

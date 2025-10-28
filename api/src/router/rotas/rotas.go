@@ -37,27 +37,5 @@ func Configurar(r *mux.Router) *mux.Router {
 
 	}
 
-	// Configurar CORS para permitir requisições do frontend
-	r.Use(configurarCORS)
-
 	return r //Retorna o router configurado
-}
-
-// configurarCORS adiciona os headers CORS necessários
-func configurarCORS(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Permitir origem específica (ajuste para seu frontend)
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-		w.Header().Set("Access-Control-Max-Age", "86400")
-
-		// Handle preflight requests
-		if r.Method == "OPTIONS" {
-			w.WriteHeader(http.StatusOK)
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
 }

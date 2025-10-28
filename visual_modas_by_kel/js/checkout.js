@@ -10,6 +10,24 @@ let cartItems = [];
 
 // INICIALIZAÇÃO
 $(document).ready(function() {
+    // Se estiver na página de confirmação, recuperar dados do localStorage
+    if (window.location && window.location.pathname === '/checkout/confirmacao') {
+        const savedCheckoutData = localStorage.getItem('checkoutData');
+        if (savedCheckoutData) {
+            checkoutData = JSON.parse(savedCheckoutData);
+            cartItems = checkoutData.items || [];
+            
+            // Limpar dados salvos
+            localStorage.removeItem('checkoutData');
+            localStorage.removeItem('abacateExternalId');
+            
+            // Mostrar confirmação diretamente
+            carregarResumo();
+            avancarEtapa(5);
+            return;
+        }
+    }
+
     // Carregar carrinho da API
     buscarResumoCarrinhoAPI(function(resumo) {
         if (!resumo || !resumo.itens || resumo.itens.length === 0) {
@@ -236,6 +254,10 @@ function avancarEtapa(etapa) {
         document.getElementById('sectionConfirmacao').classList.remove('hidden');
         document.getElementById('step5').classList.add('active');
         document.getElementById('step4').classList.add('completed');
+        // Atualiza a rota do navegador para a rota dedicada de confirmação
+        if (window.location && window.location.pathname !== '/checkout/confirmacao') {
+            window.history.pushState({}, '', '/checkout/confirmacao');
+        }
         mostrarConfirmacao();
     }
 
@@ -272,43 +294,78 @@ async function finalizarPagamento() {
     btnFinalizar.disabled = true;
     btnFinalizar.textContent = 'Processando...';
 
-    // Preparar dados do pedido
-    const dadosPedido = {
-        nomeCompleto: checkoutData.cliente.nome,
-        email: checkoutData.cliente.email,
-        telefone: checkoutData.cliente.telefone,
-        endereco: checkoutData.endereco.endereco,
-        numero: checkoutData.endereco.numero,
-        complemento: checkoutData.endereco.complemento || '',
-        bairro: checkoutData.endereco.bairro,
-        cidade: checkoutData.endereco.cidade,
-        estado: checkoutData.endereco.estado,
-        cep: checkoutData.endereco.cep,
-        formaPagamento: checkoutData.pagamento.tipo
-    };
+    try {
+        // Preparar dados para o AbacatePay
+        const dadosAbacatePay = {
+            cliente: checkoutData.cliente,
+            endereco: checkoutData.endereco
+        };
 
-    // Criar pedido via API
-    criarPedidoAPI(dadosPedido, function(sucesso, response) {
-        if (sucesso) {
-            checkoutData.numeroPedido = response.pedidoId;
-            avancarEtapa(5);
+        // Chamar API para criar cobrança no AbacatePay
+        const response = await fetch('/api/abacatepay/criar-cobranca', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(dadosAbacatePay)
+        });
+
+        const data = await response.json();
+        
+        console.log('=== Resposta da API ===');
+        console.log('Status:', response.status);
+        console.log('Data:', data);
+        console.log('paymentUrl:', data.paymentUrl);
+        console.log('=====================');
+
+        if (response.ok && data.success && data.paymentUrl) {
+            // Salvar dados do pedido no localStorage para usar após o pagamento
+            localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+            localStorage.setItem('abacateExternalId', data.externalId);
+            
+            console.log('Redirecionando para:', data.paymentUrl);
+            
+            // Redirecionar para o gateway de pagamento do AbacatePay
+            window.location.href = data.paymentUrl;
         } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Erro ao criar pedido',
-                text: response || 'Não foi possível criar o pedido. Tente novamente.',
-                confirmButtonColor: '#370400'
-            });
-            btnFinalizar.disabled = false;
-            btnFinalizar.textContent = 'Finalizar Compra';
+            console.error('Erro: resposta inválida', data);
+            throw new Error(data.erro || 'Erro ao processar pagamento: URL de pagamento não foi retornada');
         }
-    });
+    } catch (error) {
+        console.error('Erro ao criar cobrança:', error);
+        
+        let mensagemErro = error.message || 'Não foi possível processar o pagamento. Tente novamente.';
+        
+        // Mensagens específicas para erros comuns
+        if (mensagemErro.includes('Invalid taxId') || mensagemErro.includes('CPF inválido')) {
+            mensagemErro = 'CPF inválido. Por favor, verifique o CPF informado e tente novamente.';
+        }
+        
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro ao processar pagamento',
+            text: mensagemErro,
+            confirmButtonColor: '#370400'
+        });
+        btnFinalizar.disabled = false;
+        btnFinalizar.textContent = 'Finalizar Compra';
+    }
 }
 
 // MOSTRAR CONFIRMAÇÃO
 function mostrarConfirmacao() {
-    const numeroPedido = checkoutData.numeroPedido || Math.floor(Math.random() * 1000000);
-    document.getElementById('numeroPedido').textContent = `#${numeroPedido}`;
+    const numeroPedido = checkoutData.numeroPedido;
+    const numeroPedidoEl = document.getElementById('numeroPedido');
+    if (numeroPedido && numeroPedidoEl) {
+        numeroPedidoEl.textContent = `#${numeroPedido}`;
+    } else if (numeroPedidoEl) {
+        // Se não houver número real do pedido, esconder a linha
+        const parentParagraph = numeroPedidoEl.parentElement;
+        if (parentParagraph) {
+            parentParagraph.style.display = 'none';
+        }
+    }
 
     const subtotal = cartItems.reduce((sum, item) => {
         return sum + (parseFloat(item.produto.preco) * item.quantidade);
@@ -347,13 +404,13 @@ function mostrarConfirmacao() {
 
         <div class="confirmation-section">
             <p style="text-align: center; color: #370400; margin-top: 20px; font-weight: 600;">
-                ⏳ Pedido criado com sucesso!
+                Pedido criado com sucesso!
             </p>
             <p style="text-align: center; color: #666;">
                 Em breve você será redirecionado para o gateway de pagamento Abacate Pay para realizar o pagamento via PIX.
             </p>
             <p style="text-align: center; color: #666; font-size: 13px; margin-top: 10px;">
-                📧 Você receberá um e-mail com os detalhes do seu pedido.
+                Você receberá um e-mail com os detalhes do seu pedido.
             </p>
         </div>
     `;

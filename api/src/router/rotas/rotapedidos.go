@@ -41,4 +41,11 @@ var rotasPedidos = []Rota{
 		Funcao:             controllers.AtualizarStatusPedido,
 		RequerAutenticacao: true,
 	},
+	// Criar cobrança no AbacatePay (rota da API)
+	{
+		URI:                "/abacatepay/criar-cobranca",
+		Metodo:             http.MethodPost,
+		Funcao:             controllers.CriarCobrancaAbacatePay,
+		RequerAutenticacao: true,
+	},
 }
