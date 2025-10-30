@@ -34,7 +34,7 @@ func Configurar(router *mux.Router) *mux.Router {
 	rotas = append(rotas, rotasFavoritos...)
 	rotas = append(rotas, rotasCarrinho...)
 	rotas = append(rotas, rotasPedidos...)
-	rotas = append(rotas, rotaAbacatePay)
+	rotas = append(rotas, rotasAbacatePay...)
 
 	for _, rota := range rotas {
 		if rota.RequerAdmin {
@@ -55,7 +55,7 @@ func Configurar(router *mux.Router) *mux.Router {
 		}
 	}
 
-	// Serve arquivos estáticos (CSS, JS, imagens) - APENAS para arquivos que não são rotas da API
+	// Serve arquivos estáticos (CSS, JS, imagens) - apenas para arquivos que não são rotas da API
 	fileServer := http.FileServer(http.Dir("./"))
 	router.PathPrefix("/").Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Verificar se é uma rota da API
@@ -64,7 +64,7 @@ func Configurar(router *mux.Router) *mux.Router {
 			http.NotFound(w, r)
 			return
 		}
-		// Não servir arquivos .html diretamente - devem usar as rotas definidas
+		// Não servir arquivos .html diretamente
 		if strings.HasSuffix(r.URL.Path, ".html") {
 			http.NotFound(w, r)
 			return

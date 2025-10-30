@@ -18,6 +18,7 @@ type Pedido struct {
 	CEP            string    `json:"cep,omitempty"`
 	FormaPagamento string    `json:"formaPagamento,omitempty"`
 	Status         string    `json:"status,omitempty"`
+	CodigoRastreio string    `json:"codigoRastreio,omitempty"`
 	Total          float64   `json:"total,omitempty"`
 	CriadoEm       time.Time `json:"criadoEm,omitempty"`
 	AtualizadoEm   time.Time `json:"atualizadoEm,omitempty"`

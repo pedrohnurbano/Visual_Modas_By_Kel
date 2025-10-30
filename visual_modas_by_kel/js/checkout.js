@@ -17,13 +17,8 @@ $(document).ready(function() {
             checkoutData = JSON.parse(savedCheckoutData);
             cartItems = checkoutData.items || [];
             
-            // Limpar dados salvos
-            localStorage.removeItem('checkoutData');
-            localStorage.removeItem('abacateExternalId');
-            
-            // Mostrar confirmação diretamente
-            carregarResumo();
-            avancarEtapa(5);
+            // Confirmar pagamento e criar pedido
+            confirmarPagamentoECriarPedido();
             return;
         }
     }
@@ -320,14 +315,74 @@ async function finalizarPagamento() {
         console.log('=====================');
 
         if (response.ok && data.success && data.paymentUrl) {
-            // Salvar dados do pedido no localStorage para usar após o pagamento
-            localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
-            localStorage.setItem('abacateExternalId', data.externalId);
-            
-            console.log('Redirecionando para:', data.paymentUrl);
-            
-            // Redirecionar para o gateway de pagamento do AbacatePay
-            window.location.href = data.paymentUrl;
+            // Verificar se há itens no carrinho
+            if (!cartItems || cartItems.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Carrinho vazio',
+                    text: 'Seu carrinho está vazio. Adicione produtos antes de finalizar a compra.',
+                    confirmButtonColor: '#370400'
+                }).then(() => {
+                    window.location.href = '/sacola';
+                });
+                btnFinalizar.disabled = false;
+                btnFinalizar.textContent = 'Finalizar Compra';
+                return;
+            }
+
+            // Criar o pedido antes de ir para o AbacatePay
+            const dadosPedido = {
+                nomeCompleto: checkoutData.cliente.nome,
+                email: checkoutData.cliente.email,
+                telefone: checkoutData.cliente.telefone,
+                endereco: checkoutData.endereco.endereco,
+                numero: checkoutData.endereco.numero,
+                complemento: checkoutData.endereco.complemento || '',
+                bairro: checkoutData.endereco.bairro,
+                cidade: checkoutData.endereco.cidade,
+                estado: checkoutData.endereco.estado,
+                cep: checkoutData.endereco.cep,
+                formaPagamento: 'PIX'
+            };
+
+            // Criar pedido
+            const pedidoResponse = await fetch('/api/pedidos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(dadosPedido)
+            });
+
+            const pedidoData = await pedidoResponse.json();
+
+            if (pedidoResponse.ok) {
+                // Salvar dados para a confirmação
+                checkoutData.numeroPedido = pedidoData.pedidoId;
+                localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+                localStorage.setItem('abacateExternalId', data.externalId);
+                
+                console.log('Pedido criado! ID:', pedidoData.pedidoId);
+                console.log('Redirecionando para:', data.paymentUrl);
+                
+                // Redirecionar para o gateway de pagamento do AbacatePay
+                window.location.href = data.paymentUrl;
+            } else {
+                // Se o erro for de carrinho vazio, dar mensagem específica
+                if (pedidoData.erro && pedidoData.erro.includes('carrinho vazio')) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Carrinho vazio',
+                        html: 'Seu carrinho está vazio ou já foi processado.<br><br>Por favor, adicione produtos novamente antes de finalizar a compra.',
+                        confirmButtonColor: '#370400'
+                    }).then(() => {
+                        window.location.href = '/sacola';
+                    });
+                } else {
+                    throw new Error(pedidoData.erro || 'Erro ao criar pedido');
+                }
+            }
         } else {
             console.error('Erro: resposta inválida', data);
             throw new Error(data.erro || 'Erro ao processar pagamento: URL de pagamento não foi retornada');
@@ -424,4 +479,34 @@ function formatarCPF(cpf) {
 
 function formatarCEP(cep) {
     return cep.replace(/(\d{5})(\d{3})/, '$1-$2');
+}
+
+// Mostrar confirmação após retorno do AbacatePay
+async function confirmarPagamentoECriarPedido() {
+    try {
+        // Limpar dados salvos
+        const savedData = localStorage.getItem('checkoutData');
+        if (savedData) {
+            const data = JSON.parse(savedData);
+            checkoutData.numeroPedido = data.numeroPedido;
+        }
+        
+        localStorage.removeItem('checkoutData');
+        localStorage.removeItem('abacateExternalId');
+        
+        // Mostrar confirmação
+        carregarResumo();
+        avancarEtapa(5);
+        
+    } catch (error) {
+        console.error('Erro ao mostrar confirmação:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: 'Houve um erro ao processar seu pedido.',
+            confirmButtonColor: '#370400'
+        }).then(() => {
+            window.location.href = '/home';
+        });
+    }
 }

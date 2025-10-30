@@ -58,7 +58,7 @@ func (repositorio Pedidos) Criar(pedido modelos.Pedido) (uint64, error) {
 		return 0, erro
 	}
 
-	// Buscar itens do carrinho do usuário
+	// Buscar itens do carrinho do usuário e armazenar em slice
 	linhas, erro := tx.Query(`
 		SELECT 
 			c.produto_id, c.quantidade,
@@ -71,34 +71,51 @@ func (repositorio Pedidos) Criar(pedido modelos.Pedido) (uint64, error) {
 	if erro != nil {
 		return 0, erro
 	}
-	defer linhas.Close()
 
-	// Inserir itens do pedido
+	// Armazenar os itens em um slice antes de fechar a query
+	type ItemTemp struct {
+		ProdutoID  uint64
+		Quantidade int
+		Nome       string
+		Preco      float64
+		Tamanho    string
+		FotoURL    string
+	}
+
+	var itensTemp []ItemTemp
+
 	for linhas.Next() {
-		var produtoID uint64
-		var quantidade int
-		var nome, tamanho, fotoURL string
-		var preco float64
-
-		if erro = linhas.Scan(&produtoID, &quantidade, &nome, &preco, &tamanho, &fotoURL); erro != nil {
+		var item ItemTemp
+		if erro = linhas.Scan(&item.ProdutoID, &item.Quantidade, &item.Nome, &item.Preco, &item.Tamanho, &item.FotoURL); erro != nil {
+			linhas.Close()
 			return 0, erro
 		}
+		itensTemp = append(itensTemp, item)
+	}
+	linhas.Close()
 
-		subtotal := preco * float64(quantidade)
+	// Verificar se há itens no carrinho
+	if len(itensTemp) == 0 {
+		return 0, fmt.Errorf("carrinho vazio - não é possível criar pedido sem itens")
+	}
+
+	// Inserir os itens do pedido
+	for _, item := range itensTemp {
+		subtotal := item.Preco * float64(item.Quantidade)
 
 		_, erro = tx.Exec(`
 			INSERT INTO itens_pedido (
 				pedido_id, produto_id, nome_produto, preco_unitario,
 				quantidade, tamanho, subtotal, foto_url
 			) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-		`, pedidoID, produtoID, nome, preco, quantidade, tamanho, subtotal, fotoURL)
+		`, pedidoID, item.ProdutoID, item.Nome, item.Preco, item.Quantidade, item.Tamanho, subtotal, item.FotoURL)
 
 		if erro != nil {
 			return 0, erro
 		}
 	}
 
-	// Limpar carrinho do usuário
+	// Limpar carrinho do usuário se houver itens
 	_, erro = tx.Exec("DELETE FROM carrinho WHERE usuario_id = ?", pedido.UsuarioID)
 	if erro != nil {
 		return 0, erro
@@ -118,12 +135,14 @@ func (repositorio Pedidos) BuscarPorID(pedidoID uint64) (modelos.Pedido, error) 
 		SELECT 
 			id, usuario_id, nome_completo, email, telefone,
 			endereco, numero, complemento, bairro, cidade, estado, cep,
-			forma_pagamento, status, total, criadoEm, atualizadoEm
+			forma_pagamento, status, codigo_rastreio, total, criadoEm, atualizadoEm
 		FROM pedidos
 		WHERE id = ?
 	`, pedidoID)
 
 	var pedido modelos.Pedido
+	var codigoRastreio sql.NullString
+
 	erro := linha.Scan(
 		&pedido.ID,
 		&pedido.UsuarioID,
@@ -139,6 +158,7 @@ func (repositorio Pedidos) BuscarPorID(pedidoID uint64) (modelos.Pedido, error) 
 		&pedido.CEP,
 		&pedido.FormaPagamento,
 		&pedido.Status,
+		&codigoRastreio,
 		&pedido.Total,
 		&pedido.CriadoEm,
 		&pedido.AtualizadoEm,
@@ -146,6 +166,10 @@ func (repositorio Pedidos) BuscarPorID(pedidoID uint64) (modelos.Pedido, error) 
 
 	if erro != nil {
 		return modelos.Pedido{}, erro
+	}
+
+	if codigoRastreio.Valid {
+		pedido.CodigoRastreio = codigoRastreio.String
 	}
 
 	return pedido, nil
@@ -216,7 +240,7 @@ func (repositorio Pedidos) BuscarPorUsuario(usuarioID uint64) ([]modelos.Pedido,
 		SELECT 
 			id, usuario_id, nome_completo, email, telefone,
 			endereco, numero, complemento, bairro, cidade, estado, cep,
-			forma_pagamento, status, total, criadoEm, atualizadoEm
+			forma_pagamento, status, codigo_rastreio, total, criadoEm, atualizadoEm
 		FROM pedidos
 		WHERE usuario_id = ?
 		ORDER BY criadoEm DESC
@@ -231,6 +255,8 @@ func (repositorio Pedidos) BuscarPorUsuario(usuarioID uint64) ([]modelos.Pedido,
 
 	for linhas.Next() {
 		var pedido modelos.Pedido
+		var codigoRastreio sql.NullString
+
 		if erro = linhas.Scan(
 			&pedido.ID,
 			&pedido.UsuarioID,
@@ -246,11 +272,16 @@ func (repositorio Pedidos) BuscarPorUsuario(usuarioID uint64) ([]modelos.Pedido,
 			&pedido.CEP,
 			&pedido.FormaPagamento,
 			&pedido.Status,
+			&codigoRastreio,
 			&pedido.Total,
 			&pedido.CriadoEm,
 			&pedido.AtualizadoEm,
 		); erro != nil {
 			return nil, erro
+		}
+
+		if codigoRastreio.Valid {
+			pedido.CodigoRastreio = codigoRastreio.String
 		}
 
 		pedidos = append(pedidos, pedido)
@@ -292,7 +323,7 @@ func (repositorio Pedidos) ListarTodos() ([]modelos.Pedido, error) {
 		SELECT 
 			id, usuario_id, nome_completo, email, telefone,
 			endereco, numero, complemento, bairro, cidade, estado, cep,
-			forma_pagamento, status, total, criadoEm, atualizadoEm
+			forma_pagamento, status, codigo_rastreio, total, criadoEm, atualizadoEm
 		FROM pedidos
 		ORDER BY criadoEm DESC
 	`)
@@ -306,6 +337,8 @@ func (repositorio Pedidos) ListarTodos() ([]modelos.Pedido, error) {
 
 	for linhas.Next() {
 		var pedido modelos.Pedido
+		var codigoRastreio sql.NullString
+
 		if erro = linhas.Scan(
 			&pedido.ID,
 			&pedido.UsuarioID,
@@ -321,6 +354,7 @@ func (repositorio Pedidos) ListarTodos() ([]modelos.Pedido, error) {
 			&pedido.CEP,
 			&pedido.FormaPagamento,
 			&pedido.Status,
+			&codigoRastreio,
 			&pedido.Total,
 			&pedido.CriadoEm,
 			&pedido.AtualizadoEm,
@@ -328,8 +362,76 @@ func (repositorio Pedidos) ListarTodos() ([]modelos.Pedido, error) {
 			return nil, erro
 		}
 
+		if codigoRastreio.Valid {
+			pedido.CodigoRastreio = codigoRastreio.String
+		}
+
 		pedidos = append(pedidos, pedido)
 	}
 
 	return pedidos, nil
+}
+
+// AtualizarCodigoRastreio atualiza o código de rastreio de um pedido e muda status para "enviado"
+func (repositorio Pedidos) AtualizarCodigoRastreio(pedidoID uint64, codigoRastreio string) error {
+	statement, erro := repositorio.db.Prepare(
+		"UPDATE pedidos SET codigo_rastreio = ?, status = 'enviado' WHERE id = ?",
+	)
+	if erro != nil {
+		return erro
+	}
+	defer statement.Close()
+
+	resultado, erro := statement.Exec(codigoRastreio, pedidoID)
+	if erro != nil {
+		return erro
+	}
+
+	linhasAfetadas, erro := resultado.RowsAffected()
+	if erro != nil {
+		return erro
+	}
+
+	if linhasAfetadas == 0 {
+		return fmt.Errorf("pedido não encontrado")
+	}
+
+	return nil
+}
+
+// ConfirmarEntrega marca o pedido como recebido
+func (repositorio Pedidos) ConfirmarEntrega(pedidoID uint64, usuarioID uint64) error {
+	// Verificar se o pedido pertence ao usuário
+	pedido, erro := repositorio.BuscarPorID(pedidoID)
+	if erro != nil {
+		return erro
+	}
+
+	if pedido.UsuarioID != usuarioID {
+		return fmt.Errorf("pedido não pertence ao usuário")
+	}
+
+	statement, erro := repositorio.db.Prepare(
+		"UPDATE pedidos SET status = 'recebido' WHERE id = ?",
+	)
+	if erro != nil {
+		return erro
+	}
+	defer statement.Close()
+
+	resultado, erro := statement.Exec(pedidoID)
+	if erro != nil {
+		return erro
+	}
+
+	linhasAfetadas, erro := resultado.RowsAffected()
+	if erro != nil {
+		return erro
+	}
+
+	if linhasAfetadas == 0 {
+		return fmt.Errorf("pedido não encontrado")
+	}
+
+	return nil
 }

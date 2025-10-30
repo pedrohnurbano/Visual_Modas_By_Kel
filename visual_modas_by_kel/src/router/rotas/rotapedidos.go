@@ -27,6 +27,20 @@ var rotasPedidos = []Rota{
 		Funcao:             controllers.BuscarPedido,
 		RequerAutenticacao: true,
 	},
+	// Confirmar entrega do pedido (usuário)
+	{
+		URI:                "/api/pedidos/{pedidoId}/confirmar-entrega",
+		Metodo:             http.MethodPut,
+		Funcao:             controllers.ConfirmarEntrega,
+		RequerAutenticacao: true,
+	},
+	// Confirmar pagamento e criar pedido
+	{
+		URI:                "/api/pedidos/confirmar-pagamento",
+		Metodo:             http.MethodPost,
+		Funcao:             controllers.ConfirmarPagamentoPedido,
+		RequerAutenticacao: true,
+	},
 	// Listar todos os pedidos (admin)
 	{
 		URI:                "/api/admin/pedidos",
@@ -40,6 +54,14 @@ var rotasPedidos = []Rota{
 		URI:                "/api/admin/pedidos/{pedidoId}/status",
 		Metodo:             http.MethodPut,
 		Funcao:             controllers.AtualizarStatusPedido,
+		RequerAutenticacao: true,
+		RequerAdmin:        true,
+	},
+	// Atualizar código de rastreio do pedido (admin)
+	{
+		URI:                "/api/admin/pedidos/{pedidoId}/rastreio",
+		Metodo:             http.MethodPut,
+		Funcao:             controllers.AtualizarCodigoRastreio,
 		RequerAutenticacao: true,
 		RequerAdmin:        true,
 	},

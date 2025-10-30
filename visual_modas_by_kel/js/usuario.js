@@ -170,105 +170,214 @@ function cancelarEdicaoDados() {
 // Pedidos
 async function carregarPedidos() {
     try {
-        // TODO: Implementar endpoint da API para buscar pedidos do usuário
-        // const response = await fetch('/api/usuarios/pedidos');
-        // if (response.ok) {
-        //     pedidos = await response.json();
-        // }
+        const response = await fetch('/api/pedidos');
+        if (!response.ok) {
+            throw new Error('Erro ao carregar pedidos');
+        }
+        
+        pedidos = await response.json() || [];
         
         const lista = document.getElementById('pedidosLista');
         const empty = document.getElementById('pedidosEmpty');
 
-        if (pedidos.length === 0) {
+        if (!pedidos || pedidos.length === 0) {
             lista.style.display = 'none';
-            empty.style.display = 'block';
+            empty.style.display = 'flex';
             return;
         }
 
         lista.style.display = 'flex';
         empty.style.display = 'none';
 
-        lista.innerHTML = pedidos.map(pedido => `
-        <div class="pedido-card">
-            <div class="pedido-header">
-                <div>
-                    <div class="pedido-numero">Pedido #${pedido.id}</div>
-                    <div class="pedido-data">${pedido.data}</div>
-                </div>
-                <span class="pedido-status status-${pedido.status}">${getStatusText(pedido.status)}</span>
-                </div>
-            <div class="pedido-items">
-                ${pedido.items.map(item => `
-                    <div class="pedido-item">
-                        <img src="${item.imagem}" alt="${item.nome}">
-                        <div class="pedido-item-info">
-                            <div class="pedido-item-nome">${item.nome}</div>
-                            <div class="pedido-item-detalhes">
-                                Tamanho: ${item.tamanho} | Qtd: ${item.quantidade} | 
-                                R$ ${item.preco.toFixed(2).replace('.', ',')}
-                            </div>
+        lista.innerHTML = pedidos.map(pedido => {
+            const dataFormatada = new Date(pedido.criadoEm).toLocaleDateString('pt-BR');
+            const statusClass = getStatusClassUsuario(pedido.status);
+            
+            return `
+                <div class="pedido-card" data-status="${pedido.status}">
+                    <div class="pedido-header">
+                        <div>
+                            <div class="pedido-numero">Pedido #${pedido.id}</div>
+                            <div class="pedido-data">${dataFormatada}</div>
+                        </div>
+                        <span class="pedido-status badge badge-${statusClass}">${getStatusText(pedido.status)}</span>
+                    </div>
+                    <div class="pedido-info">
+                        <p><strong>Total:</strong> R$ ${pedido.total.toFixed(2).replace('.', ',')}</p>
+                        <p><strong>Forma de Pagamento:</strong> ${pedido.formaPagamento}</p>
+                        ${pedido.codigoRastreio ? `<p><strong>Código de Rastreio:</strong> <span style="color: #370400; font-weight: 600;">${pedido.codigoRastreio}</span></p>` : ''}
+                    </div>
+                    <div class="pedido-footer">
+                        <div class="pedido-acoes">
+                            <button class="btn-small primary" onclick="verDetalhesPedidoUsuario(${pedido.id})">
+                                Ver Detalhes
+                            </button>
+                            ${pedido.codigoRastreio ? `
+                                <a href="https://www.correios.com.br/rastreamento" target="_blank" class="btn-small secondary">
+                                    Rastrear Entrega
+                                </a>
+                            ` : ''}
+                            ${pedido.status === 'enviado' && pedido.codigoRastreio ? `
+                                <button class="btn-small success" onclick="confirmarEntregaPedido(${pedido.id})">
+                                    Confirmar Recebimento
+                                </button>
+                            ` : ''}
                         </div>
                     </div>
-                `).join('')}
-            </div>
-            <div class="pedido-footer">
-                <div class="pedido-total">Total: R$ ${pedido.total.toFixed(2).replace('.', ',')}</div>
-                <div class="pedido-acoes">
-                    <button class="btn-small primary" onclick="verDetalhesPedido('${pedido.id}')">
-                        Ver Detalhes
-                    </button>
-                    ${pedido.status === 'enviado' ? `
-                        <button class="btn-small secondary" onclick="rastrearPedido('${pedido.id}')">
-                            Rastrear
-                        </button>
-                    ` : ''}
                 </div>
-            </div>
-        </div>
-    `).join('');
-
-        // Filtro de pedidos
-        const filterPedidos = document.getElementById('filterPedidos');
-        if (filterPedidos) {
-            filterPedidos.addEventListener('change', function () {
-                filtrarPedidos(this.value);
-            });
-        }
+            `;
+        }).join('');
     } catch (error) {
         console.error('Erro ao carregar pedidos:', error);
+        const lista = document.getElementById('pedidosLista');
+        const empty = document.getElementById('pedidosEmpty');
+        if (lista && empty) {
+            lista.style.display = 'none';
+            empty.style.display = 'flex';
+        }
     }
 }
 
 function getStatusText(status) {
     const statusMap = {
-        'em-processamento': 'Em Processamento',
+        'pendente': 'Pendente',
+        'processamento': 'Em Processamento',
         'enviado': 'Enviado',
-        'entregue': 'Entregue',
+        'recebido': 'Recebido',
         'cancelado': 'Cancelado'
     };
     return statusMap[status] || status;
 }
 
-function filtrarPedidos(filtro) {
-    const cards = document.querySelectorAll('.pedido-card');
-    cards.forEach(card => {
-        const status = card.querySelector('.pedido-status').classList[1].replace('status-', '');
-        if (filtro === 'todos' || status === filtro) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
+function getStatusClassUsuario(status) {
+    const classMap = {
+        'pendente': 'warning',
+        'processamento': 'info',
+        'enviado': 'primary',
+        'recebido': 'success',
+        'cancelado': 'danger'
+    };
+    return classMap[status] || 'secondary';
+}
+
+function verDetalhesPedidoUsuario(pedidoId) {
+    const pedido = pedidos.find(p => p.id === pedidoId);
+    if (!pedido) {
+        showNotification('Pedido não encontrado');
+        return;
+    }
+
+    // Buscar detalhes completos do pedido com itens
+    fetch(`/api/pedidos/${pedidoId}`)
+        .then(response => response.json())
+        .then(pedidoCompleto => {
+            const itens = pedidoCompleto.itens || [];
+            let itensHTML = '';
+            
+            itens.forEach(item => {
+                const fotoUrl = item.fotoUrl ? 
+                    (item.fotoUrl.startsWith('http') ? item.fotoUrl : `http://localhost:5000${item.fotoUrl}`) : 
+                    'design/cabide.png';
+                    
+                itensHTML += `
+                    <div style="display: flex; gap: 15px; padding: 10px; border-bottom: 1px solid #eee;">
+                        <img src="${fotoUrl}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;" onerror="this.src='design/cabide.png'">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600;">${item.nomeProduto}</div>
+                            <div style="color: #666; font-size: 13px;">
+                                Tamanho: ${item.tamanho} | Quantidade: ${item.quantidade}
+                            </div>
+                        </div>
+                        <div style="font-weight: 600;">R$ ${item.subtotal.toFixed(2).replace('.', ',')}</div>
+                    </div>
+                `;
+            });
+
+            Swal.fire({
+                title: `Pedido #${pedido.id}`,
+                html: `
+                    <div style="text-align: left; max-height: 500px; overflow-y: auto;">
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: #370400; margin-bottom: 10px;">Status</h3>
+                            <span class="badge badge-${getStatusClassUsuario(pedido.status)}">${getStatusText(pedido.status)}</span>
+                            <p style="margin-top: 10px;"><strong>Data do Pedido:</strong> ${new Date(pedido.criadoEm).toLocaleDateString('pt-BR')}</p>
+                            ${pedido.codigoRastreio ? `<p><strong>Código de Rastreio:</strong> ${pedido.codigoRastreio}</p>` : ''}
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: #370400; margin-bottom: 10px;">Endereço de Entrega</h3>
+                            <p>${pedido.endereco}, ${pedido.numero}${pedido.complemento ? ' - ' + pedido.complemento : ''}</p>
+                            <p>${pedido.bairro} - ${pedido.cidade}/${pedido.estado}</p>
+                            <p>CEP: ${pedido.cep}</p>
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: #370400; margin-bottom: 10px;">Itens do Pedido</h3>
+                            ${itensHTML}
+                        </div>
+
+                        <div style="margin-top: 20px; padding-top: 15px; border-top: 2px solid #370400;">
+                            <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; color: #370400;">
+                                <span>Total:</span>
+                                <span>R$ ${pedido.total.toFixed(2).replace('.', ',')}</span>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                width: '700px',
+                confirmButtonColor: '#370400',
+                confirmButtonText: 'Fechar'
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao carregar detalhes do pedido:', error);
+            showNotification('Erro ao carregar detalhes do pedido');
+        });
+}
+
+function confirmarEntregaPedido(pedidoId) {
+    Swal.fire({
+        title: 'Confirmar Recebimento',
+        text: 'Você confirma que recebeu este pedido?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#370400',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sim, recebi',
+        cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const response = await fetch(`/api/pedidos/${pedidoId}/confirmar-entrega`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Entrega Confirmada!',
+                        text: 'Obrigado por confirmar o recebimento do seu pedido.',
+                        confirmButtonColor: '#370400'
+                    }).then(() => {
+                        carregarPedidos(); // Recarregar lista de pedidos
+                    });
+                } else {
+                    throw new Error('Erro ao confirmar entrega');
+                }
+            } catch (error) {
+                console.error('Erro ao confirmar entrega:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro',
+                    text: 'Não foi possível confirmar o recebimento. Tente novamente.',
+                    confirmButtonColor: '#370400'
+                });
+            }
         }
     });
-}
-
-function verDetalhesPedido(id) {
-    showNotification(`Ver detalhes do pedido #${id}`);
-    // Aqui você implementaria a navegação para página de detalhes
-}
-
-function rastrearPedido(id) {
-    showNotification(`Rastreamento do pedido #${id}`);
-    // Aqui você implementaria o rastreamento
 }
 
 // Favoritos

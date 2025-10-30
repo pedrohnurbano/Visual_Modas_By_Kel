@@ -63,6 +63,41 @@ func GerarIDUnico() string {
 	return fmt.Sprintf("pedido_%d_%s", timestamp, randomHex)
 }
 
+// AbacatePayWebhook processa webhooks do AbacatePay
+func AbacatePayWebhook(w http.ResponseWriter, r *http.Request) {
+	// Ler corpo da requisição
+	corpoRequisicao, erro := io.ReadAll(r.Body)
+	if erro != nil {
+		respostas.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	// Log do webhook recebido
+	fmt.Printf("\n=== Webhook AbacatePay Recebido ===\n%s\n=================================\n", string(corpoRequisicao))
+
+	var webhookData struct {
+		Event      string `json:"event"`
+		ExternalID string `json:"externalId"`
+		BillingID  string `json:"billingId"`
+		Status     string `json:"status"`
+	}
+
+	if erro = json.Unmarshal(corpoRequisicao, &webhookData); erro != nil {
+		fmt.Printf("ERRO ao fazer parse do webhook: %v\n", erro)
+		respostas.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	fmt.Printf("Event: %s, ExternalID: %s, Status: %s\n", webhookData.Event, webhookData.ExternalID, webhookData.Status)
+
+	// Verificar se o evento é de pagamento confirmado
+	if webhookData.Event == "billing.paid" || webhookData.Status == "PAID" {
+		fmt.Printf("Pagamento confirmado para ExternalID: %s\n", webhookData.ExternalID)
+	}
+
+	respostas.JSON(w, http.StatusOK, map[string]string{"mensagem": "Webhook processado"})
+}
+
 // CriarCobrancaAbacatePay cria uma cobrança no AbacatePay e retorna a URL de pagamento
 func CriarCobrancaAbacatePay(w http.ResponseWriter, r *http.Request) {
 	// Extrair ID do usuário do token
